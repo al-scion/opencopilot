@@ -1,0 +1,11 @@
+{
+  "$schema": "https://unpkg.com/knip@5/schema.json",
+  "workspaces": {
+    "packages/taskpane": {
+      "ignore": ["src/components/ui/**"]
+    },
+    "packages/docs": {
+      "ignore": ["content/**"]
+    }
+  }
+}

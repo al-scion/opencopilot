@@ -9,7 +9,6 @@
     "deploy": "convex deploy"
   },
   "dependencies": {
-    "@packages/shared": "workspace:*",
     "zod": "catalog:",
     "convex": "catalog:",
     "ai": "catalog:",

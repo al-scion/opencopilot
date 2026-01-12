@@ -40,8 +40,6 @@
     "@base-ui/react": "^1.0.0",
     "@convex-dev/react-query": "^0.1.0",
     "@convex-dev/workos": "^0.0.1",
-    "@packages/convex": "workspace:*",
-    "@packages/shared": "workspace:*",
     "@tanstack/react-query": "catalog:",
     "@tanstack/react-router": "catalog:",
     "@tiptap/extension-document": "^3.15.3",
