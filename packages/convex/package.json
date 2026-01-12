@@ -1,0 +1,22 @@
+{
+  "name": "@packages/convex",
+  "version": "0.0.0",
+  "private": true,
+  "main": "./convex/_generated/api.js",
+  "types": "./convex/_generated/api.d.ts",
+  "scripts": {
+    "dev": "convex dev",
+    "deploy": "convex deploy"
+  },
+  "dependencies": {
+    "@packages/shared": "workspace:*",
+    "zod": "catalog:",
+    "convex": "catalog:",
+    "ai": "catalog:",
+    "@ai-sdk/google": "catalog:",
+    "@convex-dev/crons": "^0.2.0",
+    "@convex-dev/r2": "^0.8.1",
+    "@convex-dev/workflow": "^0.3.3",
+    "convex-helpers": "^0.1.107"
+  }
+}

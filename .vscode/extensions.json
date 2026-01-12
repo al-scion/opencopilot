@@ -1,0 +1,14 @@
+{
+  "recommendations": [
+    "bradlc.vscode-tailwindcss",
+    "remcohaszing.schemastore",
+    "oven.bun-vscode",
+    "biomejs.biome",
+    "James-Yu.latex-workshop",
+    "yoavbls.pretty-ts-errors",
+    "astro-build.astro-vscode",
+    "TypeScriptTeam.native-preview",
+    "tauri-apps.tauri-vscode",
+    "rust-lang.rust-analyzer"
+  ]
+}

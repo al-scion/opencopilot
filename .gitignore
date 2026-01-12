@@ -1,0 +1,36 @@
+# turborepo
+.turbo
+
+# deps
+node_modules/
+
+# build output
+dist/
+
+# biome
+biome-logs/
+
+# environment variables
+.env
+.env*
+.env.local
+.env.development
+.env.test
+.env.production
+!.env.example
+
+# desktop
+target
+binaries
+gen/
+
+# web
+.tanstack
+.output
+.nitro
+.alchemy
+.vercel
+.wrangler
+
+# database
+local.db

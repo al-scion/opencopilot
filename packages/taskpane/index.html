@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<title>App</title>
+
+		<script id="window.history.cache" type="text/javascript">
+		window._historyCache = { replaceState: window.history.replaceState, pushState: window.history.pushState };
+		</script>
+		<script type="text/javascript" src="https://appsforoffice.microsoft.com/lib/1/hosted/office.js"></script>
+		<script id="window.history.restore" type="text/javascript">
+		window.history.replaceState = window._historyCache.replaceState;
+		window.history.pushState = window._historyCache.pushState;
+		</script>
+	</head>
+	<body class="antialised overscroll-none overflow-hidden">
+		<div id="root"></div>
+		<script type="module" src="/src/main.tsx"></script>
+	</body>
+</html>

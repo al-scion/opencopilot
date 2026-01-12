@@ -1,0 +1,132 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/office-js/extended-manifest.schema.json",
+  "actions": [
+    {
+      "id": "toggleTaskpane",
+      "type": "ExecuteFunction",
+      "name": "Toggle_sidebar"
+    },
+    {
+      "id": "showCellDetails",
+      "type": "ExecuteFunction",
+      "name": "Show_cell_details"
+    },
+    {
+      "id": "addToChatContext",
+      "type": "ExecuteFunction",
+      "name": "Add_to_chat_context"
+    },
+    {
+      "id": "fillColorCycle",
+      "type": "ExecuteFunction",
+      "name": "Fill_color_cycle"
+    },
+    {
+      "id": "blueBlackFontCycle",
+      "type": "ExecuteFunction",
+      "name": "Set_blue_font"
+    },
+    {
+      "id": "errorWrap",
+      "type": "ExecuteFunction",
+      "name": "Error_wrap"
+    },
+    {
+      "id": "increaseDecimal",
+      "type": "ExecuteFunction",
+      "name": "Increase_decimal"
+    },
+    {
+      "id": "decreaseDecimal",
+      "type": "ExecuteFunction",
+      "name": "Decrease_decimal"
+    },
+    {
+      "id": "shiftDecimalLeft",
+      "type": "ExecuteFunction",
+      "name": "Shift_decimal_left"
+    },
+    {
+      "id": "shiftDecimalRight",
+      "type": "ExecuteFunction",
+      "name": "Shift_decimal_right"
+    }
+  ],
+  "shortcuts": [
+    {
+      "action": "toggleTaskpane",
+      "key": {
+        "default": "Ctrl+J",
+        "mac": "Command+J"
+      }
+    },
+    {
+      "action": "showCellDetails",
+      "key": {
+        "default": "Alt+J",
+        "mac": "Option+J"
+      }
+    },
+    {
+      "action": "addToChatContext",
+      "key": {
+        "default": "Ctrl+Shift+J",
+        "mac": "Command+Option+J"
+      }
+    },
+    {
+      "action": "fillColorCycle",
+      "key": {
+        "default": "Ctrl+Shift+3",
+        "mac": "Command+Shift+3"
+      }
+    },
+    {
+      "action": "blueBlackFontCycle",
+      "key": {
+        "default": "Ctrl+Shift+2",
+        "mac": "Command+Shift+2"
+      }
+    },
+    {
+      "action": "errorWrap",
+      "key": {
+        "default": "Ctrl+Shift+E",
+        "mac": "Command+Shift+E"
+      }
+    },
+    {
+      "action": "increaseDecimal",
+      "key": {
+        "default": "Ctrl+Alt+Left",
+        "mac": "Command+Option+Comma"
+      }
+    },
+    {
+      "action": "decreaseDecimal",
+      "key": {
+        "default": "Ctrl+Alt+Right",
+        "mac": "Command+Option+Period"
+      }
+    },
+    {
+      "action": "shiftDecimalLeft",
+      "key": {
+        "default": "Ctrl+Alt+Shift+Left",
+        "mac": "Command+Option+Shift+Comma"
+      }
+    },
+    {
+      "action": "shiftDecimalRight",
+      "key": {
+        "default": "Ctrl+Alt+Shift+Right",
+        "mac": "Command+Option+Shift+Period"
+      }
+    }
+  ],
+  "resources": {
+    "default": {
+      "name": { "comment": "The name of the shortcut" }
+    }
+  }
+}

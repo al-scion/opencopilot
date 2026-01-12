@@ -1,0 +1,11 @@
+{
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "lib": ["DOM", "DOM.Iterable", "ESNext"],
+    "types": ["vite/client", "custom-functions-runtime", "office-js"],
+    "paths": {
+      "@/*": ["./src/*"],
+      "@packages/*": ["../../packages/*"]
+    }
+  }
+}
