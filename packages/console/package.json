@@ -1,0 +1,25 @@
+{
+	"$schema": "https://json.schemastore.org/package.json",
+	"name": "@packages/console",
+	"version": "0.0.0",
+	"private": true,
+	"type": "module",
+	"scripts": {
+		"dev": "bunx wrangler dev",
+		"checktypes": "tsgo --noEmit",
+		"deploy": "bun run checktypes && wrangler deploy",
+		"secrets": "wrangler secret bulk .env && wrangler types --env-file=.env"
+	},
+	"devDependencies": {
+		"@types/bun": "catalog:",
+		"@typescript/native-preview": "catalog:",
+		"typescript": "catalog:"
+	},
+	"dependencies": {
+		"@hono/standard-validator": "catalog:",
+		"@scalar/hono-api-reference": "catalog:",
+		"hono": "catalog:",
+		"hono-openapi": "catalog:",
+		"zod": "catalog:"
+	}
+}

@@ -23,7 +23,6 @@
 	"devDependencies": {
 		"@tailwindcss/vite": "catalog:",
 		"@tanstack/router-vite-plugin": "catalog:",
-		"@tauri-apps/cli": "^2",
 		"@types/bun": "catalog:",
 		"@types/react": "catalog:",
 		"@types/react-dom": "catalog:",
@@ -32,7 +31,8 @@
 		"tailwindcss": "catalog:",
 		"tw-animate-css": "catalog:",
 		"vite": "catalog:",
-		"vite-plugin-mkcert": "^1.17.9",
-		"vite-tsconfig-paths": "catalog:"
+		"vite-plugin-mkcert": "catalog:",
+		"vite-tsconfig-paths": "catalog:",
+		"@tauri-apps/cli": "^2"
 	}
 }

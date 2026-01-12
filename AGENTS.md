@@ -1,8 +1,6 @@
 # Fabric
 
-This is an AI spreadsheet agent that works as a plugin in Microsoft Excel.
-The core office runtime is uses the Office.js API.
-
+This is an AI spreadsheet agent that works as a plugin in Microsoft Excel, built on OpenCode [https://github.com/anomalyco/opencode].
 
 Default to using Bun instead of Node.js.
 
