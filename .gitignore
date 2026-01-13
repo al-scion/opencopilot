@@ -1,6 +1,9 @@
 # turborepo
 .turbo
 
+## References
+__temp*
+
 # deps
 node_modules/
 
