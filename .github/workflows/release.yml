@@ -52,6 +52,5 @@ jobs:
           releaseDraft: false
           prerelease: false
           generateReleaseNotes: true
-          uploadUpdaterJson: true
-          uploadUpdaterSignatures: true
+          includeUpdaterJson: true
           args: --target ${{ matrix.target }} --config src-tauri/tauri.prod.conf.json --no-sign --ci
