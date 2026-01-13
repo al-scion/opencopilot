@@ -12,7 +12,7 @@ Fabric is a monorepo project that provides AI-driven spreadsheet functionality t
 
 ## Project Structure
 
-```
+```text
 fabric/
 ├── packages/
 │   ├── desktop/         # Tauri v2 desktop application (React)
@@ -39,6 +39,8 @@ fabric/
 # Clone the repository
 git clone https://github.com/al-scion/opencopilot.git
 cd opencopilot
+
+# Note: The project is named "Fabric", but the repository is "opencopilot".
 
 # Install dependencies
 bun install
@@ -90,7 +92,7 @@ git push origin v.0.0.8
 ### Updater Configuration
 
 The app checks for updates at:
-```
+```text
 https://github.com/al-scion/opencopilot/releases/latest/download/latest.json
 ```
 
@@ -286,8 +288,8 @@ Current version is hardcoded to `0.0.0` in `packages/desktop/package.json`.
 
 ### Low Priority
 
-- [ ] Apple Developer ID code signing (requires paid Apple Developer Program)
-- [ ] Windows certificate signing (requires paid certificate)
+- [ ] Apple Developer ID code signing (requires a paid Apple Developer Program)
+- [ ] Windows certificate signing (requires a paid certificate)
 
 ## Contributing
 
