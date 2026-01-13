@@ -1,7 +1,7 @@
 mod cli;
 mod window_customizer;
 
-use cli::{get_sidecar_path, install_cli, sync_cli};
+use cli::get_sidecar_path;
 use futures::FutureExt;
 use std::{
     collections::VecDeque,
@@ -14,6 +14,7 @@ use tauri::{
     WebviewWindow,
 };
 use tauri_plugin_shell::process::{CommandChild, CommandEvent};
+use tauri_plugin_opener::OpenerExt;
 use tauri_plugin_shell::ShellExt;
 use tauri_plugin_store::StoreExt;
 use tokio::net::TcpSocket;
@@ -278,7 +279,6 @@ pub fn run() {
         .plugin(PinchZoomDisablePlugin)
         .invoke_handler(tauri::generate_handler![
             kill_sidecar,
-            install_cli,
             ensure_server_started
         ])
         .setup(move |app| {
@@ -315,7 +315,7 @@ pub fn run() {
                         }
                         // Open external http/https URLs in default browser
                         if url.scheme() == "http" || url.scheme() == "https" {
-                            let _ = app_for_nav.shell().open(url.as_str(), None);
+                            let _ = app_for_nav.opener().open_url(url.as_str(), None::<String>);
                             return false; // Cancel internal navigation
                         }
                         true
@@ -381,15 +381,6 @@ pub fn run() {
                     }
 
                     let _ = tx.send(res);
-                });
-            }
-
-            {
-                let app = app.clone();
-                tauri::async_runtime::spawn(async move {
-                    if let Err(e) = sync_cli(app) {
-                        eprintln!("Failed to sync CLI: {e}");
-                    }
                 });
             }
 
