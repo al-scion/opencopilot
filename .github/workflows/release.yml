@@ -53,4 +53,4 @@ jobs:
           prerelease: false
           generateReleaseNotes: true
           includeUpdaterJson: true
-          args: --target ${{ matrix.target }} --config src-tauri/tauri.prod.conf.json --no-sign --ci
+          args: --target ${{ matrix.target }} --config src-tauri/tauri.prod.conf.json --ci
