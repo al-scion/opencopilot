@@ -14,9 +14,7 @@ const queryClient = new QueryClient();
 export const router = createRouter({
 	routeTree,
 	defaultErrorComponent: (e) => <div>Error: {e.error.message}</div>,
-	defaultNotFoundComponent: (props) => (
-		<div>Route not found {JSON.stringify(props)}</div>
-	),
+	defaultNotFoundComponent: (props) => <div>Not found {props.routeId}</div>,
 	defaultPendingComponent: () => <div>Loading...</div>,
 	context: {},
 	Wrap: ({ children }) => (
