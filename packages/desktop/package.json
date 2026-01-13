@@ -12,8 +12,11 @@
 		"tauri": "tauri"
 	},
 	"dependencies": {
+		"@tauri-apps/plugin-opener": "~2",
 		"react": "catalog:",
-		"react-dom": "catalog:"
+		"react-dom": "catalog:",
+		"@tanstack/react-query": "catalog:",
+		"@tanstack/react-router": "catalog:"
 	},
 	"devDependencies": {
 		"@tauri-apps/cli": "^2",
@@ -24,6 +27,7 @@
 		"@vitejs/plugin-react": "catalog:",
 		"@typescript/native-preview": "catalog:",
 		"babel-plugin-react-compiler": "catalog:",
+		"@tanstack/router-plugin": "catalog:",
 		"typescript": "catalog:",
 		"vite": "catalog:"
 	}
