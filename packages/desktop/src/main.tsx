@@ -1,37 +1,18 @@
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { createRouter, RouterProvider } from "@tanstack/react-router";
+import { createAppRouter } from "@packages/app";
+import { QueryClient } from "@tanstack/react-query";
+import { RouterProvider } from "@tanstack/react-router";
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
-import { routeTree } from "./routeTree.gen";
-
-declare module "@tanstack/react-router" {
-	interface Register {
-		router: typeof router;
-	}
-}
 
 const queryClient = new QueryClient();
-export const router = createRouter({
-	routeTree,
-	defaultErrorComponent: (e) => <div>Error: {e.error.message}</div>,
-	defaultNotFoundComponent: (props) => <div>Not found {props.routeId}</div>,
-	defaultPendingComponent: () => <div>Loading...</div>,
-	context: {},
-	Wrap: ({ children }) => (
-		<QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
-	),
-});
+const router = createAppRouter({ platform: "desktop", queryClient });
 
 const App = () => {
 	return <RouterProvider context={{}} router={router} />;
 };
 
-const rootElement = document.getElementById("root");
-if (!rootElement) {
-	throw new Error("Root element not found");
-}
-createRoot(rootElement).render(
+createRoot(document.getElementById("root")!).render(
 	<StrictMode>
 		<App />
-	</StrictMode>,
+	</StrictMode>
 );

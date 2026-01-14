@@ -102,6 +102,7 @@
       "name": "@packages/desktop",
       "version": "0.0.0",
       "dependencies": {
+        "@packages/app": "workspace:*",
         "@tanstack/react-query": "catalog:",
         "@tanstack/react-router": "catalog:",
         "@tauri-apps/plugin-opener": "~2",
@@ -109,6 +110,7 @@
         "react-dom": "catalog:",
       },
       "devDependencies": {
+        "@tailwindcss/vite": "^4.1.18",
         "@tanstack/router-plugin": "catalog:",
         "@tauri-apps/cli": "^2",
         "@types/bun": "catalog:",
@@ -120,6 +122,7 @@
         "babel-plugin-react-compiler": "catalog:",
         "typescript": "catalog:",
         "vite": "catalog:",
+        "vite-tsconfig-paths": "^6.0.4",
       },
     },
     "packages/taskpane": {
@@ -174,10 +177,6 @@
         "vite-plugin-mkcert": "catalog:",
         "vite-tsconfig-paths": "catalog:",
       },
-    },
-    "packages/util": {
-      "name": "@packages/util",
-      "version": "0.0.0",
     },
   },
   "catalog": {
@@ -747,8 +746,6 @@
     "@packages/desktop": ["@packages/desktop@workspace:packages/desktop"],
 
     "@packages/taskpane": ["@packages/taskpane@workspace:packages/taskpane"],
-
-    "@packages/util": ["@packages/util@workspace:packages/util"],
 
     "@poppinss/colors": ["@poppinss/colors@4.1.6", "", { "dependencies": { "kleur": "^4.1.5" } }, "sha512-H9xkIdFswbS8n1d6vmRd8+c10t2Qe+rZITbbDHHkQixH5+2x1FDGmi/0K+WgWiqQFKPSlIYB7jlH6Kpfn6Fleg=="],
 

@@ -1,34 +1,37 @@
 {
-	"name": "@packages/desktop",
-	"version": "0.0.0",
-	"private": true,
-	"type": "module",
-	"scripts": {
-		"predev": "bun ./scripts/predev.ts",
-		"dev": "vite",
-		"build": "bun run checktypes && vite build",
-		"preview": "vite preview",
-		"checktypes": "tsgo --noEmit",
-		"tauri": "tauri"
-	},
-	"dependencies": {
-		"@tauri-apps/plugin-opener": "~2",
-		"react": "catalog:",
-		"react-dom": "catalog:",
-		"@tanstack/react-query": "catalog:",
-		"@tanstack/react-router": "catalog:"
-	},
-	"devDependencies": {
-		"@tauri-apps/cli": "^2",
-		"@types/bun": "catalog:",
-		"@types/node": "catalog:",
-		"@types/react": "catalog:",
-		"@types/react-dom": "catalog:",
-		"@vitejs/plugin-react": "catalog:",
-		"@typescript/native-preview": "catalog:",
-		"babel-plugin-react-compiler": "catalog:",
-		"@tanstack/router-plugin": "catalog:",
-		"typescript": "catalog:",
-		"vite": "catalog:"
-	}
+  "name": "@packages/desktop",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "predev": "bun ./scripts/predev.ts",
+    "dev": "vite",
+    "build": "bun run checktypes && vite build",
+    "preview": "vite preview",
+    "checktypes": "tsgo --noEmit",
+    "tauri": "tauri"
+  },
+  "dependencies": {
+    "@tauri-apps/plugin-opener": "~2",
+    "react": "catalog:",
+    "react-dom": "catalog:",
+    "@tanstack/react-query": "catalog:",
+    "@tanstack/react-router": "catalog:",
+    "@packages/app": "workspace:*"
+  },
+  "devDependencies": {
+    "@tailwindcss/vite": "^4.1.18",
+    "@tanstack/router-plugin": "catalog:",
+    "@tauri-apps/cli": "^2",
+    "@types/bun": "catalog:",
+    "@types/node": "catalog:",
+    "@types/react": "catalog:",
+    "@types/react-dom": "catalog:",
+    "@typescript/native-preview": "catalog:",
+    "@vitejs/plugin-react": "catalog:",
+    "babel-plugin-react-compiler": "catalog:",
+    "typescript": "catalog:",
+    "vite": "catalog:",
+    "vite-tsconfig-paths": "^6.0.4"
+  }
 }
