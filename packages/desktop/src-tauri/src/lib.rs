@@ -1,7 +1,4 @@
-mod cli;
 mod window_customizer;
-
-use cli::get_sidecar_path;
 use futures::FutureExt;
 use std::{
     collections::VecDeque,
@@ -17,6 +14,7 @@ use tauri_plugin_shell::process::{CommandChild, CommandEvent};
 use tauri_plugin_opener::OpenerExt;
 use tauri_plugin_shell::ShellExt;
 use tauri_plugin_store::StoreExt;
+use tauri_plugin_http::reqwest;
 use tokio::net::TcpSocket;
 
 use crate::window_customizer::PinchZoomDisablePlugin;
@@ -167,6 +165,14 @@ fn get_user_shell() -> String {
     std::env::var("SHELL").unwrap_or_else(|_| "/bin/sh".to_string())
 }
 
+fn get_sidecar_path() -> std::path::PathBuf {
+    tauri::utils::platform::current_exe()
+        .expect("Failed to get current exe")
+        .parent()
+        .expect("Failed to get parent dir")
+        .join("opencode-cli")
+}
+
 fn spawn_sidecar(app: &AppHandle, port: u32) -> CommandChild {
     let log_state = app.state::<LogState>();
     let log_state_clone = log_state.inner().clone();
@@ -176,6 +182,9 @@ fn spawn_sidecar(app: &AppHandle, port: u32) -> CommandChild {
         .resolve("", BaseDirectory::AppLocalData)
         .expect("Failed to resolve app local data dir");
 
+    // Configure plugins via OPENCODE_CONFIG_CONTENT environment variable
+    let plugin_config = r#"{"plugin":["opencode-office"]}"#;
+
     #[cfg(target_os = "windows")]
     let (mut rx, child) = app
         .shell()
@@ -184,6 +193,7 @@ fn spawn_sidecar(app: &AppHandle, port: u32) -> CommandChild {
         .env("OPENCODE_EXPERIMENTAL_ICON_DISCOVERY", "true")
         .env("OPENCODE_CLIENT", "desktop")
         .env("XDG_STATE_HOME", &state_dir)
+        .env("OPENCODE_CONFIG_CONTENT", plugin_config)
         .args(["serve", &format!("--port={port}")])
         .spawn()
         .expect("Failed to spawn opencode");
@@ -197,6 +207,7 @@ fn spawn_sidecar(app: &AppHandle, port: u32) -> CommandChild {
             .env("OPENCODE_EXPERIMENTAL_ICON_DISCOVERY", "true")
             .env("OPENCODE_CLIENT", "desktop")
             .env("XDG_STATE_HOME", &state_dir)
+            .env("OPENCODE_CONFIG_CONTENT", plugin_config)
             .args([
                 "-il",
                 "-c",
@@ -360,8 +371,14 @@ pub fn run() {
                             tokio::time::sleep(Duration::from_millis(10)).await;
 
                             if is_server_running(port).await {
-                                // give the server a little bit more time to warm up
-                                tokio::time::sleep(Duration::from_millis(10)).await;
+                                // Trigger plugin initialization by calling /config endpoint
+                                // This ensures InstanceBootstrap runs and plugins are loaded
+                                let client = reqwest::Client::new();
+                                let config_url = format!("http://127.0.0.1:{}/config", port);
+                                let _ = client.get(&config_url).send().await;
+
+                                // Give plugins a moment to initialize
+                                tokio::time::sleep(Duration::from_millis(50)).await;
 
                                 break Ok(());
                             }

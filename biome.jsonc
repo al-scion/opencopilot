@@ -1,0 +1,58 @@
+{
+  "$schema": "./node_modules/@biomejs/biome/configuration_schema.json",
+  "extends": ["ultracite/biome/core", "ultracite/biome/react"],
+  "files": {
+    "includes": ["!**/bun.lock", "!**/worker-configuration.d.ts"]
+  },
+  "formatter": {
+    "lineWidth": 120,
+    "indentWidth": 2,
+    "indentStyle": "tab"
+  },
+  "javascript": {
+    "globals": ["Office", "Excel", "OfficeExtension", "CustomFunctions"]
+  },
+  "linter": {
+    "rules": {
+      "style": {
+        "noNonNullAssertion": "off",
+        "noMagicNumbers": "off",
+        "noNestedTernary": "off",
+        "useConsistentTypeDefinitions": "off"
+      },
+      "correctness": {
+        "noUnusedImports": "off",
+        "noUnusedVariables": "off",
+        "noUnusedFunctionParameters": "off"
+      },
+      "suspicious": {
+        "useAwait": "off",
+        "noConsole": "off",
+        "noEmptyBlockStatements": "off",
+        "noConfusingVoidType": "off",
+        "noUnknownAtRules": "off",
+        "noArrayIndexKey": "off",
+        "useStrictMode": "off",
+        "noExplicitAny": "off"
+      },
+      "nursery": {
+        // "useConsistentTypeDefinitions": "off",
+        "noShadow": "off",
+        "useConsistentArrowReturn": "off",
+        "noUnusedExpressions": "off"
+      },
+      "a11y": {
+        "noSvgWithoutTitle": "off"
+      },
+      "complexity": {
+        "noForEach": "off",
+        "noBannedTypes": "off",
+        "noExcessiveCognitiveComplexity": "info"
+      },
+      "performance": {
+        "noBarrelFile": "off",
+        "noNamespaceImport": "off"
+      }
+    }
+  }
+}

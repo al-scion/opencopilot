@@ -9,7 +9,6 @@
 		"jsx": "react-jsx",
 		"allowJs": true,
 		"resolveJsonModule": true,
-		"types": ["bun", "node"],
 		"strict": true,
 		"isolatedModules": true,
 		"noEmit": true,
