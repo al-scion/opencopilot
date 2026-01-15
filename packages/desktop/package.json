@@ -12,14 +12,16 @@
     "tauri": "tauri"
   },
   "dependencies": {
-    "@tauri-apps/plugin-opener": "~2",
-    "react": "catalog:",
-    "react-dom": "catalog:",
+    "@packages/app": "workspace:*",
     "@tanstack/react-query": "catalog:",
     "@tanstack/react-router": "catalog:",
-    "@packages/app": "workspace:*"
+    "@tauri-apps/api": "^2.9.1",
+    "@tauri-apps/plugin-opener": "~2",
+    "react": "catalog:",
+    "react-dom": "catalog:"
   },
   "devDependencies": {
+    "@opencode-ai/sdk": "catalog:",
     "@tailwindcss/vite": "^4.1.18",
     "@tanstack/router-plugin": "catalog:",
     "@tauri-apps/cli": "^2",

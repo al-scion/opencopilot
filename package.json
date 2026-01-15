@@ -10,7 +10,6 @@
   },
   "workspaces": {
     "packages": [
-      "apps/*",
       "packages/*"
     ],
     "catalog": {
@@ -19,11 +18,11 @@
       "@types/react": "^19.2.8",
       "@types/react-dom": "^19.2.3",
       "zod": "^4.3.2",
-      "ai": "^6.0.33",
+      "ai": "^6.0.35",
       "@ai-sdk/anthropic": "^3.0.9",
       "@ai-sdk/google": "^3.0.6",
       "@ai-sdk/openai": "^3.0.7",
-      "@ai-sdk/react": "^3.0.35",
+      "@ai-sdk/react": "^3.0.37",
       "react": "^19.2.3",
       "react-dom": "^19.2.3",
       "babel-plugin-react-compiler": "^1.0.0",
@@ -37,9 +36,9 @@
       "hono-openapi": "^1.1.2",
       "@hono/standard-validator": "^0.2.1",
       "zustand": "^5.0.9",
-      "@tanstack/react-query": "^5.90.16",
-      "@tanstack/react-router": "^1.149.3",
-      "@tanstack/router-plugin": "^1.149.3",
+      "@tanstack/react-query": "^5.90.17",
+      "@tanstack/react-router": "^1.150.0",
+      "@tanstack/router-plugin": "^1.150.0",
       "@tanstack/react-start": "^1.147.0",
       "@cloudflare/vite-plugin": "^1.20.3",
       "@typescript/native-preview": "^7.0.0-dev.20260109.1",
@@ -50,7 +49,13 @@
       "wrangler": "^4.59.1",
       "vite-plugin-mkcert": "^1.17.9",
       "@scalar/hono-api-reference": "^0.9.32",
-      "@base-ui/react": "^1.0.0"
+      "@base-ui/react": "^1.0.0",
+      "@opencode-ai/sdk": "^1.1.20",
+      "class-variance-authority": "^0.7.1",
+      "clsx": "^2.1.1",
+      "tailwind-merge": "^3.4.0",
+      "lucide-react": "^0.562.0",
+      "react-hotkeys-hook": "^5.2.1"
     }
   },
   "devDependencies": {
@@ -59,7 +64,6 @@
     "knip": "^5.80.2",
     "turbo": "^2.7.3",
     "typescript": "catalog:",
-    "ultracite": "7.0.11",
-    "wrangler": "catalog:"
+    "ultracite": "7.0.11"
   }
 }

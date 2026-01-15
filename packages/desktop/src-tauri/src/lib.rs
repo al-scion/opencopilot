@@ -1,108 +1,37 @@
 mod window_customizer;
-use futures::FutureExt;
 use std::{
-    collections::VecDeque,
-    net::{SocketAddr, TcpListener},
+    net::{SocketAddr, TcpListener, TcpStream},
     sync::{Arc, Mutex},
     time::{Duration, Instant},
 };
 use tauri::{
-    path::BaseDirectory, AppHandle, LogicalSize, Manager, RunEvent, State, WebviewUrl,
-    WebviewWindow,
+    path::BaseDirectory, AppHandle, Manager, RunEvent, State, WebviewUrl, WebviewWindow,
 };
 use tauri_plugin_shell::process::{CommandChild, CommandEvent};
-use tauri_plugin_opener::OpenerExt;
 use tauri_plugin_shell::ShellExt;
-use tauri_plugin_store::StoreExt;
-use tauri_plugin_http::reqwest;
-use tokio::net::TcpSocket;
 
 use crate::window_customizer::PinchZoomDisablePlugin;
 
 #[derive(Clone)]
 struct ServerState {
     child: Arc<Mutex<Option<CommandChild>>>,
-    status: futures::future::Shared<tokio::sync::oneshot::Receiver<Result<(), String>>>,
+    port: u32,
 }
 
 impl ServerState {
     pub fn new(
         child: Option<CommandChild>,
-        status: tokio::sync::oneshot::Receiver<Result<(), String>>,
+        port: u32,
     ) -> Self {
         Self {
             child: Arc::new(Mutex::new(child)),
-            status: status.shared(),
+            port,
         }
     }
-
+    
     pub fn set_child(&self, child: Option<CommandChild>) {
         *self.child.lock().unwrap() = child;
     }
-}
-
-#[derive(Clone)]
-struct LogState(Arc<Mutex<VecDeque<String>>>);
-
-const MAX_LOG_ENTRIES: usize = 200;
-const GLOBAL_STORAGE: &str = "opencode.global.dat";
-
-/// Check if a URL's origin matches any configured server in the store.
-/// Returns true if the URL should be allowed for internal navigation.
-fn is_allowed_server(app: &AppHandle, url: &tauri::Url) -> bool {
-    // Always allow localhost and 127.0.0.1
-    if let Some(host) = url.host_str() {
-        if host == "localhost" || host == "127.0.0.1" {
-            return true;
-        }
-    }
-
-    // Try to read the server list from the store
-    let Ok(store) = app.store(GLOBAL_STORAGE) else {
-        return false;
-    };
-
-    let Some(server_data) = store.get("server") else {
-        return false;
-    };
-
-    // Parse the server list from the stored JSON
-    let Some(list) = server_data.get("list").and_then(|v| v.as_array()) else {
-        return false;
-    };
-
-    // Get the origin of the navigation URL (scheme + host + port)
-    let url_origin = format!(
-        "{}://{}{}",
-        url.scheme(),
-        url.host_str().unwrap_or(""),
-        url.port().map(|p| format!(":{}", p)).unwrap_or_default()
-    );
-
-    // Check if any configured server matches the URL's origin
-    for server in list {
-        let Some(server_url) = server.as_str() else {
-            continue;
-        };
-
-        // Parse the server URL to extract its origin
-        let Ok(parsed) = tauri::Url::parse(server_url) else {
-            continue;
-        };
-
-        let server_origin = format!(
-            "{}://{}{}",
-            parsed.scheme(),
-            parsed.host_str().unwrap_or(""),
-            parsed.port().map(|p| format!(":{}", p)).unwrap_or_default()
-        );
-
-        if url_origin == server_origin {
-            return true;
-        }
-    }
-
-    false
 }
 
 #[tauri::command]
@@ -112,39 +41,34 @@ fn kill_sidecar(app: AppHandle) {
         return;
     };
 
-    let Some(server_state) = server_state
+    let Some(child) = server_state
         .child
         .lock()
         .expect("Failed to acquire mutex lock")
         .take()
     else {
-        println!("Server state missing");
+        println!("No child process to kill");
         return;
     };
 
-    let _ = server_state.kill();
+    let _ = child.kill();
 
     println!("Killed server");
 }
 
-async fn get_logs(app: AppHandle) -> Result<String, String> {
-    let log_state = app.try_state::<LogState>().ok_or("Log state not found")?;
-
-    let logs = log_state
-        .0
-        .lock()
-        .map_err(|_| "Failed to acquire log lock")?;
-
-    Ok(logs.iter().cloned().collect::<Vec<_>>().join(""))
-}
-
 #[tauri::command]
-async fn ensure_server_started(state: State<'_, ServerState>) -> Result<(), String> {
-    state
-        .status
-        .clone()
-        .await
-        .map_err(|_| "Failed to get server status".to_string())?
+async fn ensure_server_started(state: State<'_, ServerState>) -> Result<u32, String> {
+    // Wait for server to be ready (with timeout)
+    let start = Instant::now();
+    
+    while start.elapsed() < Duration::from_secs(7) {
+        if is_server_running(state.port) {
+            return Ok(state.port);
+        }
+        tokio::time::sleep(Duration::from_millis(10)).await;
+    }
+    
+    Err("Server failed to start within 7 seconds".to_string())
 }
 
 fn get_sidecar_port() -> u32 {
@@ -174,16 +98,10 @@ fn get_sidecar_path() -> std::path::PathBuf {
 }
 
 fn spawn_sidecar(app: &AppHandle, port: u32) -> CommandChild {
-    let log_state = app.state::<LogState>();
-    let log_state_clone = log_state.inner().clone();
-
     let state_dir = app
         .path()
         .resolve("", BaseDirectory::AppLocalData)
         .expect("Failed to resolve app local data dir");
-
-    // Configure plugins via OPENCODE_CONFIG_CONTENT environment variable
-    let plugin_config = r#"{"plugin":["opencode-office"]}"#;
 
     #[cfg(target_os = "windows")]
     let (mut rx, child) = app
@@ -193,7 +111,6 @@ fn spawn_sidecar(app: &AppHandle, port: u32) -> CommandChild {
         .env("OPENCODE_EXPERIMENTAL_ICON_DISCOVERY", "true")
         .env("OPENCODE_CLIENT", "desktop")
         .env("XDG_STATE_HOME", &state_dir)
-        .env("OPENCODE_CONFIG_CONTENT", plugin_config)
         .args(["serve", &format!("--port={port}")])
         .spawn()
         .expect("Failed to spawn opencode");
@@ -207,7 +124,6 @@ fn spawn_sidecar(app: &AppHandle, port: u32) -> CommandChild {
             .env("OPENCODE_EXPERIMENTAL_ICON_DISCOVERY", "true")
             .env("OPENCODE_CLIENT", "desktop")
             .env("XDG_STATE_HOME", &state_dir)
-            .env("OPENCODE_CONFIG_CONTENT", plugin_config)
             .args([
                 "-il",
                 "-c",
@@ -223,28 +139,10 @@ fn spawn_sidecar(app: &AppHandle, port: u32) -> CommandChild {
                 CommandEvent::Stdout(line_bytes) => {
                     let line = String::from_utf8_lossy(&line_bytes);
                     print!("{line}");
-
-                    // Store log in shared state
-                    if let Ok(mut logs) = log_state_clone.0.lock() {
-                        logs.push_back(format!("[STDOUT] {}", line));
-                        // Keep only the last MAX_LOG_ENTRIES
-                        while logs.len() > MAX_LOG_ENTRIES {
-                            logs.pop_front();
-                        }
-                    }
                 }
                 CommandEvent::Stderr(line_bytes) => {
                     let line = String::from_utf8_lossy(&line_bytes);
                     eprint!("{line}");
-
-                    // Store log in shared state
-                    if let Ok(mut logs) = log_state_clone.0.lock() {
-                        logs.push_back(format!("[STDERR] {}", line));
-                        // Keep only the last MAX_LOG_ENTRIES
-                        while logs.len() > MAX_LOG_ENTRIES {
-                            logs.pop_front();
-                        }
-                    }
                 }
                 _ => {}
             }
@@ -254,15 +152,15 @@ fn spawn_sidecar(app: &AppHandle, port: u32) -> CommandChild {
     child
 }
 
-async fn is_server_running(port: u32) -> bool {
-    TcpSocket::new_v4()
-        .unwrap()
-        .connect(SocketAddr::new(
+fn is_server_running(port: u32) -> bool {
+    TcpStream::connect_timeout(
+        &SocketAddr::new(
             "127.0.0.1".parse().expect("Failed to parse IP"),
             port as u16,
-        ))
-        .await
-        .is_ok()
+        ),
+        Duration::from_millis(100),
+    )
+    .is_ok()
 }
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
@@ -294,113 +192,34 @@ pub fn run() {
         ])
         .setup(move |app| {
             let app = app.handle().clone();
-
-            // Initialize log state
-            app.manage(LogState(Arc::new(Mutex::new(VecDeque::new()))));
-
-            // Get port and create window immediately for faster perceived startup
-            let port = get_sidecar_port();
-
-            let primary_monitor = app.primary_monitor().ok().flatten();
-            let size = primary_monitor
-                .map(|m| m.size().to_logical(m.scale_factor()))
-                .unwrap_or(LogicalSize::new(1920, 1080));
-
+            
             // Create window immediately with serverReady = false
-            let app_for_nav = app.clone();
             let mut window_builder =
-                WebviewWindow::builder(&app, "main", WebviewUrl::App("/".into()))
-                    .title("OpenCode")
-                    .inner_size(size.width as f64, size.height as f64)
-                    .decorations(true)
-                    .zoom_hotkeys_enabled(true)
-                    .disable_drag_drop_handler()
-                    .on_navigation(move |url| {
-                        // Allow internal navigation (tauri:// scheme)
-                        if url.scheme() == "tauri" {
-                            return true;
-                        }
-                        // Allow navigation to configured servers (localhost, 127.0.0.1, or remote)
-                        if is_allowed_server(&app_for_nav, url) {
-                            return true;
-                        }
-                        // Open external http/https URLs in default browser
-                        if url.scheme() == "http" || url.scheme() == "https" {
-                            let _ = app_for_nav.opener().open_url(url.as_str(), None::<String>);
-                            return false; // Cancel internal navigation
-                        }
-                        true
-                    })
-                    .initialization_script(format!(
-                        r#"
-                      window.__OPENCODE__ ??= {{}};
-                      window.__OPENCODE__.updaterEnabled = {updater_enabled};
-                      window.__OPENCODE__.port = {port};
-                    "#
-                    ));
-
+            WebviewWindow::builder(&app, "main", WebviewUrl::App("/".into()))
+                .title("OpenCode")
+                .inner_size(1920.0, 1080.0)
+                .decorations(true)
+                .zoom_hotkeys_enabled(true)
+                .disable_drag_drop_handler();
+            
             #[cfg(target_os = "macos")]
             {
                 window_builder = window_builder
-                    .title_bar_style(tauri::TitleBarStyle::Overlay)
-                    .hidden_title(true);
+                .title_bar_style(tauri::TitleBarStyle::Overlay)
+                .hidden_title(true);
             }
-
+        
             let window = window_builder.build().expect("Failed to create window");
-
-            let (tx, rx) = tokio::sync::oneshot::channel();
-            app.manage(ServerState::new(None, rx));
-
-            {
-                let app = app.clone();
-                tauri::async_runtime::spawn(async move {
-                    let should_spawn_sidecar = !is_server_running(port).await;
-
-                    let (child, res) = if should_spawn_sidecar {
-                        let child = spawn_sidecar(&app, port);
-
-                        let timestamp = Instant::now();
-                        let res = loop {
-                            if timestamp.elapsed() > Duration::from_secs(7) {
-                                break Err(format!(
-                                    "Failed to spawn OpenCode Server. Logs:\n{}",
-                                    get_logs(app.clone()).await.unwrap()
-                                ));
-                            }
-
-                            tokio::time::sleep(Duration::from_millis(10)).await;
-
-                            if is_server_running(port).await {
-                                // Trigger plugin initialization by calling /config endpoint
-                                // This ensures InstanceBootstrap runs and plugins are loaded
-                                let client = reqwest::Client::new();
-                                let config_url = format!("http://127.0.0.1:{}/config", port);
-                                let _ = client.get(&config_url).send().await;
-
-                                // Give plugins a moment to initialize
-                                tokio::time::sleep(Duration::from_millis(50)).await;
-
-                                break Ok(());
-                            }
-                        };
-
-                        println!("Server ready after {:?}", timestamp.elapsed());
-
-                        (Some(child), res)
-                    } else {
-                        (None, Ok(()))
-                    };
-
-                    app.state::<ServerState>().set_child(child);
-
-                    if res.is_ok() {
-                        let _ = window.eval("window.__OPENCODE__.serverReady = true;");
-                    }
-
-                    let _ = tx.send(res);
-                });
+        
+            // Spawn the sidecar if it doesn't exist
+            let port = get_sidecar_port();
+            app.manage(ServerState::new(None, port));
+            if !is_server_running(port) {
+                let child = spawn_sidecar(&app, port);
+                app.state::<ServerState>().set_child(Some(child));
             }
 
+            let _ = window.set_focus();
             Ok(())
         });
 

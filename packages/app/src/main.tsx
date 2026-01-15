@@ -1,28 +1,20 @@
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { createRouter, RouterProvider } from "@tanstack/react-router";
+import { createOpencodeClient } from "@opencode-ai/sdk/v2/client";
+import { QueryClient } from "@tanstack/react-query";
+import { RouterProvider } from "@tanstack/react-router";
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
-import type { RouterContext } from "./routes/__root";
-import { routeTree } from "./routeTree.gen";
-import "./index.css";
+import { createAppRouter } from "./router";
 
-declare module "@tanstack/react-router" {
-	interface Register {
-		router: ReturnType<typeof createAppRouter>;
-	}
-}
+const opencodeClient = createOpencodeClient({
+	baseUrl: import.meta.env.VITE_OPENCODE_LOCAL_URL,
+});
 
-export const createAppRouter = (context: RouterContext) =>
-	createRouter({
-		routeTree,
-		defaultErrorComponent: (e) => <div>Error: {e.error.message}</div>,
-		defaultNotFoundComponent: (props) => <div>Not found {props.routeId}</div>,
-		defaultPendingComponent: () => <div>Loading...</div>,
-		context,
-		Wrap: ({ children }) => <QueryClientProvider client={context.queryClient}>{children}</QueryClientProvider>,
-	});
+const router = createAppRouter({
+	platform: "web",
+	queryClient: new QueryClient(),
+	opencode: opencodeClient,
+});
 
-const router = createAppRouter({ platform: "web", queryClient: new QueryClient() });
 const App = () => {
 	return <RouterProvider context={{}} router={router} />;
 };

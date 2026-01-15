@@ -7,10 +7,10 @@ import tsConfigPaths from "vite-tsconfig-paths";
 
 export default defineConfig({
 	plugins: [
-		tailwindcss(),
+		tailwindcss({ optimize: true }),
 		tanstackRouter({ autoCodeSplitting: true, target: "react" }),
 		react({ babel: { plugins: ["babel-plugin-react-compiler"] } }),
 		cloudflare(),
-		tsConfigPaths({ projects: ["./tsconfig.json"] }),
+		tsConfigPaths({ projects: ["./tsconfig.json", "../ui/tsconfig.json"] }),
 	],
 });

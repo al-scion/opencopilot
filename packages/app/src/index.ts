@@ -1,1 +1,1 @@
-export { createAppRouter } from "./main";
+export { createAppRouter } from "./router";

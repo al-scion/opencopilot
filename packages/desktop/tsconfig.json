@@ -1,28 +1,10 @@
 {
 	"extends": "../../tsconfig.json",
 	"compilerOptions": {
+		"types": ["vite/client"],
 		"paths": {
 			"@packages/app": ["../app"]
 		}
-	}
-	// "compilerOptions": {
-	// 	"target": "ESNext",
-	// 	"module": "ESNext",
-	// 	"skipLibCheck": true,
-	// 	"moduleResolution": "bundler",
-	// 	"allowSyntheticDefaultImports": true,
-	// 	"esModuleInterop": true,
-	// 	"jsx": "react-jsx",
-	// 	"allowJs": true,
-	// 	"resolveJsonModule": true,
-	// 	"strict": true,
-	// 	"isolatedModules": true,
-	// 	"noEmit": true,
-	// 	"emitDeclarationOnly": false,
-	// 	"outDir": "node_modules/.ts-dist",
-	// 	"paths": {
-	// 		"@packages/app": ["../app"]
-	// 	}
-	// },
-	// "include": ["src", "scripts", "package.json", "vite.config.ts"]
+	},
+	"exclude": ["src-tauri"]
 }

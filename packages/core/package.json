@@ -1,15 +1,18 @@
 {
-	"$schema": "https://json.schemastore.org/package.json",
-	"name": "@packages/core",
-	"version": "0.0.0",
-	"private": true,
-	"type": "module",
-	"scripts": {
-		"dev": "bun run --hot src/index.ts",
-		"checktypes": "tsgo --noEmit"
-	},
-	"devDependencies": {},
-	"dependencies": {
-		"@opencode-ai/sdk": "^1.1.15"
-	}
+  "$schema": "https://json.schemastore.org/package.json",
+  "name": "@packages/core",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "bun run --hot src/index.ts",
+    "checktypes": "tsgo --noEmit"
+  },
+  "devDependencies": {
+    "@types/bun": "catalog:",
+    "@types/node": "catalog:"
+  },
+  "dependencies": {
+    "@opencode-ai/sdk": "^1.1.15"
+  }
 }

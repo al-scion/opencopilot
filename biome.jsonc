@@ -10,7 +10,7 @@
     "indentStyle": "tab"
   },
   "javascript": {
-    "globals": ["Office", "Excel", "OfficeExtension", "CustomFunctions"]
+    "globals": ["Office", "Excel", "OfficeExtension", "CustomFunctions", "Bun"]
   },
   "linter": {
     "rules": {
