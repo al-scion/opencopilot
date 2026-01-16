@@ -6,6 +6,7 @@ export class MyContainer extends Container<Env> {
 	override requiredPorts = [4096];
 	override envVars = {
 		ANTHROPIC_API_KEY: this.env.ANTHROPIC_API_KEY,
+		// OPENCODE_SERVER_PASSWORD: "public",
 	};
 }
 
@@ -16,9 +17,6 @@ app.all("/container/:id/*", async (c) => {
 	const container = c.env.MyContainer.getByName(id);
 	const url = new URL(c.req.url);
 	url.pathname = url.pathname.replace(`/container/${id}`, "");
-	console.log("Starting container", id);
-	await container.startAndWaitForPorts();
-	console.log("Container started", id);
 	const request = new Request(url, c.req.raw);
 	return container.fetch(request);
 });

@@ -2,12 +2,12 @@
   "name": "opencopilot-containers",
   "compatibility_date": "2025-12-10",
   "compatibility_flags": ["nodejs_compat"],
+  "workers_dev": true,
+  "preview_urls": true,
   "observability": { "enabled": true },
   "routes": [{ "custom_domain": true, "pattern": "containers.usefabric.xyz" }],
   "main": "src/index.ts",
-  "containers": [
-    { "class_name": "MyContainer", "image": "./Dockerfile", "max_instances": 5 }
-  ],
+  "containers": [{ "class_name": "MyContainer", "image": "./Dockerfile" }],
   "durable_objects": {
     "bindings": [{ "class_name": "MyContainer", "name": "MyContainer" }]
   },
