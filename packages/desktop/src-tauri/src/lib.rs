@@ -103,6 +103,11 @@ fn spawn_sidecar(app: &AppHandle, port: u32) -> CommandChild {
         .resolve("", BaseDirectory::AppLocalData)
         .expect("Failed to resolve app local data dir");
 
+    let config_path = app
+        .path()
+        .resolve("resources/opencode.json", BaseDirectory::Resource)
+        .expect("Failed to resolve opencode config path");
+
     #[cfg(target_os = "windows")]
     let (mut rx, child) = app
         .shell()
@@ -110,6 +115,7 @@ fn spawn_sidecar(app: &AppHandle, port: u32) -> CommandChild {
         .unwrap()
         .env("OPENCODE_EXPERIMENTAL_ICON_DISCOVERY", "true")
         .env("OPENCODE_CLIENT", "desktop")
+        .env("OPENCODE_CONFIG", &config_path)
         .env("XDG_STATE_HOME", &state_dir)
         .args(["serve", &format!("--port={port}")])
         .spawn()
@@ -123,6 +129,7 @@ fn spawn_sidecar(app: &AppHandle, port: u32) -> CommandChild {
             .command(&shell)
             .env("OPENCODE_EXPERIMENTAL_ICON_DISCOVERY", "true")
             .env("OPENCODE_CLIENT", "desktop")
+            .env("OPENCODE_CONFIG", &config_path)
             .env("XDG_STATE_HOME", &state_dir)
             .args([
                 "-il",

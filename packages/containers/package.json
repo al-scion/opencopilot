@@ -1,6 +1,6 @@
 {
   "$schema": "https://json.schemastore.org/package.json",
-  "name": "@packages/console",
+  "name": "@packages/containers",
   "version": "0.0.0",
   "private": true,
   "type": "module",
@@ -16,6 +16,7 @@
     "typescript": "catalog:"
   },
   "dependencies": {
+    "@cloudflare/containers": "^0.1.0",
     "@hono/standard-validator": "catalog:",
     "@scalar/hono-api-reference": "catalog:",
     "hono": "catalog:",

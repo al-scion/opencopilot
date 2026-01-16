@@ -1,5 +1,4 @@
 import tailwindcss from "@tailwindcss/vite";
-import { tanstackRouter } from "@tanstack/router-plugin/vite";
 import react from "@vitejs/plugin-react";
 import { defineConfig } from "vite";
 import tsConfigPaths from "vite-tsconfig-paths";
@@ -9,9 +8,8 @@ const host = process.env.TAURI_DEV_HOST;
 export default defineConfig({
 	plugins: [
 		tailwindcss(),
-		// tanstackRouter({ autoCodeSplitting: true, target: "react" }),
 		react({ babel: { plugins: ["babel-plugin-react-compiler"] } }),
-		tsConfigPaths({ projects: ["./tsconfig.json"] }),
+		tsConfigPaths({ projects: ["./tsconfig.json", "../app/tsconfig.json", "../ui/tsconfig.json"] }),
 	],
 	clearScreen: false,
 	esbuild: {

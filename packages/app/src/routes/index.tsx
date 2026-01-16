@@ -1,5 +1,5 @@
-import { AppSidebar } from "@packages/ui/components/app-sidebar";
 import { createFileRoute } from "@tanstack/react-router";
+import { AppSidebar } from "@/components/app-sidebar";
 
 export const Route = createFileRoute("/")({
 	component: RouteComponent,

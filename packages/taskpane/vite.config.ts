@@ -8,7 +8,7 @@ import tsConfigPaths from "vite-tsconfig-paths";
 
 export default defineConfig({
 	plugins: [
-		tailwindcss(),
+		tailwindcss({ optimize: true }),
 		tanstackRouter({ autoCodeSplitting: true, target: "react" }),
 		react({ babel: { plugins: ["babel-plugin-react-compiler"] } }),
 		cloudflare(),

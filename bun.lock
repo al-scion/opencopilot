@@ -59,6 +59,7 @@
         "typescript": "catalog:",
         "vite": "catalog:",
         "vite-tsconfig-paths": "catalog:",
+        "wrangler": "catalog:",
       },
     },
     "packages/console": {
@@ -72,7 +73,24 @@
         "zod": "catalog:",
       },
       "devDependencies": {
-        "@types/bun": "catalog:",
+        "@types/node": "catalog:",
+        "@typescript/native-preview": "catalog:",
+        "typescript": "catalog:",
+      },
+    },
+    "packages/containers": {
+      "name": "@packages/containers",
+      "version": "0.0.0",
+      "dependencies": {
+        "@cloudflare/containers": "^0.1.0",
+        "@hono/standard-validator": "catalog:",
+        "@scalar/hono-api-reference": "catalog:",
+        "hono": "catalog:",
+        "hono-openapi": "catalog:",
+        "zod": "catalog:",
+      },
+      "devDependencies": {
+        "@types/node": "catalog:",
         "@typescript/native-preview": "catalog:",
         "typescript": "catalog:",
       },
@@ -486,6 +504,8 @@
 
     "@clack/prompts": ["@clack/prompts@0.11.0", "", { "dependencies": { "@clack/core": "0.5.0", "picocolors": "^1.0.0", "sisteransi": "^1.0.5" } }, "sha512-pMN5FcrEw9hUkZA4f+zLlzivQSeQf5dRGJjSUbvVYDLvpKCdQx5OaknvKzgbtXOizhP+SJJJjqEbOe55uKKfAw=="],
 
+    "@cloudflare/containers": ["@cloudflare/containers@0.1.0", "", {}, "sha512-nuXnmkpJZzbjYdguRI2hB0sw1QCBMWdNuGDNQwEiJSLebtKRFpBt/d6AStGjp+8wGD2plPbd2U/mQerYF9kzJg=="],
+
     "@cloudflare/kv-asset-handler": ["@cloudflare/kv-asset-handler@0.4.1", "", { "dependencies": { "mime": "^3.0.0" } }, "sha512-Nu8ahitGFFJztxUml9oD/DLb7Z28C8cd8F46IVQ7y5Btz575pvMY8AqZsXkX7Gds29eCKdMgIHjIvzskHgPSFg=="],
 
     "@cloudflare/unenv-preset": ["@cloudflare/unenv-preset@2.9.0", "", { "peerDependencies": { "unenv": "2.0.0-rc.24", "workerd": "^1.20251202.0" }, "optionalPeers": ["workerd"] }, "sha512-99nEvuOTCGGGRNaIat8UVVXJ27aZK+U09SYDp0kVjQLwC9wyxcrQ28IqLwrQq2DjWLmBI1+UalGJzdPqYgPlRw=="],
@@ -777,6 +797,8 @@
     "@packages/app": ["@packages/app@workspace:packages/app"],
 
     "@packages/console": ["@packages/console@workspace:packages/console"],
+
+    "@packages/containers": ["@packages/containers@workspace:packages/containers"],
 
     "@packages/convex": ["@packages/convex@workspace:packages/convex"],
 

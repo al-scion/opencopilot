@@ -8,7 +8,7 @@ import {
 	SidebarMenu,
 	SidebarMenuButton,
 	SidebarMenuItem,
-} from "./ui/sidebar";
+} from "@packages/ui/components/ui/sidebar";
 
 export const AppSidebar = () => {
 	return (
