@@ -7,14 +7,13 @@
   "observability": { "enabled": true },
   "routes": [{ "custom_domain": true, "pattern": "containers.usefabric.xyz" }],
   "main": "src/index.ts",
-  "containers": [{ "class_name": "MyContainer", "image": "./Dockerfile" }],
+  "containers": [
+    { "class_name": "OpencodeContainer", "image": "./Dockerfile" }
+  ],
   "durable_objects": {
-    "bindings": [{ "class_name": "MyContainer", "name": "MyContainer" }]
+    "bindings": [
+      { "class_name": "OpencodeContainer", "name": "OpencodeContainer" }
+    ]
   },
-  "migrations": [
-    {
-      "new_sqlite_classes": ["MyContainer"],
-      "tag": "v1"
-    }
-  ]
+  "migrations": [{ "new_sqlite_classes": ["OpencodeContainer"], "tag": "v1" }]
 }
