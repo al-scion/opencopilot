@@ -11,8 +11,8 @@ const namedRanges = [
 	},
 ];
 
-export const registerNamedRange = async () => {
-	await Excel.run({ delayForCellEdit: true }, async (context) => {
+export const registerNamedRange = () => {
+	Excel.run({ delayForCellEdit: true }, async (context) => {
 		const names = context.workbook.names.load({ $all: true });
 		await context.sync();
 

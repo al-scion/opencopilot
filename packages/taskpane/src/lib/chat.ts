@@ -1,6 +1,5 @@
 import { Chat } from "@ai-sdk/react";
-import type { MessageType } from "@packages/shared";
-import { excelToolHandler, excelToolNames } from "@packages/shared";
+import { excelToolHandler, excelToolNames, type MessageType } from "@packages/shared";
 import {
 	DefaultChatTransport,
 	lastAssistantMessageIsCompleteWithApprovalResponses,

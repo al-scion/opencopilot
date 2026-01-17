@@ -7,7 +7,7 @@ import {
 	ExcelFillPattern,
 	ExcelHorizontalAlignment,
 	ExcelRangeUnderlineStyle,
-} from "../constants/excel";
+} from "../excel/constants";
 
 // Tool definitions
 export const editRange = tool({
