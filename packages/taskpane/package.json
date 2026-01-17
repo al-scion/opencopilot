@@ -36,6 +36,8 @@
     "@convex-dev/workos": "^0.0.1",
     "@packages/cloud": "workspace:*",
     "@packages/shared": "workspace:*",
+    "@packages/ui": "workspace:*",
+    "@packages/convex": "workspace:*",
     "@tanstack/react-query": "catalog:",
     "@tanstack/react-router": "catalog:",
     "@tiptap/extension-document": "^3.15.3",

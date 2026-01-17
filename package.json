@@ -57,7 +57,6 @@
   },
   "devDependencies": {
     "@biomejs/biome": "2.3.11",
-    "@typescript/native-preview": "catalog:",
     "knip": "^5.80.2",
     "turbo": "^2.7.3",
     "typescript": "catalog:",

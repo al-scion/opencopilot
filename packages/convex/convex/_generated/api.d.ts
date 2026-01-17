@@ -8,7 +8,6 @@
  * @module
  */
 
-import type * as agent_chat from "../agent/chat.js";
 import type * as chat_actions from "../chat/actions.js";
 import type * as chat_functions from "../chat/functions.js";
 import type * as crons from "../crons.js";
@@ -24,7 +23,6 @@ import type {
 } from "convex/server";
 
 declare const fullApi: ApiFromModules<{
-  "agent/chat": typeof agent_chat;
   "chat/actions": typeof chat_actions;
   "chat/functions": typeof chat_functions;
   crons: typeof crons;

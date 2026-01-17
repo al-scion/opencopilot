@@ -16,7 +16,6 @@
     "@ai-sdk/openai": "catalog:",
     "ai": "catalog:",
     "convex": "catalog:",
-    "zod": "catalog:",
-    "exa-js": "^2.0.12"
+    "zod": "catalog:"
   }
 }

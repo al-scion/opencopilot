@@ -85,7 +85,7 @@ const browserShortcuts = [
 	},
 ] as const satisfies BrowserShortcut[];
 
-export type ShortcutName = (typeof browserShortcuts)[number]["name"];
+type ShortcutName = (typeof browserShortcuts)[number]["name"];
 
 type UseShortcutParams = {
 	name: ShortcutName;

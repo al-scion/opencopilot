@@ -22,8 +22,7 @@
   },
   "devDependencies": {
     "@opencode-ai/sdk": "catalog:",
-    "@tailwindcss/vite": "^4.1.18",
-    "@tanstack/router-plugin": "catalog:",
+    "@tailwindcss/vite": "catalog:",
     "@tauri-apps/cli": "^2",
     "@types/bun": "catalog:",
     "@types/node": "catalog:",
@@ -34,6 +33,6 @@
     "babel-plugin-react-compiler": "catalog:",
     "typescript": "catalog:",
     "vite": "catalog:",
-    "vite-tsconfig-paths": "^6.0.4"
+    "vite-tsconfig-paths": "catalog:"
   }
 }
