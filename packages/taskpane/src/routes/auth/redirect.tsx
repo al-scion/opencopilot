@@ -1,8 +1,7 @@
-import { createFileRoute } from "@tanstack/react-router";
-import { LoadingPage } from "@/components/loading-page";
+import { createFileRoute, Outlet } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/auth/redirect")({
-	component: LoadingPage,
+	component: Outlet,
 	beforeLoad: async (props) => {
 		await props.context.auth.signIn();
 	},

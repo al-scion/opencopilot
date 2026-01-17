@@ -11,7 +11,7 @@ export default defineConfig({
 		tailwindcss({ optimize: true }),
 		tanstackRouter({ autoCodeSplitting: true, target: "react" }),
 		react({ babel: { plugins: ["babel-plugin-react-compiler"] } }),
-		tsConfigPaths({ projects: ["./tsconfig.json"] }),
+		tsConfigPaths({ projects: ["./tsconfig.json", "../ui/tsconfig.json"] }),
 		cloudflare(),
 		mkcert(),
 	],

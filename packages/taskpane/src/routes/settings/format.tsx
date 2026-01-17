@@ -1,5 +1,5 @@
+import { Card, CardContent, CardContentItem } from "@packages/ui/components/ui/card";
 import { createFileRoute } from "@tanstack/react-router";
-import { Card, CardContent, CardContentItem } from "@/components/ui/card";
 
 export const Route = createFileRoute("/settings/format")({
 	component: RouteComponent,

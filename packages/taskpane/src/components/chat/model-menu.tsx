@@ -1,13 +1,4 @@
 import { LANGUAGE_MODELS, type LanguageModelId } from "@packages/shared";
-import { Check } from "lucide-react";
-// import type { ModelId } from "@/lib/agent/config";
-// import { MODELS } from "@/lib/agent/config";
-import { getShortcutString, useShortcut } from "@/lib/browser-shortcuts";
-import { useAppState } from "@/lib/state";
-import { cn } from "@/lib/utils";
-import { TooltipButton } from "../tooltip-button";
-// import { Command, CommandEmpty, CommandGroup, CommandInput, CommandList } from "../ui/command";
-// import { Dialog, DialogDescription, DialogHeader, DialogPopup, DialogTitle } from "../ui/dialog";
 import {
 	DropdownMenu,
 	DropdownMenuContent,
@@ -16,7 +7,12 @@ import {
 	DropdownMenuLabel,
 	DropdownMenuShortcut,
 	DropdownMenuTrigger,
-} from "../ui/dropdown-menu";
+} from "@packages/ui/components/ui/dropdown-menu";
+import { cn } from "@packages/ui/lib/utils";
+import { Check } from "lucide-react";
+import { TooltipButton } from "@/components/tooltip-button";
+import { getShortcutString, useShortcut } from "@/lib/browser-shortcuts";
+import { useAppState } from "@/lib/state";
 
 export function ModelMenu() {
 	const { editor, modelMenuOpen } = useAppState();

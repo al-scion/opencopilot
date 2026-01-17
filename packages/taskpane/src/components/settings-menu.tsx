@@ -1,18 +1,16 @@
-import { useRouter } from "@tanstack/react-router";
-import { CircleUserRound, Ellipsis, Keyboard, LogOut, Settings } from "lucide-react";
-import { getShortcutString, useShortcut } from "@/lib/browser-shortcuts";
-import { useAppState } from "@/lib/state";
-import { cn } from "@/lib/utils";
-import { TooltipButton } from "./tooltip-button";
-import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import {
 	DropdownMenu,
 	DropdownMenuContent,
 	DropdownMenuGroup,
 	DropdownMenuItem,
-	DropdownMenuSeparator,
 	DropdownMenuTrigger,
-} from "./ui/dropdown-menu";
+} from "@packages/ui/components/ui/dropdown-menu";
+import { cn } from "@packages/ui/lib/utils";
+import { useRouter } from "@tanstack/react-router";
+import { Ellipsis, Keyboard, LogOut, Settings } from "lucide-react";
+import { getShortcutString, useShortcut } from "@/lib/browser-shortcuts";
+import { useAppState } from "@/lib/state";
+import { TooltipButton } from "./tooltip-button";
 
 export function SettingsMenu() {
 	const router = useRouter();

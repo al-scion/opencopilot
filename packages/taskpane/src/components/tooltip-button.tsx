@@ -1,8 +1,7 @@
 import type { Tooltip as TooltipPrimitive } from "@base-ui/react/tooltip";
+import { Button, type buttonVariants } from "@packages/ui/components/ui/button";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@packages/ui/components/ui/tooltip";
 import type { VariantProps } from "class-variance-authority";
-import { Button, type buttonVariants } from "@/components/ui/button";
-import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
-import { cn } from "@/lib/utils";
 
 interface TooltipButtonProps extends React.ComponentProps<"button">, VariantProps<typeof buttonVariants> {
 	asChild?: boolean;
@@ -26,7 +25,7 @@ export function TooltipButton({
 		<Tooltip>
 			<TooltipTrigger
 				render={
-					<Button className={cn(className)} {...props}>
+					<Button className={className} {...props}>
 						{children}
 					</Button>
 				}

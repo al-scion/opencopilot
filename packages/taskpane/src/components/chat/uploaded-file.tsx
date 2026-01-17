@@ -1,8 +1,8 @@
+import { Button } from "@packages/ui/components/ui/button";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@packages/ui/components/ui/tooltip";
 import type { FileUIPart } from "ai";
 import { FileText, XIcon } from "lucide-react";
-import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { ALLOWED_MIME_TYPES } from "@/lib/constants";
-import { Button } from "../ui/button";
 
 export function UploadedFile({ file, removeFile }: { file: FileUIPart; removeFile: () => void }) {
 	const isImage = file.mediaType.startsWith("image/");

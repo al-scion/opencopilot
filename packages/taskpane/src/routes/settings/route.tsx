@@ -1,3 +1,15 @@
+import {
+	Sidebar,
+	SidebarContent,
+	SidebarFooter,
+	SidebarGroup,
+	SidebarGroupContent,
+	SidebarGroupLabel,
+	SidebarMenu,
+	SidebarMenuButton,
+	SidebarMenuItem,
+	SidebarProvider,
+} from "@packages/ui/components/ui/sidebar";
 import { createFileRoute, HeadContent, Outlet, useLocation, useRouter } from "@tanstack/react-router";
 import {
 	BoxIcon,
@@ -9,20 +21,6 @@ import {
 	SquareSigmaIcon,
 	Unplug,
 } from "lucide-react";
-import {
-	Sidebar,
-	SidebarContent,
-	SidebarFooter,
-	SidebarGroup,
-	SidebarGroupContent,
-	SidebarGroupLabel,
-	SidebarInset,
-	SidebarMenu,
-	SidebarMenuButton,
-	SidebarMenuItem,
-	SidebarProvider,
-	useSidebar,
-} from "@/components/ui/sidebar";
 
 export const Route = createFileRoute("/settings")({
 	component: RouteComponent,

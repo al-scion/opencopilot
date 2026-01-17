@@ -1,8 +1,7 @@
-import { createFileRoute, redirect } from "@tanstack/react-router";
-import { LoadingPage } from "@/components/loading-page";
+import { createFileRoute, Outlet, redirect } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/auth/callback")({
-	component: LoadingPage,
+	component: Outlet,
 	beforeLoad: async (props) => {
 		await Office.onReady(({ host, platform }) => {
 			if (platform === Office.PlatformType.Mac || platform === Office.PlatformType.PC) {

@@ -1,7 +1,7 @@
+import { Button } from "@packages/ui/components/ui/button";
 import { createFileRoute, redirect, useRouter } from "@tanstack/react-router";
 import { useAuth } from "@workos-inc/authkit-react";
 import { useState } from "react";
-import { Button } from "@/components/ui/button";
 import { signInWithDialog } from "@/lib/auth";
 import { useAppState } from "@/lib/state";
 import { cn } from "@/lib/utils";

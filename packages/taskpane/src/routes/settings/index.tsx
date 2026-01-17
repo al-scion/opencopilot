@@ -1,6 +1,6 @@
+import { Card, CardContent, CardContentItem } from "@packages/ui/components/ui/card";
+import { Switch } from "@packages/ui/components/ui/switch";
 import { createFileRoute } from "@tanstack/react-router";
-import { Card, CardContent, CardContentItem, CardHeader, CardTitle } from "@/components/ui/card";
-import { Switch } from "@/components/ui/switch";
 import { useAppState } from "@/lib/state";
 
 export const Route = createFileRoute("/settings/")({

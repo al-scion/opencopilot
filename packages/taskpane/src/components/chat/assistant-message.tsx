@@ -1,4 +1,6 @@
 import type { MessageType } from "@packages/shared";
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@packages/ui/components/ui/accordion";
+import { cn } from "@packages/ui/lib/utils";
 import type { ChatStatus } from "ai";
 import {
 	AlertCircle,
@@ -13,8 +15,6 @@ import {
 	SquarePlus,
 	Table,
 } from "lucide-react";
-import { cn } from "@/lib/utils";
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "../ui/accordion";
 import { MarkdownText } from "./markdown-text";
 
 function ToolMessage(props: React.ComponentProps<typeof AccordionItem>) {

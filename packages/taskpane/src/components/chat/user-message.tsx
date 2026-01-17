@@ -1,4 +1,6 @@
 import type { MessageType } from "@packages/shared";
+import { Card, CardContent, CardContentItem } from "@packages/ui/components/ui/card";
+import { toastManager } from "@packages/ui/components/ui/toast";
 import { useMutation } from "@tanstack/react-query";
 import Document from "@tiptap/extension-document";
 import HardBreak from "@tiptap/extension-hard-break";
@@ -7,10 +9,8 @@ import Paragraph from "@tiptap/extension-paragraph";
 import Text from "@tiptap/extension-text";
 import { EditorContent, useEditor, useEditorState } from "@tiptap/react";
 import { Loader2, Undo2 } from "lucide-react";
-import { Card, CardContent, CardContentItem } from "@/components/ui/card";
+import { TooltipButton } from "@/components/tooltip-button";
 import { restoreCheckpoint } from "@/lib/excel/checkpoint";
-import { TooltipButton } from "../tooltip-button";
-import { toastManager } from "../ui/toast";
 
 export function UserMessage({ message }: { message: MessageType }) {
 	const text = message.parts.find((part) => part.type === "text")?.text;

@@ -6,7 +6,6 @@ import { AuthKitProvider, useAuth } from "@workos-inc/authkit-react";
 import { ConvexProvider, ConvexReactClient } from "convex/react";
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
-import { LoadingPage } from "./components/loading-page";
 import { routeTree } from "./routeTree.gen";
 import "./index.css";
 
@@ -26,7 +25,7 @@ export const router = createRouter({
 	routeTree,
 	defaultErrorComponent: (e) => <div>Error: {e.error.message}</div>,
 	defaultNotFoundComponent: (props) => <div>Route not found {JSON.stringify(props)}</div>,
-	defaultPendingComponent: () => <LoadingPage />,
+	defaultPendingComponent: () => <div>Loading...</div>,
 	context: {
 		queryClient,
 		convexReactClient,

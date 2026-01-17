@@ -1,4 +1,15 @@
 import { useChat } from "@ai-sdk/react";
+import { Card, CardContent, CardContentItem } from "@packages/ui/components/ui/card";
+import {
+	Command,
+	CommandEmpty,
+	CommandGroup,
+	CommandInput,
+	CommandItem,
+	CommandList,
+	CommandShortcut,
+} from "@packages/ui/components/ui/command";
+import { toastManager } from "@packages/ui/components/ui/toast";
 import { createFileRoute, redirect, useRouteContext } from "@tanstack/react-router";
 import { Document } from "@tiptap/extension-document";
 import { HardBreak } from "@tiptap/extension-hard-break";
@@ -16,27 +27,14 @@ import { ChatHistory } from "@/components/chat/chat-history";
 import { ErrorMessage } from "@/components/chat/error-message";
 import { ModeSelector } from "@/components/chat/mode-selector";
 import { ModelMenu } from "@/components/chat/model-menu";
-import { ToolMenu } from "@/components/chat/tool-menu";
 import { UploadedFile } from "@/components/chat/uploaded-file";
 import { UserMessage } from "@/components/chat/user-message";
 import { SettingsMenu } from "@/components/settings-menu";
 import { TooltipButton } from "@/components/tooltip-button";
-import { Card, CardContent, CardContentItem } from "@/components/ui/card";
-import {
-	Command,
-	CommandEmpty,
-	CommandGroup,
-	CommandInput,
-	CommandItem,
-	CommandList,
-	CommandShortcut,
-} from "@/components/ui/command";
-import { toastManager } from "@/components/ui/toast";
 import { getShortcutString, useShortcut } from "@/lib/browser-shortcuts";
 import { createChat } from "@/lib/chat";
 import { ALLOWED_MIME_TYPES, MAX_FILE_SIZE } from "@/lib/constants";
 import { saveFileToStorage } from "@/lib/excel/checkpoint";
-import { server } from "@/lib/server";
 import { useAppState } from "@/lib/state";
 import type { MentionItem } from "@/lib/types";
 import { cn, fileToDataUrl } from "@/lib/utils";

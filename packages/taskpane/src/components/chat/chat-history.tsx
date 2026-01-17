@@ -1,14 +1,5 @@
 import { convexQuery } from "@convex-dev/react-query";
 import { api } from "@packages/convex";
-import { useQueryClient } from "@tanstack/react-query";
-import { ArrowUpDown, ChevronDown, History } from "lucide-react";
-import { useState } from "react";
-import { getShortcutString, useShortcut } from "@/lib/browser-shortcuts";
-import { createChat } from "@/lib/chat";
-import { getMessages, useGetChats } from "@/lib/convex";
-import { useAppState } from "@/lib/state";
-import { cn, getRelativeTime } from "@/lib/utils";
-import { TooltipButton } from "../tooltip-button";
 import {
 	Command,
 	CommandEmpty,
@@ -17,9 +8,17 @@ import {
 	CommandItem,
 	CommandList,
 	CommandShortcut,
-} from "../ui/command";
-import { Dialog, DialogContent, DialogHeader, DialogTrigger } from "../ui/dialog";
-import { Kbd } from "../ui/kbd";
+} from "@packages/ui/components/ui/command";
+import { Dialog, DialogContent, DialogHeader, DialogTrigger } from "@packages/ui/components/ui/dialog";
+import { Kbd } from "@packages/ui/components/ui/kbd";
+import { useQueryClient } from "@tanstack/react-query";
+import { ArrowUpDown, ChevronDown, History } from "lucide-react";
+import { getShortcutString, useShortcut } from "@/lib/browser-shortcuts";
+import { createChat } from "@/lib/chat";
+import { getMessages, useGetChats } from "@/lib/convex";
+import { useAppState } from "@/lib/state";
+import { cn, getRelativeTime } from "@/lib/utils";
+import { TooltipButton } from "../tooltip-button";
 
 export function ChatHistory() {
 	const queryClient = useQueryClient();

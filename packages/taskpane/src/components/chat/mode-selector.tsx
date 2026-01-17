@@ -1,5 +1,15 @@
 import { MODES, type ModeId } from "@packages/shared";
 import {
+	DropdownMenu,
+	DropdownMenuContent,
+	DropdownMenuGroup,
+	DropdownMenuItem,
+	DropdownMenuLabel,
+	DropdownMenuShortcut,
+	DropdownMenuTrigger,
+} from "@packages/ui/components/ui/dropdown-menu";
+import { cn } from "@packages/ui/lib/utils";
+import {
 	Check,
 	ChevronDown,
 	InfinityIcon,
@@ -9,19 +19,9 @@ import {
 	Paintbrush2Icon,
 	PenSquareIcon,
 } from "lucide-react";
+import { TooltipButton } from "@/components/tooltip-button";
 import { getShortcutString, useShortcut } from "@/lib/browser-shortcuts";
 import { useAppState } from "@/lib/state";
-import { cn } from "@/lib/utils";
-import { TooltipButton } from "../tooltip-button";
-import {
-	DropdownMenu,
-	DropdownMenuContent,
-	DropdownMenuGroup,
-	DropdownMenuItem,
-	DropdownMenuLabel,
-	DropdownMenuShortcut,
-	DropdownMenuTrigger,
-} from "../ui/dropdown-menu";
 
 const ModeIcon = ({ modeId, ...props }: { modeId: ModeId } & React.SVGProps<SVGSVGElement>) => {
 	const Icon = {
