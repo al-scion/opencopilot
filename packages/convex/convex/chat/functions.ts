@@ -10,9 +10,10 @@ export const saveChat = mutation({
 	},
 	handler: async (ctx, args) => {
 		const auth = await ctx.auth.getUserIdentity();
-		if (!auth) {
-			throw new Error("Unauthorized");
-		}
+		const userId = auth?.subject ?? "public";
+		// if (!auth) {
+		// 	throw new Error("Unauthorized");
+		// }
 		const chat = await ctx.db
 			.query("chat")
 			.withIndex("by_chatId", (q) => q.eq("chatId", args.chatId))
@@ -24,7 +25,7 @@ export const saveChat = mutation({
 			});
 		} else {
 			const chatId = await ctx.db.insert("chat", {
-				userId: auth.subject,
+				userId,
 				namespace: args.namespace,
 				chatId: args.chatId,
 				updatedAt: Date.now(),
@@ -84,12 +85,13 @@ export const getChats = query({
 	},
 	handler: async (ctx, args) => {
 		const auth = await ctx.auth.getUserIdentity();
-		if (!auth) {
-			throw new Error("Unauthorized");
-		}
+		const userId = auth?.subject ?? "public";
+		// if (!auth) {
+		// 	throw new Error("Unauthorized");
+		// }
 		const chats = await ctx.db
 			.query("chat")
-			.withIndex("by_userId_namespace_updatedAt", (q) => q.eq("userId", auth.subject).eq("namespace", args.namespace))
+			.withIndex("by_userId_namespace_updatedAt", (q) => q.eq("userId", userId).eq("namespace", args.namespace))
 			.order("desc")
 			.take(20);
 		return chats;

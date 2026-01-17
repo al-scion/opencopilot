@@ -11,11 +11,22 @@ export default defineConfig({
 		tailwindcss({ optimize: true }),
 		tanstackRouter({ autoCodeSplitting: true, target: "react" }),
 		react({ babel: { plugins: ["babel-plugin-react-compiler"] } }),
+		tsConfigPaths({ projects: ["./tsconfig.json"] }),
 		cloudflare(),
-		tsConfigPaths(),
 		mkcert(),
 	],
-	server: { port: 3000, strictPort: true },
+	server: {
+		port: 3000,
+		strictPort: true,
+		proxy: {
+			"/api": {
+				target: "http://localhost:8787",
+				changeOrigin: true,
+				secure: false,
+				rewrite: (path) => path.replace(/^\/api/, ""),
+			},
+		},
+	},
 
 	// The settings below is to fix issues with the streamdown package
 	optimizeDeps: {

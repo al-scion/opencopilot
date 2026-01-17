@@ -1,6 +1,5 @@
 import type { excelTools } from "@packages/shared";
 import type { ChatOnToolCallCallback, InferToolInput, InferToolOutput } from "ai";
-// import { uploadImage } from "@/lib/server";
 import { jsonToMarkdownTable } from "./markdown";
 import { NUMBER_FORMATS } from "./style";
 

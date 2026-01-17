@@ -1,6 +1,5 @@
 import type { Tooltip as TooltipPrimitive } from "@base-ui/react/tooltip";
 import type { VariantProps } from "class-variance-authority";
-import type * as React from "react";
 import { Button, type buttonVariants } from "@/components/ui/button";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";

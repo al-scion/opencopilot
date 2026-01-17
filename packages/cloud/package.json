@@ -1,0 +1,38 @@
+{
+  "name": "@packages/cloud",
+  "type": "module",
+  "version": "0.0.0",
+  "private": true,
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "dev": "wrangler dev",
+    "checktypes": "tsgo --noEmit",
+    "deploy": "wrangler deploy",
+    "secrets": "wrangler secret bulk .env && wrangler types --env-file=.env"
+  },
+  "devDependencies": {
+    "@types/node": "catalog:",
+    "wrangler": "catalog:",
+    "typescript": "catalog:",
+    "@typescript/native-preview": "catalog:"
+  },
+  "dependencies": {
+    "@ai-sdk/anthropic": "catalog:",
+    "@ai-sdk/google": "catalog:",
+    "@ai-sdk/openai": "catalog:",
+    "@ai-sdk/react": "catalog:",
+    "@hono/standard-validator": "catalog:",
+    "@packages/convex": "workspace:*",
+    "@packages/shared": "workspace:*",
+    "@scalar/hono-api-reference": "catalog:",
+    "ai": "catalog:",
+    "convex": "catalog:",
+    "hono": "catalog:",
+    "hono-openapi": "catalog:",
+    "zod": "catalog:"
+  }
+}

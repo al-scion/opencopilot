@@ -6,7 +6,6 @@ import {
 	lastAssistantMessageIsCompleteWithApprovalResponses,
 	lastAssistantMessageIsCompleteWithToolCalls,
 } from "ai";
-import { env } from "@/lib/env";
 import { server } from "@/lib/server";
 import { useAppState } from "@/lib/state";
 import { excelToolHandler } from "./excel/tools";
@@ -18,7 +17,6 @@ export const createChat = ({ id, messages }: { id?: string; messages?: MessageTy
 		messages,
 		transport: new DefaultChatTransport({
 			api: server.chat.$url().href,
-			// api: `${env.VITE_CONVEX_SITE_URL}/chat`,
 			headers: async () => ({
 				// Authorization: `Bearer ${await useAppState.getState().auth.getAccessToken()}`,
 			}),

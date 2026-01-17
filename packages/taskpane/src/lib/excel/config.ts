@@ -7,19 +7,10 @@ export const shortcutsDefinitions = [
 	{
 		id: "toggleTaskpane",
 		key: {
-			default: "Ctrl+J",
 			windows: "Ctrl+J",
 			mac: "Command+J",
-			web: "Ctrl+Shift+J",
 		},
 		action: toggleTaskpane,
-	},
-	{
-		id: "testShortcut",
-		key: {
-			default: "alt+j",
-		},
-		action: testShortcut,
 	},
 ] satisfies {
 	id: string;

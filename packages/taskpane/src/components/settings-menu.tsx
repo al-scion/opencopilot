@@ -1,5 +1,5 @@
 import { useRouter } from "@tanstack/react-router";
-import { CircleUserRound, Keyboard, LogOut, Settings } from "lucide-react";
+import { CircleUserRound, Ellipsis, Keyboard, LogOut, Settings } from "lucide-react";
 import { getShortcutString, useShortcut } from "@/lib/browser-shortcuts";
 import { useAppState } from "@/lib/state";
 import { cn } from "@/lib/utils";
@@ -54,7 +54,7 @@ export function SettingsMenu() {
 			<DropdownMenuTrigger
 				render={(props, state) => (
 					<TooltipButton
-						className={cn("hover:bg-background", state.open && "bg-muted")}
+						className={cn(state.open && "bg-muted")}
 						shortcutKeys={getShortcutString("openSettings")}
 						size="icon"
 						tooltip="Settings"
@@ -65,7 +65,7 @@ export function SettingsMenu() {
 					/>
 				)}
 			>
-				<Settings />
+				<Ellipsis />
 			</DropdownMenuTrigger>
 			<DropdownMenuContent align="center" className={"w-fit"}>
 				{/* <DropdownMenuGroup className="flex flex-row items-center gap-2 px-1 py-0">

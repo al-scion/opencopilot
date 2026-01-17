@@ -78,8 +78,9 @@ export function AssistantMessage({ message, status }: { message: MessageType; st
 					return (
 						<ToolMessage key={key}>
 							<ToolMessageTrigger>
-								<Table className="size-3.5" />
-								Edited {part.input?.worksheet}
+								<Table className="size-3.5 group-hover/accordion-trigger:hidden" />
+								<ChevronRight className="hidden size-3.5 transition-transform duration-200 ease-in-out group-hover/accordion-trigger:block group-data-panel-open/accordion-trigger:rotate-90" />
+								<span className="truncate">Edited {part.input?.worksheet}</span>
 								{part.state === "output-error" && <AlertCircle className="size-3.5 text-destructive" />}
 							</ToolMessageTrigger>
 							<ToolMessageContent>
@@ -139,29 +140,29 @@ export function AssistantMessage({ message, status }: { message: MessageType; st
 					);
 				}
 
-				if (part.type === "tool-webSearch") {
-					return (
-						<ToolMessage key={key}>
-							<ToolMessageTrigger>
-								<Globe className="size-3.5 group-hover/accordion-trigger:hidden" />
-								<ChevronRight className="hidden size-3.5 transition-transform duration-200 ease-in-out group-hover/accordion-trigger:block group-data-panel-open/accordion-trigger:rotate-90" />
-								<span className="truncate">Searched for "{part.input?.query}"</span>
-							</ToolMessageTrigger>
-							<ToolMessageContent>{JSON.stringify(part.output?.map((result) => result.title))}</ToolMessageContent>
-						</ToolMessage>
-					);
-				}
+				// if (part.type === "tool-webSearch") {
+				// 	return (
+				// 		<ToolMessage key={key}>
+				// 			<ToolMessageTrigger>
+				// 				<Globe className="size-3.5 group-hover/accordion-trigger:hidden" />
+				// 				<ChevronRight className="hidden size-3.5 transition-transform duration-200 ease-in-out group-hover/accordion-trigger:block group-data-panel-open/accordion-trigger:rotate-90" />
+				// 				<span className="truncate">Searched for "{part.input?.query}"</span>
+				// 			</ToolMessageTrigger>
+				// 			<ToolMessageContent>{JSON.stringify(part.output?.map((result) => result.title))}</ToolMessageContent>
+				// 		</ToolMessage>
+				// 	);
+				// }
 
-				if (part.type === "tool-webFetch") {
-					return (
-						<ToolMessage key={key}>
-							<ToolMessageTrigger>
-								<Globe className="size-3.5" />
-								<span className="truncate">Fetched {part.input?.urls?.join(", ")}</span>
-							</ToolMessageTrigger>
-						</ToolMessage>
-					);
-				}
+				// if (part.type === "tool-webFetch") {
+				// 	return (
+				// 		<ToolMessage key={key}>
+				// 			<ToolMessageTrigger>
+				// 				<Globe className="size-3.5" />
+				// 				<span className="truncate">Fetched {part.input?.urls?.join(", ")}</span>
+				// 			</ToolMessageTrigger>
+				// 		</ToolMessage>
+				// 	);
+				// }
 
 				if (part.type === "tool-getScreenshot") {
 					return null;

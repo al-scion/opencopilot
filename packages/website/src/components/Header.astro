@@ -1,0 +1,112 @@
+---
+interface Props {
+	links?: Array<{ label: string; href: string }>;
+}
+
+const { links = [
+	{ label: 'Features', href: '#features' },
+	{ label: 'Pricing', href: '#pricing' },
+	{ label: 'Docs', href: '/docs' },
+] } = Astro.props;
+---
+
+<header class="header">
+	<div class="header-inner">
+		<a href="/" class="logo">
+			<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+				<rect width="24" height="24" rx="4" fill="currentColor"/>
+			</svg>
+			<span>Fabric</span>
+		</a>
+
+		<nav class="nav">
+			{links.map((link) => (
+				<a href={link.href} class="nav-link">{link.label}</a>
+			))}
+		</nav>
+
+		<div class="header-actions">
+			<a href="/login" class="sign-in">Sign in</a>
+			<a href="/download" class="download-btn">Download</a>
+		</div>
+	</div>
+</header>
+
+<style>
+	.header {
+		position: fixed;
+		top: 0;
+		left: 0;
+		right: 0;
+		z-index: 100;
+		padding: var(--space-sm) var(--space-md);
+		background: var(--color-bg);
+	}
+
+	.header-inner {
+		max-width: var(--max-width);
+		margin: 0 auto;
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+	}
+
+	.logo {
+		display: flex;
+		align-items: center;
+		gap: var(--space-xs);
+		font-weight: 600;
+		font-size: 1.125rem;
+	}
+
+	.nav {
+		display: flex;
+		gap: var(--space-lg);
+	}
+
+	.nav-link {
+		color: var(--color-text-secondary);
+		font-size: 0.9375rem;
+		transition: color 0.15s;
+	}
+
+	.nav-link:hover {
+		color: var(--color-text);
+	}
+
+	.header-actions {
+		display: flex;
+		align-items: center;
+		gap: var(--space-md);
+	}
+
+	.sign-in {
+		font-size: 0.9375rem;
+		color: var(--color-text-secondary);
+		transition: color 0.15s;
+	}
+
+	.sign-in:hover {
+		color: var(--color-text);
+	}
+
+	.download-btn {
+		background: var(--color-accent);
+		color: var(--color-bg);
+		padding: 0.5rem 1rem;
+		border-radius: 6px;
+		font-size: 0.9375rem;
+		font-weight: 500;
+		transition: opacity 0.15s;
+	}
+
+	.download-btn:hover {
+		opacity: 0.9;
+	}
+
+	@media (max-width: 768px) {
+		.nav {
+			display: none;
+		}
+	}
+</style>

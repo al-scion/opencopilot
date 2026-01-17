@@ -1,8 +1,8 @@
 export const handleCitation = (href: string) => {
-	if (!href.startsWith("citation:")) {
+	if (!href.startsWith("#citation:")) {
 		return null;
 	}
-	const citation = href.split("citation:")[1]!;
+	const citation = href.split("#citation:")[1]!;
 	const [sheetName, address] = citation.split("!");
 
 	if (address && sheetName) {

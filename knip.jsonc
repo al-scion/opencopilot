@@ -4,6 +4,9 @@
     "packages/taskpane": {
       "ignore": ["src/components/ui/**"]
     },
+    "packages/ui": {
+      "ignore": ["src/components/ui/**"]
+    },
     "packages/docs": {
       "ignore": ["content/**"]
     }

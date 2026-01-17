@@ -16,7 +16,6 @@ import { ChatHistory } from "@/components/chat/chat-history";
 import { ErrorMessage } from "@/components/chat/error-message";
 import { ModeSelector } from "@/components/chat/mode-selector";
 import { ModelMenu } from "@/components/chat/model-menu";
-import { TodoList } from "@/components/chat/todo-list";
 import { ToolMenu } from "@/components/chat/tool-menu";
 import { UploadedFile } from "@/components/chat/uploaded-file";
 import { UserMessage } from "@/components/chat/user-message";
@@ -113,7 +112,7 @@ function RouteComponent() {
 		});
 
 		const checkpointId = crypto.randomUUID();
-		// saveFileToStorage(checkpointId);
+		saveFileToStorage(checkpointId);
 		sendMessage({
 			text: editor.getText(),
 			metadata: { tiptap: editor.getJSON(), checkpointId },
@@ -261,19 +260,11 @@ function RouteComponent() {
 	});
 
 	return (
-		<div
-			className={cn(
-				"flex h-dvh flex-col p-1.5 pt-0",
-				officePlatform === "mac" && "bg-taskpane-background-mac",
-				officePlatform === "web" && "bg-taskpane-background-web",
-				officePlatform === "windows" && "bg-taskpane-background-windows"
-			)}
-		>
-			<div className="flex flex-row items-center pt-1 pr-2 pb-1.5 pl-1">
-				<ChatHistory />
+		<>
+			<div className={cn("flex flex-row items-center p-1.5")}>
+				{/* TODO: Insert chat title here */}
 				<div className="ml-auto flex flex-row items-center gap-0.5">
 					<TooltipButton
-						className="hover:bg-background"
 						onClick={newChat}
 						shortcutKeys={getShortcutString("newChat")}
 						size="icon"
@@ -282,112 +273,104 @@ function RouteComponent() {
 					>
 						<Plus />
 					</TooltipButton>
+					<ChatHistory />
 					<SettingsMenu />
 				</div>
 			</div>
-			<div className="flex min-h-0 flex-1 flex-col overflow-hidden rounded-xl bg-background">
-				<StickToBottom className="relative flex-1 overflow-y-auto" initial="instant" resize="instant">
-					<StickToBottom.Content className="p-1.5">
-						{messages.map((message) => {
-							if (message.role === "user") {
-								return <UserMessage key={message.id} message={message} />;
-							}
-							if (message.role === "assistant") {
-								return <AssistantMessage key={message.id} message={message} status={status} />;
-							}
-							return null;
-						})}
-						<ErrorMessage error={error} />
-					</StickToBottom.Content>
-				</StickToBottom>
-				<Card className="relative m-1.5 mt-0">
-					<CardContent className="p-0">
-						<CardContentItem
-							className={cn("px-2 py-1", !(status === "streaming" || status === "submitted") && "hidden")}
-						>
-							<span className="font-light text-muted-foreground text-xs">Generating...</span>
-							<TooltipButton className="-mr-1 ml-auto rounded-sm" onClick={stop} size="sm" variant="secondary">
-								<span className="font-normal text-muted-foreground text-xs">Stop</span>
-								<span className="-mr-0.5 font-light text-muted-foreground text-xs">
-									{getShortcutString("stopChat")}
-								</span>
-							</TooltipButton>
-						</CardContentItem>
-						<TodoList />
-						<CardContentItem className={cn("p-2", uploadedFiles.length === 0 && "hidden")}>
-							{uploadedFiles.map((file) => (
-								<UploadedFile file={file} key={file.url} removeFile={() => handleRemoveFile(file)} />
-							))}
-						</CardContentItem>
-						<CardContentItem className="flex-col items-start">
-							<EditorContent className="w-full flex-1" editor={editor} />
-							<div className="flex w-full flex-row">
-								<div className="flex flex-row items-center gap-1">
-									<TooltipButton
-										onClick={() => fileInputRef.current?.click()}
-										size="icon"
-										tooltip="Files"
-										variant="ghost"
-									>
-										<input
-											accept={ALLOWED_MIME_TYPES.join(",")}
-											className="hidden"
-											multiple
-											onChange={fileInputChange}
-											ref={fileInputRef}
-											type="file"
-										/>
-										<Paperclip />
-									</TooltipButton>
-									{/* <ToolMenu /> */}
-									<ModeSelector />
-									<ModelMenu />
-								</div>
-								<div className="ml-auto flex flex-row items-center gap-1">
-									<TooltipButton
-										className={cn("rounded-full", editorState.isEmpty && "bg-foreground/50 hover:bg-foreground/50")}
-										onClick={handleSendMessage}
-										shortcutKeys={"⏎"}
-										size="icon"
-										tooltip="Send"
-									>
-										<ArrowUp />
-									</TooltipButton>
-								</div>
-							</div>
-						</CardContentItem>
-					</CardContent>
-					<Command
-						className={cn(
-							"absolute bottom-[calc(100%+4px)] left-1/2 h-fit w-[calc(100%-4px)] -translate-x-1/2 rounded-lg border shadow",
-							query === null && "hidden"
-						)}
-						filter={(_value, search, keywords) =>
-							keywords?.join().toLowerCase().includes(search.toLowerCase()) ? 1 : 0
+			<StickToBottom className="relative flex-1 overflow-y-auto" initial="instant" resize="instant">
+				<StickToBottom.Content className="p-1.5 pt-0">
+					{messages.map((message) => {
+						if (message.role === "user") {
+							return <UserMessage key={message.id} message={message} />;
 						}
-						loop
-					>
-						<CommandInput ref={commandInputRef} value={query || ""} wrapperClassName="hidden" />
-						<CommandList>
-							<CommandEmpty>No results</CommandEmpty>
-							<CommandGroup>
-								{selectOptions.map((item, index) => (
-									<CommandItem
-										key={index}
-										keywords={[item.menuLabel, item.menuSubLabel]}
-										onSelect={(value) => handleSelectMention(value, item.label)}
-										value={item.id}
-									>
-										<item.icon className="size-4" />
-										<span className="truncate">{item.menuLabel}</span>
-										<CommandShortcut className="tracking-normal">{item.menuSubLabel}</CommandShortcut>
-									</CommandItem>
-								))}
-							</CommandGroup>
-						</CommandList>
-					</Command>
-				</Card>
-			</div>
-		</div>
+						if (message.role === "assistant") {
+							return <AssistantMessage key={message.id} message={message} status={status} />;
+						}
+						return null;
+					})}
+					<ErrorMessage error={error} />
+				</StickToBottom.Content>
+			</StickToBottom>
+			<Card className="relative m-1.5 mt-0">
+				<CardContent className="p-0">
+					<CardContentItem className={cn("px-2 py-1", !(status === "streaming" || status === "submitted") && "hidden")}>
+						<span className="font-light text-muted-foreground text-xs">Generating...</span>
+						<TooltipButton className="-mr-1 ml-auto rounded-sm" onClick={stop} size="sm" variant="secondary">
+							<span className="font-normal text-muted-foreground text-xs">Stop</span>
+							<span className="-mr-0.5 font-light text-muted-foreground text-xs">{getShortcutString("stopChat")}</span>
+						</TooltipButton>
+					</CardContentItem>
+					<CardContentItem className={cn("p-2", uploadedFiles.length === 0 && "hidden")}>
+						{uploadedFiles.map((file) => (
+							<UploadedFile file={file} key={file.url} removeFile={() => handleRemoveFile(file)} />
+						))}
+					</CardContentItem>
+					<CardContentItem className="flex-col items-start">
+						<EditorContent className="w-full flex-1" editor={editor} />
+						<div className="flex w-full flex-row">
+							<div className="flex flex-row items-center gap-1">
+								<TooltipButton
+									onClick={() => fileInputRef.current?.click()}
+									size="icon"
+									tooltip="Files"
+									variant="ghost"
+								>
+									<input
+										accept={ALLOWED_MIME_TYPES.join(",")}
+										className="hidden"
+										multiple
+										onChange={fileInputChange}
+										ref={fileInputRef}
+										type="file"
+									/>
+									<Paperclip />
+								</TooltipButton>
+								{/* <ToolMenu /> */}
+								<ModeSelector />
+								<ModelMenu />
+							</div>
+							<div className="ml-auto flex flex-row items-center gap-1">
+								<TooltipButton
+									className={cn("rounded-full", editorState.isEmpty && "bg-foreground/50 hover:bg-foreground/50")}
+									onClick={handleSendMessage}
+									shortcutKeys={"⏎"}
+									size="icon"
+									tooltip="Send"
+								>
+									<ArrowUp />
+								</TooltipButton>
+							</div>
+						</div>
+					</CardContentItem>
+				</CardContent>
+				<Command
+					className={cn(
+						"absolute bottom-[calc(100%+4px)] left-1/2 h-fit w-[calc(100%-4px)] -translate-x-1/2 rounded-lg border shadow",
+						query === null && "hidden"
+					)}
+					filter={(_value, search, keywords) => (keywords?.join().toLowerCase().includes(search.toLowerCase()) ? 1 : 0)}
+					loop
+				>
+					<CommandInput ref={commandInputRef} value={query || ""} wrapperClassName="hidden" />
+					<CommandList>
+						<CommandEmpty>No results</CommandEmpty>
+						<CommandGroup>
+							{selectOptions.map((item, index) => (
+								<CommandItem
+									key={index}
+									keywords={[item.menuLabel, item.menuSubLabel]}
+									onSelect={(value) => handleSelectMention(value, item.label)}
+									value={item.id}
+								>
+									<item.icon className="size-4" />
+									<span className="truncate">{item.menuLabel}</span>
+									<CommandShortcut className="tracking-normal">{item.menuSubLabel}</CommandShortcut>
+								</CommandItem>
+							))}
+						</CommandGroup>
+					</CommandList>
+				</Command>
+			</Card>
+		</>
 	);
 }

@@ -1,3 +1,4 @@
+import { unzipSync, zipSync } from "fflate";
 import { server } from "../server";
 import { useAppState } from "../state";
 
@@ -46,21 +47,22 @@ export const saveFileToStorage = async (key: string) => {
 
 const getBase64StringFromStorage = async (key: string): Promise<string> => {
 	const response = await server.storage.files[":key"].$get({ param: { key } });
-	const blob = await response.blob();
-	return await new Promise((resolve, reject) => {
-		const reader = new FileReader();
-		reader.onload = () => {
-			const result = reader.result as string;
-			const base64 = result.split(",")[1];
-			if (!base64) {
-				reject(new Error("Failed to extract base64 data from file"));
-				return;
-			}
-			resolve(base64);
-		};
-		reader.onerror = () => reject(reader.error || new Error("Failed to read file"));
-		reader.readAsDataURL(blob);
-	});
+	const arrayBuffer = await response.arrayBuffer();
+
+	// Hide the taskpane by setting visibility to 0
+	const zipData = new Uint8Array(arrayBuffer);
+	const unzippedFile = unzipSync(zipData);
+
+	const taskpanesPath = "xl/webextensions/taskpanes.xml";
+	const taskpanesEntry = unzippedFile[taskpanesPath];
+	if (taskpanesEntry) {
+		const xmlContent = new TextDecoder().decode(taskpanesEntry).replace(/visibility="1"/g, 'visibility="0"');
+		unzippedFile[taskpanesPath] = new TextEncoder().encode(xmlContent);
+	}
+	const modifiedZipData = zipSync(unzippedFile);
+
+	// Convert to base64
+	return btoa(Array.from(modifiedZipData, (byte) => String.fromCharCode(byte)).join(""));
 };
 
 export const restoreCheckpoint = async (checkpointId: string) => {

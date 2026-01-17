@@ -48,7 +48,7 @@ export type AppState = {
 export const useAppState = create<AppState>()(
 	persist(
 		(set, get) => ({
-			operatingSystem: "windows",
+			operatingSystem: navigator.userAgent.toLowerCase().includes("mac") ? "mac" : "windows",
 			editor: undefined!,
 			modelMenuOpen: false,
 			settingsMenuOpen: false,

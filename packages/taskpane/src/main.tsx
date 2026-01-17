@@ -6,12 +6,11 @@ import { AuthKitProvider, useAuth } from "@workos-inc/authkit-react";
 import { ConvexProvider, ConvexReactClient } from "convex/react";
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
-import { env } from "@/lib/env";
 import { LoadingPage } from "./components/loading-page";
 import { routeTree } from "./routeTree.gen";
 import "./index.css";
 
-const convexReactClient = new ConvexReactClient(env.VITE_CONVEX_URL);
+const convexReactClient = new ConvexReactClient(import.meta.env.VITE_CONVEX_URL);
 const convexQueryClient = new ConvexQueryClient(convexReactClient);
 const queryClient = new QueryClient({
 	defaultOptions: {
@@ -32,22 +31,26 @@ export const router = createRouter({
 		queryClient,
 		convexReactClient,
 		convexQueryClient,
+		auth: undefined!, // Will be set in react land!!
 	},
 	Wrap: ({ children }) => (
-		// <ConvexProviderWithAuthKit client={convexReactClient} useAuth={useAuth}>
-		<ConvexProvider client={convexReactClient}>
-			<QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
-		</ConvexProvider>
-		// </ConvexProviderWithAuthKit>
+		<ConvexProviderWithAuthKit client={convexReactClient} useAuth={useAuth}>
+			<ConvexProvider client={convexReactClient}>
+				<QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
+			</ConvexProvider>
+		</ConvexProviderWithAuthKit>
 	),
 });
 
-const App = () => {
-	return <RouterProvider context={{}} router={router} />;
-};
+function App() {
+	const auth = useAuth();
+	return <RouterProvider context={{ auth }} router={router} />;
+}
 
 createRoot(document.getElementById("root")!).render(
 	<StrictMode>
-		<App />
+		<AuthKitProvider clientId={import.meta.env.VITE_WORKOS_CLIENT_ID}>
+			<App />
+		</AuthKitProvider>
 	</StrictMode>
 );

@@ -1,6 +1,7 @@
 interface ImportMetaEnv {
 	readonly VITE_OPENCODE_LOCAL_URL: string;
 	readonly VITE_OPENCODE_CLOUD_URL: string;
+	readonly VITE_WORKOS_CLIENT_ID: string;
 }
 
 interface ImportMeta {

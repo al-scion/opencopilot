@@ -90,11 +90,11 @@ export const generateImage = async (prompt: string, model: string | null, signal
 		},
 		{ init: { signal } }
 	);
-	const { url, downloadUrl } = await response.json();
+	const { fileUrl, downloadUrl } = await response.json();
 
 	const card = getCellValueCard({
 		basicValue: "Image",
-		image: { imageUrl: url, downloadUrl },
+		image: { imageUrl: fileUrl, downloadUrl },
 		icon: Excel.EntityCompactLayoutIcons.image,
 	});
 

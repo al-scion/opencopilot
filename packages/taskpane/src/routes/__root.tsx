@@ -11,15 +11,11 @@ export interface RouterContext {
 	queryClient: QueryClient;
 	convexReactClient: ConvexReactClient;
 	convexQueryClient: ConvexQueryClient;
+	auth: ReturnType<typeof useAuth>;
 }
 
 export const Route = createRootRouteWithContext<RouterContext>()({
 	component: RootComponent,
-	beforeLoad: async ({ context }) => {
-		console.log(navigator.userAgent);
-		const operatingSystem = navigator.userAgent.toLowerCase().includes("mac") ? "mac" : "windows";
-		useAppState.setState({ operatingSystem });
-	},
 	loader: async ({ context }) => {},
 });
 

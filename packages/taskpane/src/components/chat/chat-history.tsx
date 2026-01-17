@@ -51,20 +51,16 @@ export function ChatHistory() {
 			<DialogTrigger
 				render={(props, state) => (
 					<TooltipButton
-						className={cn("rounded-sm px-1.5 hover:bg-transparent")}
 						shortcutKeys={getShortcutString("chatHistory")}
-						size="sm"
+						size="icon"
 						tooltip="Chat history"
-						tooltipAlign="start"
 						variant="ghost"
 						{...props}
 						{...state}
 					/>
 				)}
 			>
-				<span className="font-normal text-sm">{currentChatTitle}</span>
-				<ChevronDown className="-mx-0.5 size-3 text-foreground" />
-				{/* <History /> */}
+				<History />
 			</DialogTrigger>
 			<DialogContent className="min-h-100 p-2" showCloseButton={false}>
 				<DialogHeader className="sr-only">Chat history</DialogHeader>

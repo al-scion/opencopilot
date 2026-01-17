@@ -4,9 +4,10 @@ import {
 	getSystemPrompt,
 	type MessageType,
 	messageRequestSchema,
-	registry,
+	modelRegistry,
+	resolveTools,
+	toolRegistry,
 } from "@packages/shared";
-import { resolveTools, toolRegistry } from "@packages/shared/src/tools/registry";
 import {
 	convertToModelMessages,
 	createUIMessageStream,
@@ -33,15 +34,12 @@ export const chatHandler = httpAction(async (ctx, req) => {
 		message: lastMessage,
 	});
 
-	const agentContext: AgentContext = {
-		ctx,
-		chatId,
-	};
+	const agentContext: AgentContext = { chatId };
 
 	const stream = createUIMessageStream<MessageType>({
 		execute: async ({ writer }) => {
 			const response = streamText({
-				model: registry.languageModel(agentConfig.model),
+				model: modelRegistry.languageModel(agentConfig.model),
 				system: getSystemPrompt({ workbookState: workbook, agentConfig }),
 				messages: modelMessages,
 				tools: toolRegistry(agentConfig.model),

@@ -104,7 +104,7 @@ export const getShortcutString = (name: ShortcutName) => {
 	const operatingSystem = useAppState.getState().operatingSystem;
 	const key = shortcut.key[operatingSystem];
 
-	// Universal key map.
+	// Universal key map.§
 	// - Converts to upper case
 	// - Replaces common key names with symbols
 	// - Removes the + symbol
@@ -143,54 +143,3 @@ export const getShortcutString = (name: ShortcutName) => {
 
 	return operatingSystem === "mac" ? macKeyString : windowsKeyString;
 };
-
-// mac: {
-// 	("command");
-// 	: '⌘',
-//     'cmd': '⌘',
-//     'meta': '⌘',
-//     'option': '⌥',
-//     'alt': '⌥',
-//     'shift': '⇧',
-//     'control': 'ctrl',
-//     'up': '↑',
-//     'down': '↓',
-//     'left': '←',
-//     'right': '→',
-//     'enter': '⏎',
-//     'return': '⏎',
-//     'space': '␣',
-//     'escape': 'esc',
-//     'backspace': '⌫',
-//     'semicolon': ';',
-//     'comma': ',',
-//     'backslash': '\\',
-//     'bracketleft': '[',
-//     'bracketright': ']',
-//     'slash': '/',
-//     'period': '.',
-//     'equal': '=',
-//     'minus': '-',
-// }
-// ,
-//   windows:
-// {
-// 	("control");
-// 	: 'ctrl',
-//     'alternate': 'alt',
-//     'escape': 'esc',
-//     'up': '↑',
-//     'down': '↓',
-//     'left': '←',
-//     'right': '→',
-//     'semicolon': ';',
-//     'comma': ',',
-//     'backslash': '\\',
-//     'bracketleft': '[',
-//     'bracketright': ']',
-//     'slash': '/',
-//     'period': '.',
-//     'equal': '=',
-//     'minus': '-',
-// }
-// ,

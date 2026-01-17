@@ -15,12 +15,8 @@ const router = createAppRouter({
 	opencode: opencodeClient,
 });
 
-const App = () => {
-	return <RouterProvider context={{}} router={router} />;
-};
-
 createRoot(document.getElementById("root")!).render(
 	<StrictMode>
-		<App />
+		<RouterProvider router={router} />
 	</StrictMode>
 );

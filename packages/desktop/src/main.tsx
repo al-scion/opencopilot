@@ -11,18 +11,15 @@ const port = await invoke<number>("ensure_server_started");
 const opencodeClient = createOpencodeClient({
 	baseUrl: `${import.meta.env.VITE_OPENCODE_BASE_URL}:${port}`,
 });
+
 const router = createAppRouter({
 	platform: "desktop",
 	queryClient: new QueryClient(),
 	opencode: opencodeClient,
 });
 
-const App = () => {
-	return <RouterProvider context={{}} router={router} />;
-};
-
 createRoot(document.getElementById("root")!).render(
 	<StrictMode>
-		<App />
+		<RouterProvider router={router} />
 	</StrictMode>
 );

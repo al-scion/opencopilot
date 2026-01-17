@@ -419,7 +419,7 @@ function SidebarMenuButton({
 			"data-sidebar": "menu-button",
 			"data-size": size,
 			"data-active": isActive,
-			className: cn(sidebarMenuButtonVariants({ variant, size }), "group/sidebar-menu-button", className),
+			className: cn(sidebarMenuButtonVariants({ variant, size }), "group/sidebar-menu-button truncate", className),
 			...props,
 		},
 	});

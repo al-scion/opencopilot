@@ -1,11 +1,13 @@
 {
   "extends": "../../tsconfig.json",
   "compilerOptions": {
-    "lib": ["DOM", "DOM.Iterable", "ESNext"],
-    "types": ["vite/client", "custom-functions-runtime", "office-js"],
+    "types": ["vite/client", "office-js", "custom-functions-runtime"],
     "paths": {
       "@/*": ["./src/*"],
-      "@packages/*": ["../../packages/*"]
+      "@packages/shared": ["../../packages/shared"],
+      "@packages/convex": ["../../packages/convex"],
+      "@packages/cloud": ["../../packages/cloud"],
+      "@packages/ui/*": ["../ui/src/*"]
     }
   }
 }
