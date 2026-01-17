@@ -1,6 +1,7 @@
 {
   "extends": "../../tsconfig.json",
   "compilerOptions": {
+    "types": ["custom-functions-runtime", "office-js"],
     "paths": {
       "@packages/convex": ["../../packages/convex"]
     }

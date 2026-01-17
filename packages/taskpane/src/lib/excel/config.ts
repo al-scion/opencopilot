@@ -1,7 +1,7 @@
+import type { CustomFunctionsConfig, ShortcutsConfig } from "@packages/shared";
 import { IMAGE_MODELS, LANGUAGE_MODELS } from "@packages/shared";
-import type { CustomFunctionsConfig, ShortcutsConfig } from "../types";
-import { generateImage, generateText, memoize, testFunction } from "./formula";
-import { testShortcut, toggleTaskpane } from "./shortcuts";
+import { generateImage, generateText, memoize } from "./formula";
+import { toggleTaskpane } from "./shortcuts";
 
 export const shortcutsDefinitions = [
 	{
@@ -37,11 +37,6 @@ export const customFunctionsDefinitions = [
 		],
 		action: generateImage,
 	},
-	{
-		id: "TEST",
-		parameters: [],
-		action: testFunction,
-	},
 ] satisfies {
 	id: string;
 	description?: string;
@@ -62,13 +57,10 @@ export const getCustomFunctionsConfig = (): CustomFunctionsConfig => {
 		options: { stream: true, requiresStreamAddress: true, requiresStreamParameterAddresses: true },
 	})) satisfies CustomFunctionsConfig["functions"];
 
-	const isProd = import.meta.env.PROD;
-	const customFunctions = isProd ? functions.filter((item) => item.id !== "TEST") : functions;
-
 	return {
 		allowCustomDataForDataTypeAny: true,
 		allowErrorForDataTypeAny: true,
-		functions: customFunctions,
+		functions,
 		enums: [
 			{
 				id: "LANGUAGE_MODELS",
@@ -91,16 +83,13 @@ export const getCustomFunctionsConfig = (): CustomFunctionsConfig => {
 };
 
 export const getShortcutsConfig = (): ShortcutsConfig => {
-	const isProd = import.meta.env.PROD;
-	const shortcuts = isProd ? shortcutsDefinitions.filter((item) => item.id !== "testShortcut") : shortcutsDefinitions;
-
 	return {
-		actions: shortcuts.map((item) => ({
+		actions: shortcutsDefinitions.map((item) => ({
 			id: item.id,
 			name: item.id,
 			type: "ExecuteFunction",
 		})),
-		shortcuts: shortcuts.map((item) => ({
+		shortcuts: shortcutsDefinitions.map((item) => ({
 			action: item.id,
 			key: item.key,
 		})),
@@ -108,22 +97,16 @@ export const getShortcutsConfig = (): ShortcutsConfig => {
 };
 
 export const registerCustomFunctionsAndShortcuts = () => {
-	// Handle registration, removing test in production environments
-	const isProd = import.meta.env.PROD;
-	const customFunctions = isProd
-		? customFunctionsDefinitions.filter((item) => item.id !== "TEST")
-		: customFunctionsDefinitions;
-	const shortcuts = isProd ? shortcutsDefinitions.filter((item) => item.id !== "testShortcut") : shortcutsDefinitions;
-
 	// Register custom functions
-	CustomFunctions.associate(Object.fromEntries(customFunctions.map((item) => [item.id, memoize(item.action)])));
+	CustomFunctions.associate(
+		Object.fromEntries(customFunctionsDefinitions.map((item) => [item.id, memoize(item.action)]))
+	);
 
 	// Register shortcuts
-	console.log("Shortcuts to register", shortcuts);
-	shortcuts.forEach((item) => {
+	shortcutsDefinitions.forEach((item) => {
 		Office.actions.associate(item.id, item.action);
 	});
-	Office.actions.areShortcutsInUse(["command+j"]).then((data) => console.log("areShortcutsInUse", data));
+
 	Office.actions.getShortcuts().then((shortcuts) => console.log("registered shortcuts", shortcuts));
 
 	console.log("Custom functions and shortcuts registered");

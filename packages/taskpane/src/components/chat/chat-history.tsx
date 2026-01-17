@@ -11,13 +11,14 @@ import {
 } from "@packages/ui/components/ui/command";
 import { Dialog, DialogContent, DialogHeader, DialogTrigger } from "@packages/ui/components/ui/dialog";
 import { Kbd } from "@packages/ui/components/ui/kbd";
+import { cn } from "@packages/ui/lib/utils";
 import { useQueryClient } from "@tanstack/react-query";
 import { ArrowUpDown, ChevronDown, History } from "lucide-react";
 import { getShortcutString, useShortcut } from "@/lib/browser-shortcuts";
 import { createChat } from "@/lib/chat";
 import { getMessages, useGetChats } from "@/lib/convex";
 import { useAppState } from "@/lib/state";
-import { cn, getRelativeTime } from "@/lib/utils";
+import { getRelativeTime } from "@/lib/utils";
 import { TooltipButton } from "../tooltip-button";
 
 export function ChatHistory() {

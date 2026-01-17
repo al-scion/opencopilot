@@ -10,6 +10,7 @@ import {
 	SidebarMenuItem,
 	SidebarProvider,
 } from "@packages/ui/components/ui/sidebar";
+import { cn } from "@packages/ui/lib/utils";
 import { createFileRoute, HeadContent, Outlet, useLocation, useRouter } from "@tanstack/react-router";
 import {
 	BoxIcon,

@@ -1,6 +1,6 @@
 import { Chat } from "@ai-sdk/react";
 import type { MessageType } from "@packages/shared";
-import { excelToolNames } from "@packages/shared";
+import { excelToolHandler, excelToolNames } from "@packages/shared";
 import {
 	DefaultChatTransport,
 	lastAssistantMessageIsCompleteWithApprovalResponses,
@@ -8,7 +8,6 @@ import {
 } from "ai";
 import { server } from "@/lib/server";
 import { useAppState } from "@/lib/state";
-import { excelToolHandler } from "./excel/tools";
 import { getWorkbookState } from "./excel/workbook";
 
 export const createChat = ({ id, messages }: { id?: string; messages?: MessageType[] } = {}) => {
@@ -32,7 +31,7 @@ export const createChat = ({ id, messages }: { id?: string; messages?: MessageTy
 		onData: async (args) => {},
 		onError: async (args) => {},
 		onToolCall: async ({ toolCall }) => {
-			console.log("toolCall", toolCall);
+			// console.log("toolCall", toolCall);
 			const { toolName, toolCallId } = toolCall;
 
 			if (excelToolNames.includes(toolName)) {

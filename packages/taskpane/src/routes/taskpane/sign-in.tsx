@@ -1,10 +1,10 @@
 import { Button } from "@packages/ui/components/ui/button";
+import { cn } from "@packages/ui/lib/utils";
 import { createFileRoute, redirect, useRouter } from "@tanstack/react-router";
 import { useAuth } from "@workos-inc/authkit-react";
 import { useState } from "react";
 import { signInWithDialog } from "@/lib/auth";
 import { useAppState } from "@/lib/state";
-import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/taskpane/sign-in")({
 	component: RouteComponent,

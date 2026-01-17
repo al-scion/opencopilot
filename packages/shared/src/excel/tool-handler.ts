@@ -1,7 +1,6 @@
-import type { excelTools } from "@packages/shared";
 import type { ChatOnToolCallCallback, InferToolInput, InferToolOutput } from "ai";
+import type { excelTools } from "../tools/excel";
 import { jsonToMarkdownTable } from "./markdown";
-import { NUMBER_FORMATS } from "./style";
 
 export type ToolCall = Parameters<ChatOnToolCallCallback>[0]["toolCall"];
 

@@ -1,6 +1,6 @@
+import { cn } from "@packages/ui/lib/utils";
 import { Streamdown, type StreamdownProps } from "streamdown";
 import { handleCitation } from "@/lib/excel/navigation";
-import { cn } from "@/lib/utils";
 
 export function MarkdownText({ children, components, className, ...props }: StreamdownProps) {
 	return (

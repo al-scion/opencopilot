@@ -8,7 +8,10 @@
   "exports": {
     ".": "./src/index.ts"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "@types/custom-functions-runtime": "catalog:",
+    "@types/office-js": "catalog:"
+  },
   "dependencies": {
     "@packages/convex": "workspace:*",
     "@ai-sdk/anthropic": "catalog:",

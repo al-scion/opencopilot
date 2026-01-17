@@ -10,6 +10,7 @@ import {
 	CommandShortcut,
 } from "@packages/ui/components/ui/command";
 import { toastManager } from "@packages/ui/components/ui/toast";
+import { cn } from "@packages/ui/lib/utils";
 import { createFileRoute, redirect, useRouteContext } from "@tanstack/react-router";
 import { Document } from "@tiptap/extension-document";
 import { HardBreak } from "@tiptap/extension-hard-break";
@@ -37,7 +38,7 @@ import { ALLOWED_MIME_TYPES, MAX_FILE_SIZE } from "@/lib/constants";
 import { saveFileToStorage } from "@/lib/excel/checkpoint";
 import { useAppState } from "@/lib/state";
 import type { MentionItem } from "@/lib/types";
-import { cn, fileToDataUrl } from "@/lib/utils";
+import { fileToDataUrl } from "@/lib/utils";
 
 export const Route = createFileRoute("/taskpane/")({
 	component: RouteComponent,

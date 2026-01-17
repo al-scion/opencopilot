@@ -1,7 +1,7 @@
+import { cn } from "@packages/ui/lib/utils";
 import { createFileRoute, Outlet } from "@tanstack/react-router";
 import { initWorkbook } from "@/lib/excel/_init";
 import { useAppState } from "@/lib/state";
-import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/taskpane")({
 	component: RouteComponent,

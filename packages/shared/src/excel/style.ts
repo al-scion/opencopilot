@@ -5,7 +5,7 @@ import {
 	ExcelBorderWeight,
 	ExcelHorizontalAlignment,
 	ExcelUnderlineStyle,
-} from "@/lib/constants";
+} from "./constants";
 
 export const NUMBER_FORMATS = {
 	number: `_(* #,##0_);_(* (#,##0);_(* "-"_);_(@_)`,
@@ -16,7 +16,6 @@ export const NUMBER_FORMATS = {
 	text: undefined,
 } as const;
 export type NumberFormatEnum = keyof typeof NUMBER_FORMATS;
-export const numberFormatEnumSchema = z.enum(Object.keys(NUMBER_FORMATS) as [NumberFormatEnum]);
 
 export const BORDER_FORMATS = {
 	none: null,

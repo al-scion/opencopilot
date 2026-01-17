@@ -1,7 +1,7 @@
+import { authErrorCell, inPreviewErrorCell } from "@packages/shared";
 import { server } from "@/lib/server";
 import { useAppState } from "@/lib/state";
 import { getCellValueCard } from "./cards";
-import { authErrorCell, inPreviewErrorCell } from "./cell-value";
 
 export const memoize = <T extends (...args: any[]) => any>(fn: T): ((...args: Parameters<T>) => Promise<void>) => {
 	const cache = new Map<string, any>();
@@ -58,10 +58,6 @@ export const memoize = <T extends (...args: any[]) => any>(fn: T): ((...args: Pa
 			inFlight.delete(cacheString);
 		}
 	};
-};
-
-export const testFunction = async (invocation: CustomFunctions.Invocation) => {
-	return [[inPreviewErrorCell]];
 };
 
 export const generateText = async (prompt: string, model: string | null, signal: AbortSignal) => {
