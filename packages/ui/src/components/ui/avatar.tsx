@@ -17,11 +17,7 @@ function Avatar({ className, ...props }: AvatarPrimitive.Root.Props) {
 
 function AvatarImage({ className, ...props }: AvatarPrimitive.Image.Props) {
 	return (
-		<AvatarPrimitive.Image
-			className={cn("size-full object-cover", className)}
-			data-slot="avatar-image"
-			{...props}
-		/>
+		<AvatarPrimitive.Image className={cn("size-full object-cover", className)} data-slot="avatar-image" {...props} />
 	);
 }
 

@@ -16,7 +16,7 @@ function RouteComponent() {
 	return (
 		<div
 			className={cn(
-				"flex h-dvh flex-col p-1.5",
+				"flex h-dvh w-full flex-col p-1.5",
 				officePlatform === "mac" && "bg-taskpane-background-mac",
 				officePlatform === "web" && "bg-taskpane-background-web",
 				officePlatform === "windows" && "bg-taskpane-background-windows"

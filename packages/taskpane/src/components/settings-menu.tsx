@@ -7,38 +7,29 @@ import {
 } from "@packages/ui/components/ui/dropdown-menu";
 import { cn } from "@packages/ui/lib/utils";
 import { useRouter } from "@tanstack/react-router";
-import { Ellipsis, Keyboard, LogOut, Settings } from "lucide-react";
+import { useAuth } from "@workos-inc/authkit-react";
+import { CircleUserRoundIcon, Ellipsis, Keyboard, LogInIcon, LogOut, Settings } from "lucide-react";
 import { getShortcutString, useShortcut } from "@/lib/browser-shortcuts";
 import { useAppState } from "@/lib/state";
 import { TooltipButton } from "./tooltip-button";
 
 export function SettingsMenu() {
+	const { signOut, signIn, user } = useAuth();
 	const router = useRouter();
 	const { editor, settingsMenuOpen } = useAppState();
 
 	const handleOpenSettings = () => {
-		Office.context.ui.displayDialogAsync(
-			router.buildLocation({ to: "/settings" }).url.href,
-			{
-				displayInIframe: true,
-				promptBeforeOpen: false,
-				height: 60,
-				width: 60,
-			},
-			(result) => {
-				result.value.addEventHandler(Office.EventType.DialogMessageReceived, (event) => {
-					if ("error" in event) {
-						return;
-					}
-					const message = event.message;
-				});
-			}
-		);
+		router.navigate({ to: "/taskpane/settings" });
 	};
 
-	const handleSignOut = () => {
+	const handleAuth = () => {
+		if (user) {
+			signOut({ navigate: false });
+			window.location.href = `${window.location.origin}/taskpane`;
+		} else {
+			signIn({});
+		}
 		// signOut({ navigate: false });
-		window.location.href = `${window.location.origin}/taskpane/sign-in`;
 	};
 
 	const handleOpenChange = (open: boolean) => {
@@ -89,9 +80,9 @@ export function SettingsMenu() {
 						Shortcuts
 					</DropdownMenuItem>
 					{/* <DropdownMenuSeparator /> */}
-					<DropdownMenuItem onClick={handleSignOut}>
-						<LogOut />
-						Sign out
+					<DropdownMenuItem onClick={handleAuth}>
+						{user ? <LogOut /> : <CircleUserRoundIcon />}
+						{user ? "Sign out" : "Sign in"}
 					</DropdownMenuItem>
 				</DropdownMenuGroup>
 			</DropdownMenuContent>

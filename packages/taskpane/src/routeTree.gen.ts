@@ -10,25 +10,16 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as TaskpaneRouteRouteImport } from './routes/taskpane/route'
-import { Route as SettingsRouteRouteImport } from './routes/settings/route'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as TaskpaneIndexRouteImport } from './routes/taskpane/index'
-import { Route as SettingsIndexRouteImport } from './routes/settings/index'
 import { Route as TaskpaneSignInRouteImport } from './routes/taskpane/sign-in'
-import { Route as SettingsProfileRouteImport } from './routes/settings/profile'
-import { Route as SettingsFormatRouteImport } from './routes/settings/format'
-import { Route as SettingsSplatRouteImport } from './routes/settings/$'
+import { Route as TaskpaneSettingsRouteImport } from './routes/taskpane/settings'
 import { Route as AuthRedirectRouteImport } from './routes/auth/redirect'
 import { Route as AuthCallbackRouteImport } from './routes/auth/callback'
 
 const TaskpaneRouteRoute = TaskpaneRouteRouteImport.update({
   id: '/taskpane',
   path: '/taskpane',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const SettingsRouteRoute = SettingsRouteRouteImport.update({
-  id: '/settings',
-  path: '/settings',
   getParentRoute: () => rootRouteImport,
 } as any)
 const IndexRoute = IndexRouteImport.update({
@@ -41,30 +32,15 @@ const TaskpaneIndexRoute = TaskpaneIndexRouteImport.update({
   path: '/',
   getParentRoute: () => TaskpaneRouteRoute,
 } as any)
-const SettingsIndexRoute = SettingsIndexRouteImport.update({
-  id: '/',
-  path: '/',
-  getParentRoute: () => SettingsRouteRoute,
-} as any)
 const TaskpaneSignInRoute = TaskpaneSignInRouteImport.update({
   id: '/sign-in',
   path: '/sign-in',
   getParentRoute: () => TaskpaneRouteRoute,
 } as any)
-const SettingsProfileRoute = SettingsProfileRouteImport.update({
-  id: '/profile',
-  path: '/profile',
-  getParentRoute: () => SettingsRouteRoute,
-} as any)
-const SettingsFormatRoute = SettingsFormatRouteImport.update({
-  id: '/format',
-  path: '/format',
-  getParentRoute: () => SettingsRouteRoute,
-} as any)
-const SettingsSplatRoute = SettingsSplatRouteImport.update({
-  id: '/$',
-  path: '/$',
-  getParentRoute: () => SettingsRouteRoute,
+const TaskpaneSettingsRoute = TaskpaneSettingsRouteImport.update({
+  id: '/settings',
+  path: '/settings',
+  getParentRoute: () => TaskpaneRouteRoute,
 } as any)
 const AuthRedirectRoute = AuthRedirectRouteImport.update({
   id: '/auth/redirect',
@@ -79,85 +55,62 @@ const AuthCallbackRoute = AuthCallbackRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/settings': typeof SettingsRouteRouteWithChildren
   '/taskpane': typeof TaskpaneRouteRouteWithChildren
   '/auth/callback': typeof AuthCallbackRoute
   '/auth/redirect': typeof AuthRedirectRoute
-  '/settings/$': typeof SettingsSplatRoute
-  '/settings/format': typeof SettingsFormatRoute
-  '/settings/profile': typeof SettingsProfileRoute
+  '/taskpane/settings': typeof TaskpaneSettingsRoute
   '/taskpane/sign-in': typeof TaskpaneSignInRoute
-  '/settings/': typeof SettingsIndexRoute
   '/taskpane/': typeof TaskpaneIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth/callback': typeof AuthCallbackRoute
   '/auth/redirect': typeof AuthRedirectRoute
-  '/settings/$': typeof SettingsSplatRoute
-  '/settings/format': typeof SettingsFormatRoute
-  '/settings/profile': typeof SettingsProfileRoute
+  '/taskpane/settings': typeof TaskpaneSettingsRoute
   '/taskpane/sign-in': typeof TaskpaneSignInRoute
-  '/settings': typeof SettingsIndexRoute
   '/taskpane': typeof TaskpaneIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
-  '/settings': typeof SettingsRouteRouteWithChildren
   '/taskpane': typeof TaskpaneRouteRouteWithChildren
   '/auth/callback': typeof AuthCallbackRoute
   '/auth/redirect': typeof AuthRedirectRoute
-  '/settings/$': typeof SettingsSplatRoute
-  '/settings/format': typeof SettingsFormatRoute
-  '/settings/profile': typeof SettingsProfileRoute
+  '/taskpane/settings': typeof TaskpaneSettingsRoute
   '/taskpane/sign-in': typeof TaskpaneSignInRoute
-  '/settings/': typeof SettingsIndexRoute
   '/taskpane/': typeof TaskpaneIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
-    | '/settings'
     | '/taskpane'
     | '/auth/callback'
     | '/auth/redirect'
-    | '/settings/$'
-    | '/settings/format'
-    | '/settings/profile'
+    | '/taskpane/settings'
     | '/taskpane/sign-in'
-    | '/settings/'
     | '/taskpane/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/auth/callback'
     | '/auth/redirect'
-    | '/settings/$'
-    | '/settings/format'
-    | '/settings/profile'
+    | '/taskpane/settings'
     | '/taskpane/sign-in'
-    | '/settings'
     | '/taskpane'
   id:
     | '__root__'
     | '/'
-    | '/settings'
     | '/taskpane'
     | '/auth/callback'
     | '/auth/redirect'
-    | '/settings/$'
-    | '/settings/format'
-    | '/settings/profile'
+    | '/taskpane/settings'
     | '/taskpane/sign-in'
-    | '/settings/'
     | '/taskpane/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  SettingsRouteRoute: typeof SettingsRouteRouteWithChildren
   TaskpaneRouteRoute: typeof TaskpaneRouteRouteWithChildren
   AuthCallbackRoute: typeof AuthCallbackRoute
   AuthRedirectRoute: typeof AuthRedirectRoute
@@ -170,13 +123,6 @@ declare module '@tanstack/react-router' {
       path: '/taskpane'
       fullPath: '/taskpane'
       preLoaderRoute: typeof TaskpaneRouteRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/settings': {
-      id: '/settings'
-      path: '/settings'
-      fullPath: '/settings'
-      preLoaderRoute: typeof SettingsRouteRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/': {
@@ -193,13 +139,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof TaskpaneIndexRouteImport
       parentRoute: typeof TaskpaneRouteRoute
     }
-    '/settings/': {
-      id: '/settings/'
-      path: '/'
-      fullPath: '/settings/'
-      preLoaderRoute: typeof SettingsIndexRouteImport
-      parentRoute: typeof SettingsRouteRoute
-    }
     '/taskpane/sign-in': {
       id: '/taskpane/sign-in'
       path: '/sign-in'
@@ -207,26 +146,12 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof TaskpaneSignInRouteImport
       parentRoute: typeof TaskpaneRouteRoute
     }
-    '/settings/profile': {
-      id: '/settings/profile'
-      path: '/profile'
-      fullPath: '/settings/profile'
-      preLoaderRoute: typeof SettingsProfileRouteImport
-      parentRoute: typeof SettingsRouteRoute
-    }
-    '/settings/format': {
-      id: '/settings/format'
-      path: '/format'
-      fullPath: '/settings/format'
-      preLoaderRoute: typeof SettingsFormatRouteImport
-      parentRoute: typeof SettingsRouteRoute
-    }
-    '/settings/$': {
-      id: '/settings/$'
-      path: '/$'
-      fullPath: '/settings/$'
-      preLoaderRoute: typeof SettingsSplatRouteImport
-      parentRoute: typeof SettingsRouteRoute
+    '/taskpane/settings': {
+      id: '/taskpane/settings'
+      path: '/settings'
+      fullPath: '/taskpane/settings'
+      preLoaderRoute: typeof TaskpaneSettingsRouteImport
+      parentRoute: typeof TaskpaneRouteRoute
     }
     '/auth/redirect': {
       id: '/auth/redirect'
@@ -245,30 +170,14 @@ declare module '@tanstack/react-router' {
   }
 }
 
-interface SettingsRouteRouteChildren {
-  SettingsSplatRoute: typeof SettingsSplatRoute
-  SettingsFormatRoute: typeof SettingsFormatRoute
-  SettingsProfileRoute: typeof SettingsProfileRoute
-  SettingsIndexRoute: typeof SettingsIndexRoute
-}
-
-const SettingsRouteRouteChildren: SettingsRouteRouteChildren = {
-  SettingsSplatRoute: SettingsSplatRoute,
-  SettingsFormatRoute: SettingsFormatRoute,
-  SettingsProfileRoute: SettingsProfileRoute,
-  SettingsIndexRoute: SettingsIndexRoute,
-}
-
-const SettingsRouteRouteWithChildren = SettingsRouteRoute._addFileChildren(
-  SettingsRouteRouteChildren,
-)
-
 interface TaskpaneRouteRouteChildren {
+  TaskpaneSettingsRoute: typeof TaskpaneSettingsRoute
   TaskpaneSignInRoute: typeof TaskpaneSignInRoute
   TaskpaneIndexRoute: typeof TaskpaneIndexRoute
 }
 
 const TaskpaneRouteRouteChildren: TaskpaneRouteRouteChildren = {
+  TaskpaneSettingsRoute: TaskpaneSettingsRoute,
   TaskpaneSignInRoute: TaskpaneSignInRoute,
   TaskpaneIndexRoute: TaskpaneIndexRoute,
 }
@@ -279,7 +188,6 @@ const TaskpaneRouteRouteWithChildren = TaskpaneRouteRoute._addFileChildren(
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  SettingsRouteRoute: SettingsRouteRouteWithChildren,
   TaskpaneRouteRoute: TaskpaneRouteRouteWithChildren,
   AuthCallbackRoute: AuthCallbackRoute,
   AuthRedirectRoute: AuthRedirectRoute,

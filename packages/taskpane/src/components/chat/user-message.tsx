@@ -18,7 +18,7 @@ export function UserMessage({ message }: { message: MessageType }) {
 
 	const { mutate: undoChanges, isPending } = useMutation({
 		mutationFn: restoreCheckpoint,
-		onSuccess: () => toastManager.add({ title: "Changes undone", timeout: 500 }),
+		onSuccess: () => toastManager.add({ title: "Changes undone", timeout: 1000 }),
 	});
 
 	const editor = useEditor({

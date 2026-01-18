@@ -1,13 +1,7 @@
 import { Toast } from "@base-ui/react/toast";
-import {
-	CircleAlertIcon,
-	CircleCheckIcon,
-	InfoIcon,
-	LoaderCircleIcon,
-	TriangleAlertIcon,
-} from "lucide-react";
 import { buttonVariants } from "@packages/ui/components/ui/button";
 import { cn } from "@packages/ui/lib/utils";
+import { CircleAlertIcon, CircleCheckIcon, InfoIcon, LoaderCircleIcon, TriangleAlertIcon } from "lucide-react";
 
 const toastManager = Toast.createToastManager();
 
@@ -19,13 +13,7 @@ const TOAST_ICONS = {
 	warning: TriangleAlertIcon,
 } as const;
 
-type ToastPosition =
-	| "top-left"
-	| "top-center"
-	| "top-right"
-	| "bottom-left"
-	| "bottom-center"
-	| "bottom-right";
+type ToastPosition = "top-left" | "top-center" | "top-right" | "bottom-left" | "bottom-center" | "bottom-right";
 
 interface ToastProviderProps extends Toast.Provider.Props {
 	position?: ToastPosition;
@@ -55,7 +43,7 @@ function ToastList({ position = "bottom-right" }: { position: ToastPosition }) {
 					// Horizontal positioning
 					"data-[position*=left]:left-(--toast-inset)",
 					"data-[position*=right]:right-(--toast-inset)",
-					"data-[position*=center]:-translate-x-1/2 data-[position*=center]:left-1/2"
+					"data-[position*=center]:left-1/2 data-[position*=center]:-translate-x-1/2"
 				)}
 				data-position={position}
 				data-slot="toast-viewport"
@@ -131,10 +119,7 @@ function ToastList({ position = "bottom-right" }: { position: ToastPosition }) {
 
 									<div className="flex flex-col gap-0.5">
 										<Toast.Title className="font-medium" data-slot="toast-title" />
-										<Toast.Description
-											className="text-muted-foreground"
-											data-slot="toast-description"
-										/>
+										<Toast.Description className="text-muted-foreground" data-slot="toast-description" />
 									</div>
 								</div>
 								{toast.actionProps && (

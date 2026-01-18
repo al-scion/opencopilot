@@ -36,6 +36,7 @@ export const chatRouter = new Hono<{ Variables: Variables }>().post("/", async (
 
 	const agentContext: AgentContext = {
 		chatId,
+		convex: c.var.convex,
 	};
 
 	const stream = createUIMessageStream<MessageType>({

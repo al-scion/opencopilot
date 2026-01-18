@@ -13,7 +13,6 @@ export const excelToolHandler = async (toolCall: ToolCall) => {
 			{ delayForCellEdit: true, mergeUndoGroup: true },
 			async (context): Promise<InferToolOutput<typeof excelTools.editRange>> => {
 				const range = context.workbook.worksheets.getItem(input.worksheet).getRange(input.address);
-				// const numberFormat = input.numberFormats.map((row) => row.map((format) => NUMBER_FORMATS[format]));
 				range.set({ values: input.values });
 				range.load({ text: true });
 				await context.sync();

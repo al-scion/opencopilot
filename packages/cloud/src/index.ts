@@ -23,7 +23,7 @@ const app = new Hono<{ Bindings: Env; Variables: Variables }>()
 	.use(logger())
 	.use(prettyJSON({ force: true }))
 	.use(async (c, next) => {
-		c.set("convex", new ConvexHttpClient(c.env.CONVEX_URL));
+		c.set("convex", new ConvexHttpClient(c.env.CONVEX_URL, {}));
 		await next();
 	})
 	.get("/health", describeRoute({}), (c) => c.json({ status: "OK" }))

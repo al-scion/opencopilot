@@ -20,7 +20,7 @@ import { Text } from "@tiptap/extension-text";
 import { Placeholder } from "@tiptap/extensions";
 import { EditorContent, type Range, useEditor, useEditorState } from "@tiptap/react";
 import type { FileUIPart } from "ai";
-import { ArrowUp, AtSign, Paperclip, Plus, SquareMousePointer, Table2 } from "lucide-react";
+import { ArrowUp, Paperclip, Plus, SquareMousePointer, Table2 } from "lucide-react";
 import { useRef, useState } from "react";
 import { StickToBottom } from "use-stick-to-bottom";
 import { AssistantMessage } from "@/components/chat/assistant-message";

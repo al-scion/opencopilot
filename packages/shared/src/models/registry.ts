@@ -32,4 +32,4 @@ export const defaultProviderOptions: ProviderOptions = {
 	},
 };
 
-export type ModelId = Parameters<typeof modelRegistry.languageModel>[0];
+// export type ModelId = Parameters<typeof modelRegistry.languageModel>[0];

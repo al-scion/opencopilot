@@ -15,7 +15,6 @@ interface TooltipButtonProps extends React.ComponentProps<"button">, VariantProp
 export function TooltipButton({
 	children,
 	tooltip,
-	className,
 	tooltipDisabled,
 	tooltipAlign,
 	shortcutKeys,
@@ -23,13 +22,7 @@ export function TooltipButton({
 }: TooltipButtonProps) {
 	return (
 		<Tooltip>
-			<TooltipTrigger
-				render={
-					<Button className={className} {...props}>
-						{children}
-					</Button>
-				}
-			/>
+			<TooltipTrigger render={<Button {...props}>{children}</Button>} />
 			{tooltip && !tooltipDisabled && (
 				<TooltipContent align={tooltipAlign} className="min-h-fit gap-1.5 rounded-sm py-1">
 					<span className="font-light">{tooltip}</span>

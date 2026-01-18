@@ -7,7 +7,6 @@ import { useAppState } from "@/lib/state";
 export const initWorkbook = async () => {
 	// First, wait for the office to be ready and execute
 	Office.addin.showAsTaskpane().then(() => useAppState.setState({ taskpaneOpen: true }));
-	Office.addin.setStartupBehavior(Office.StartupBehavior.load);
 
 	const officePlatformMap = {
 		[Office.PlatformType.Mac]: "mac",
@@ -20,7 +19,7 @@ export const initWorkbook = async () => {
 		documentUrl: Office.context.document.url,
 		officePlatform: officePlatformMap[Office.context.platform] ?? "web",
 		isDarkTheme: Office.context.officeTheme?.isDarkTheme ?? false,
-		loadOnStartup: true,
+		loadOnStartup: await Office.addin.getStartupBehavior().then((value) => value === Office.StartupBehavior.load),
 	});
 
 	registerNamedRange();

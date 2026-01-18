@@ -1,13 +1,8 @@
 import { Input as InputPrimitive } from "@base-ui/react/input";
+import { cn } from "@packages/ui/lib/utils";
 import type * as React from "react";
 
-import { cn } from "@packages/ui/lib/utils";
-
-function Input({
-	className,
-	type,
-	...props
-}: InputPrimitive.Props & React.RefAttributes<HTMLInputElement>) {
+function Input({ className, type, ...props }: InputPrimitive.Props & React.RefAttributes<HTMLInputElement>) {
 	return (
 		<InputPrimitive
 			className={cn(

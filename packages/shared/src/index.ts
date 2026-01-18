@@ -10,7 +10,6 @@ export * from "./excel/tool-handler";
 export * from "./message";
 export * from "./models/registry";
 export * from "./prompt";
-export * from "./styles/number-format";
 export * from "./tools/excel";
 export * from "./tools/registry";
 export * from "./tools/todo";

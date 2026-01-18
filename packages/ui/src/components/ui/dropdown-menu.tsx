@@ -1,7 +1,6 @@
 import { Menu as MenuPrimitive } from "@base-ui/react/menu";
-import { CheckIcon, ChevronRightIcon } from "lucide-react";
-import type * as React from "react";
 import { cn } from "@packages/ui/lib/utils";
+import { CheckIcon, ChevronRightIcon } from "lucide-react";
 
 function DropdownMenu({ ...props }: MenuPrimitive.Root.Props) {
 	return <MenuPrimitive.Root data-slot="dropdown-menu" {...props} />;
@@ -22,8 +21,7 @@ function DropdownMenuContent({
 	sideOffset = 4,
 	className,
 	...props
-}: MenuPrimitive.Popup.Props &
-	Pick<MenuPrimitive.Positioner.Props, "align" | "alignOffset" | "side" | "sideOffset">) {
+}: MenuPrimitive.Popup.Props & Pick<MenuPrimitive.Positioner.Props, "align" | "alignOffset" | "side" | "sideOffset">) {
 	return (
 		<MenuPrimitive.Portal>
 			<MenuPrimitive.Positioner
@@ -59,10 +57,7 @@ function DropdownMenuLabel({
 }) {
 	return (
 		<MenuPrimitive.GroupLabel
-			className={cn(
-				"px-1.5 py-1 font-medium text-muted-foreground text-xs data-inset:pl-8",
-				className
-			)}
+			className={cn("px-1.5 py-1 font-medium text-muted-foreground text-xs data-inset:pl-8", className)}
 			data-inset={inset}
 			data-slot="dropdown-menu-label"
 			{...props}
@@ -146,12 +141,7 @@ function DropdownMenuSubContent({
 	);
 }
 
-function DropdownMenuCheckboxItem({
-	className,
-	children,
-	checked,
-	...props
-}: MenuPrimitive.CheckboxItem.Props) {
+function DropdownMenuCheckboxItem({ className, children, checked, ...props }: MenuPrimitive.CheckboxItem.Props) {
 	return (
 		<MenuPrimitive.CheckboxItem
 			checked={checked}

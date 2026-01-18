@@ -1,10 +1,7 @@
 {
   "extends": "../../tsconfig.json",
   "compilerOptions": {
-    "types": ["custom-functions-runtime", "office-js"],
-    "paths": {
-      "@packages/convex": ["../../packages/convex"]
-    }
+    "types": ["custom-functions-runtime", "office-js", "excel"]
   },
   "exclude": ["node_modules"]
 }
