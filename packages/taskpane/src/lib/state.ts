@@ -1,10 +1,12 @@
 import type { Chat } from "@ai-sdk/react";
 import type { MessageType } from "@packages/shared";
 import { type AgentConfig, initialAgentConfig } from "@packages/shared";
+import type { createChatClientOptions } from "@tanstack/ai-react";
 import type { Editor } from "@tiptap/react";
 import type { useAuth } from "@workos-inc/authkit-react";
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
+import { createChat, createTanstackChat } from "./chat";
 import type { WorkbookMetadata } from "./excel/metadata";
 
 type WorkbookConfig = {
@@ -30,6 +32,7 @@ export type AppState = {
 	taskpaneOpen: boolean;
 
 	chat: Chat<MessageType>;
+	tanstackChat: ReturnType<typeof createChatClientOptions>;
 	auth: ReturnType<typeof useAuth>;
 
 	// Agent speicific state
@@ -55,7 +58,8 @@ export const useAppState = create<AppState>()(
 			chatHistoryOpen: false,
 			taskpaneOpen: false,
 
-			chat: undefined!,
+			chat: createChat(),
+			tanstackChat: createTanstackChat(),
 			auth: undefined!,
 
 			agentConfig: initialAgentConfig,

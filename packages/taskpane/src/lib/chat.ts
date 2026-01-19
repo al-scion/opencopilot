@@ -1,5 +1,7 @@
 import { Chat } from "@ai-sdk/react";
 import { excelToolHandler, excelToolNames, type MessageType } from "@packages/shared";
+import type { UIMessage } from "@tanstack/ai-react";
+import { createChatClientOptions, fetchServerSentEvents } from "@tanstack/ai-react";
 import {
 	DefaultChatTransport,
 	lastAssistantMessageIsCompleteWithApprovalResponses,
@@ -8,6 +10,16 @@ import {
 import { server } from "@/lib/server";
 import { useAppState } from "@/lib/state";
 import { getWorkbookState } from "./excel/workbook";
+
+export const createTanstackChat = ({ id, messages }: { id?: string; messages?: UIMessage[] } = {}) => {
+	const chatOptions = createChatClientOptions({
+		id: id ?? crypto.randomUUID(),
+		initialMessages: messages ?? [],
+		connection: fetchServerSentEvents(server.chat.$url().href),
+		tools: [],
+	});
+	return chatOptions;
+};
 
 export const createChat = ({ id, messages }: { id?: string; messages?: MessageType[] } = {}) => {
 	const chat = new Chat<MessageType>({
@@ -52,10 +64,6 @@ export const createChat = ({ id, messages }: { id?: string; messages?: MessageTy
 			}
 		},
 	});
-
-	console.log("created new chat", chat.id);
-
-	useAppState.setState({ chat });
 
 	return chat;
 };

@@ -8,7 +8,7 @@ import {
 import { cn } from "@packages/ui/lib/utils";
 import { useRouter } from "@tanstack/react-router";
 import { useAuth } from "@workos-inc/authkit-react";
-import { CircleUserRoundIcon, Ellipsis, Keyboard, LogInIcon, LogOut, Settings } from "lucide-react";
+import { CircleUserRoundIcon, Ellipsis, Keyboard, LogOut, Settings } from "lucide-react";
 import { getShortcutString, useShortcut } from "@/lib/browser-shortcuts";
 import { useAppState } from "@/lib/state";
 import { TooltipButton } from "./tooltip-button";

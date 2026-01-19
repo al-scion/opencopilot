@@ -13,7 +13,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTrigger } from "@packages/ui
 import { Kbd } from "@packages/ui/components/ui/kbd";
 import { cn } from "@packages/ui/lib/utils";
 import { useQueryClient } from "@tanstack/react-query";
-import { ArrowUpDown, ChevronDown, History } from "lucide-react";
+import { ArrowDownIcon, ArrowUpDown, ArrowUpIcon, ChevronDown, CornerDownLeft, History } from "lucide-react";
 import { getShortcutString, useShortcut } from "@/lib/browser-shortcuts";
 import { createChat } from "@/lib/chat";
 import { getMessages, useGetChats } from "@/lib/convex";
@@ -25,8 +25,7 @@ export function ChatHistory() {
 	const queryClient = useQueryClient();
 	const { workbookMetadata, chatHistoryOpen, chat, editor } = useAppState();
 	const { data: chats, isLoading } = useGetChats(workbookMetadata.documentId);
-	const currentChatTitle = chats?.find((item) => item.chatId === chat.id)?.title ?? "New chat";
-	// const [value, setValue] = useState("");
+	// const currentChatTitle = chats?.find((item) => item.chatId === chat.id)?.title ?? "New chat";
 
 	const handleOpenChange = (open: boolean) => {
 		useAppState.setState({ chatHistoryOpen: open });
@@ -93,14 +92,19 @@ export function ChatHistory() {
 				</Command>
 				<div className="absolute inset-x-0 bottom-0 z-20 flex items-center gap-3 rounded-b-xl border-t bg-muted px-3 py-2 text-foreground text-xs">
 					<div className="flex items-center gap-1.5">
-						<Kbd className="border bg-background p-0.5 text-foreground shadow-xs">
-							<ArrowUpDown strokeWidth={2.1} />
+						<Kbd className="size-5 rounded-xs border bg-background text-muted-foreground">
+							<ArrowUpIcon />
 						</Kbd>
-						Navigate
+						<Kbd className="-ml-1 size-5 rounded-xs border bg-background text-muted-foreground">
+							<ArrowDownIcon />
+						</Kbd>
+						<span className="text-muted-foreground">Navigate</span>
 					</div>
 					<div className="flex items-center gap-1.5">
-						<Kbd className="border bg-background p-0.5 font-normal text-foreground shadow-xs">⏎</Kbd>
-						Select
+						<Kbd className="size-5 rounded-xs border bg-background text-muted-foreground">
+							<CornerDownLeft />
+						</Kbd>
+						<span className="text-muted-foreground">Select</span>
 					</div>
 				</div>
 			</DialogContent>

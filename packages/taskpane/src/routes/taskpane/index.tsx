@@ -11,6 +11,7 @@ import {
 } from "@packages/ui/components/ui/command";
 import { toastManager } from "@packages/ui/components/ui/toast";
 import { cn } from "@packages/ui/lib/utils";
+import { fetchServerSentEvents, useChat as useTanstackChat } from "@tanstack/ai-react";
 import { createFileRoute, redirect, useRouteContext } from "@tanstack/react-router";
 import { Document } from "@tiptap/extension-document";
 import { HardBreak } from "@tiptap/extension-hard-break";
@@ -36,27 +37,25 @@ import { getShortcutString, useShortcut } from "@/lib/browser-shortcuts";
 import { createChat } from "@/lib/chat";
 import { ALLOWED_MIME_TYPES, MAX_FILE_SIZE } from "@/lib/constants";
 import { saveFileToStorage } from "@/lib/excel/checkpoint";
+import { server } from "@/lib/server";
 import { useAppState } from "@/lib/state";
 import type { MentionItem } from "@/lib/types";
 import { fileToDataUrl } from "@/lib/utils";
 
 export const Route = createFileRoute("/taskpane/")({
 	component: RouteComponent,
-	beforeLoad: async ({ context }) => {
-		// if (context.auth.user === null) {
-		// 	throw redirect({ to: "/taskpane/sign-in" });
-		// }
-		createChat();
-	},
+	beforeLoad: async ({ context }) => {},
 });
 
 function RouteComponent() {
 	const [query, setQuery] = useState<string | null>(null);
 	const [queryRange, setQueryRange] = useState<Range | null>(null);
 	const commandInputRef = useRef<HTMLInputElement>(null);
-	const { chat, workbookState, workbookConfig } = useAppState();
+	const { chat, workbookState, tanstackChat } = useAppState();
 	const activeRange = workbookState.activeRange;
-	const officePlatform = workbookConfig.officePlatform;
+
+	// const { append, messages, stop, error, isLoading } = useTanstackChat(tanstackChat);
+	const { sendMessage, messages, status, stop, error, id } = useChat({ chat });
 
 	const fileInputRef = useRef<HTMLInputElement>(null);
 	const [uploadedFiles, setUploadedFiles] = useState<FileUIPart[]>([]);
@@ -87,9 +86,8 @@ function RouteComponent() {
 		event.target.value = "";
 	};
 
-	const { id: chatId, sendMessage, messages, status, stop, error } = useChat({ chat });
 	const newChat = () => {
-		messages.length > 0 && createChat();
+		messages.length > 0 && useAppState.setState({ chat: createChat() });
 		editor.commands.clearContent();
 		setUploadedFiles([]);
 		editor.commands.focus();
@@ -232,9 +230,6 @@ function RouteComponent() {
 				},
 			},
 			onMount: ({ editor }) => {
-				useAppState.setState({ editor });
-			},
-			onBeforeCreate: ({ editor }) => {
 				useAppState.setState({ editor });
 			},
 			onCreate: ({ editor }) => {
