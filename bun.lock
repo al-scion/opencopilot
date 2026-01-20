@@ -92,6 +92,7 @@
         "ai": "catalog:",
         "convex": "catalog:",
         "convex-helpers": "^0.1.111",
+        "hono": "^4.11.4",
         "zod": "catalog:",
       },
       "devDependencies": {

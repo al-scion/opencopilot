@@ -23,6 +23,7 @@
     "ai": "catalog:",
     "convex": "catalog:",
     "convex-helpers": "^0.1.111",
+    "hono": "catalog:",
     "zod": "catalog:"
   }
 }
