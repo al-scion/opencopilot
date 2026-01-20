@@ -7,7 +7,7 @@ import { action } from "../_generated/server";
 
 export const generateTitle = action({
 	args: {
-		chatInternalId: v.id("chat"),
+		chatId: v.string(),
 		message: v.any(),
 	},
 	handler: async (ctx, args) => {
@@ -16,10 +16,11 @@ export const generateTitle = action({
 			system: generateTitlePrompt,
 			messages: await convertToModelMessages([args.message]),
 		});
+		const title = response.text;
 
 		await ctx.runMutation(api.chat.functions.updateChat, {
-			chatInternalId: args.chatInternalId,
-			title: response.text,
+			chatId: args.chatId,
+			title,
 		});
 	},
 });

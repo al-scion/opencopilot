@@ -41,8 +41,6 @@ export const customFunctionsDefinitions = [
 	id: string;
 	description?: string;
 	parameters: CustomFunctionsConfig["functions"][number]["parameters"];
-	// options: CustomFunctionsConfig["functions"][number]["options"];
-	// result: CustomFunctionsConfig["functions"][number]["result"];
 	action: Function;
 }[];
 
@@ -96,18 +94,14 @@ export const getShortcutsConfig = (): ShortcutsConfig => {
 	};
 };
 
-export const registerCustomFunctionsAndShortcuts = () => {
-	// Register custom functions
+export const registerCustomFunctions = () => {
 	CustomFunctions.associate(
 		Object.fromEntries(customFunctionsDefinitions.map((item) => [item.id, memoize(item.action)]))
 	);
+};
 
-	// Register shortcuts
+export const registerShortcuts = () => {
 	shortcutsDefinitions.forEach((item) => {
 		Office.actions.associate(item.id, item.action);
 	});
-
-	Office.actions.getShortcuts().then((shortcuts) => console.log("registered shortcuts", shortcuts));
-
-	console.log("Custom functions and shortcuts registered");
 };

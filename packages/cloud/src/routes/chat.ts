@@ -33,7 +33,7 @@ export const chatRouter = new Hono<{ Bindings: Env; Variables: Variables }>()
 		c.var.convex.mutation(api.chat.functions.saveChat, {
 			chatId,
 			message: lastMessage,
-			namespace: workbook.metadata.documentId,
+			namespace: workbook.metadata.id,
 		});
 
 		const agentContext: AgentContext = {
@@ -64,7 +64,12 @@ export const chatRouter = new Hono<{ Bindings: Env; Variables: Variables }>()
 						originalMessages: messages,
 						sendSources: true,
 						generateMessageId: () => (isToolCallResponse ? lastMessage.id : crypto.randomUUID()),
-						onFinish: async (props) => {},
+						onFinish: async (props) => {
+							await c.var.convex.mutation(api.chat.functions.saveMessage, {
+								chatId,
+								message: props.responseMessage,
+							});
+						},
 						messageMetadata: ({ part }) => {
 							if (part.type === "start-step") {
 								return { startTime: Date.now() };

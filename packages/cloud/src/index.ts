@@ -4,6 +4,7 @@ import { Scalar } from "@scalar/hono-api-reference";
 import { ConvexHttpClient } from "convex/browser";
 import { Hono } from "hono";
 import { cors } from "hono/cors";
+import { jwk } from "hono/jwk";
 import { logger } from "hono/logger";
 import { prettyJSON } from "hono/pretty-json";
 import type { JWTPayload } from "hono/utils/jwt/types";
@@ -22,17 +23,21 @@ const app = new Hono<{ Bindings: Env; Variables: Variables }>()
 	.use(cors({ origin: "*" }))
 	.use(logger())
 	.use(prettyJSON({ force: true }))
+	// .use(jwk({ jwks_uri: `https://api.workos.com/sso/jwks/${process.env.WORKOS_CLIENT_ID}`, alg: ["RS256"] }))
 	.use(async (c, next) => {
-		c.set("convex", new ConvexHttpClient(c.env.CONVEX_URL, {}));
+		const ipAddress = c.req.header("x-real-ip") || c.req.header("cf-connecting-ip") || "";
+
+		const auth = c.req.header("Authorization")?.split(" ")[1];
+		c.set("convex", new ConvexHttpClient(c.env.CONVEX_URL, { auth }));
 		await next();
 	})
 	.get("/health", describeRoute({}), (c) => c.json({ status: "OK" }))
-	.get("/", (c) => c.redirect("/docs"))
 	.route("/storage", storageRouter)
 	.route("/chat", chatRouter)
 	.route("/office", officeRouter)
 	.route("/formulas", formulasRouter);
 
+app.get("/", (c) => c.redirect("/docs"));
 app.get("/openapi", openAPIRouteHandler(app));
 app.get("/docs", Scalar({ url: "/openapi" }));
 

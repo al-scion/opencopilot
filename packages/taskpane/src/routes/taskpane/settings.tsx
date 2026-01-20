@@ -3,12 +3,17 @@ import { Select, SelectItem, SelectPopup, SelectTrigger, SelectValue } from "@pa
 import { Switch } from "@packages/ui/components/ui/switch";
 import { Tabs, TabsList, TabsTrigger } from "@packages/ui/components/ui/tabs";
 import { createFileRoute, useRouter } from "@tanstack/react-router";
-import { ChevronLeftIcon } from "lucide-react";
+import { ChevronLeftIcon, Router } from "lucide-react";
+import { useState } from "react";
 import { TooltipButton } from "@/components/tooltip-button";
 import { useAppState } from "@/lib/state";
 
 export const Route = createFileRoute("/taskpane/settings")({
 	component: RouteComponent,
+	loader: async () => {
+		const startupBehavior = await Office.addin.getStartupBehavior();
+		return { startupBehavior };
+	},
 });
 
 const options = [
@@ -18,15 +23,17 @@ const options = [
 
 function RouteComponent() {
 	const router = useRouter();
-
-	const { workbookConfig, setWorkbookConfig } = useAppState();
+	// const { workbookConfig, setWorkbookConfig } = useAppState();
+	const [loadOnStartup, setLoadOnStartup] = useState<boolean>(
+		Route.useLoaderData().startupBehavior === Office.StartupBehavior.load
+	);
 
 	const handleBack = () => {
 		router.navigate({ to: "/taskpane" });
 	};
 
 	const handleLoadBehaviourChange = (checked: boolean) => {
-		setWorkbookConfig({ loadOnStartup: checked });
+		setLoadOnStartup(checked);
 		Office.addin.setStartupBehavior(checked ? Office.StartupBehavior.load : Office.StartupBehavior.none);
 	};
 
@@ -52,7 +59,7 @@ function RouteComponent() {
 				</SelectPopup>
 			</Select> */}
 
-			<Tabs defaultValue={options[0].value}>
+			<Tabs defaultValue={options[0]!.value}>
 				<TabsList className="rounded-md p-0" variant="default">
 					{options.map(({ value, label }) => (
 						<TabsTrigger className={"h-7 px-1.5 font-normal text-sm"} key={value} value={value}>
@@ -69,11 +76,7 @@ function RouteComponent() {
 							<span className="">Load behaviour</span>
 							<span className="font-light text-muted-foreground text-xs">Launch automatically on startup</span>
 						</div>
-						<Switch
-							checked={workbookConfig.loadOnStartup}
-							className="ml-auto"
-							onCheckedChange={handleLoadBehaviourChange}
-						/>
+						<Switch checked={loadOnStartup} className="ml-auto" onCheckedChange={handleLoadBehaviourChange} />
 					</CardContentItem>
 				</CardContent>
 			</Card>

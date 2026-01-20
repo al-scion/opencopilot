@@ -12,13 +12,13 @@ import { cn } from "@packages/ui/lib/utils";
 import { Check } from "lucide-react";
 import { TooltipButton } from "@/components/tooltip-button";
 import { getShortcutString, useShortcut } from "@/lib/browser-shortcuts";
-import { useAppState } from "@/lib/state";
+import { useAgentConfig, useAppState } from "@/lib/state";
 
 export function ModelMenu() {
 	const { editor, modelMenuOpen } = useAppState();
-	const { agentConfig, setAgentConfig } = useAppState();
-	const setModel = (modelId: LanguageModelId) => setAgentConfig({ model: modelId });
-	const selectedModel = LANGUAGE_MODELS.find((model) => model.id === agentConfig.model)!;
+	const { model } = useAgentConfig();
+	const handleSetModel = (modelId: LanguageModelId) => useAgentConfig.setState({ model: modelId });
+	const selectedModel = LANGUAGE_MODELS.find((m) => m.id === model)!;
 
 	useShortcut({ name: "toggleModel", action: () => handleOpenChange(!modelMenuOpen) });
 
@@ -58,16 +58,15 @@ export function ModelMenu() {
 						WebkitMaskPosition: "center",
 					}}
 				/>
-				{/* <span className="font-light text-sm">{selectedModelData.name}</span> */}
 			</DropdownMenuTrigger>
 			<DropdownMenuContent align="center" className="w-48 min-w-fit">
 				<DropdownMenuGroup>
 					<DropdownMenuLabel>Select model</DropdownMenuLabel>
-					{LANGUAGE_MODELS.map((model) => (
-						<DropdownMenuItem key={model.id} onClick={() => setModel(model.id)}>
-							<img alt={model.name} height={16} src={model.icon} width={16} />
-							<span>{model.name}</span>
-							<DropdownMenuShortcut>{model.id === agentConfig.model && <Check />}</DropdownMenuShortcut>
+					{LANGUAGE_MODELS.map((option) => (
+						<DropdownMenuItem key={option.id} onClick={() => handleSetModel(option.id)}>
+							<img alt={option.name} height={16} src={option.icon} width={16} />
+							<span>{option.name}</span>
+							<DropdownMenuShortcut>{option.id === model && <Check />}</DropdownMenuShortcut>
 						</DropdownMenuItem>
 					))}
 				</DropdownMenuGroup>

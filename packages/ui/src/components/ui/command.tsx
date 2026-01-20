@@ -1,3 +1,4 @@
+import { Autocomplete as AutocompletePrimitive } from "@base-ui/react/autocomplete";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@packages/ui/components/ui/dialog";
 import { cn } from "@packages/ui/lib/utils";
 import { Command as CommandPrimitive } from "cmdk";

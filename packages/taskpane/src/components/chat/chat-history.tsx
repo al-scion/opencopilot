@@ -1,5 +1,3 @@
-import { convexQuery } from "@convex-dev/react-query";
-import { api } from "@packages/convex";
 import {
 	Command,
 	CommandEmpty,
@@ -13,36 +11,37 @@ import { Dialog, DialogContent, DialogHeader, DialogTrigger } from "@packages/ui
 import { Kbd } from "@packages/ui/components/ui/kbd";
 import { cn } from "@packages/ui/lib/utils";
 import { useQueryClient } from "@tanstack/react-query";
-import { ArrowDownIcon, ArrowUpDown, ArrowUpIcon, ChevronDown, CornerDownLeft, History } from "lucide-react";
+import { ArrowDownIcon, ArrowUpIcon, CornerDownLeft, History } from "lucide-react";
+import { TooltipButton } from "@/components/tooltip-button";
 import { getShortcutString, useShortcut } from "@/lib/browser-shortcuts";
 import { createChat } from "@/lib/chat";
-import { getMessages, useGetChats } from "@/lib/convex";
-import { useAppState } from "@/lib/state";
+import { getMessages, prefetchMessages, useGetChats } from "@/lib/convex";
+import { useAppState, useChatStore, useOfficeMetadata } from "@/lib/state";
 import { getRelativeTime } from "@/lib/utils";
-import { TooltipButton } from "../tooltip-button";
 
 export function ChatHistory() {
 	const queryClient = useQueryClient();
-	const { workbookMetadata, chatHistoryOpen, chat, editor } = useAppState();
-	const { data: chats, isLoading } = useGetChats(workbookMetadata.documentId);
-	// const currentChatTitle = chats?.find((item) => item.chatId === chat.id)?.title ?? "New chat";
+	const { chat } = useChatStore();
+	const { chatHistoryOpen, editor } = useAppState();
+	const { id } = useOfficeMetadata();
+
+	const { data: chats, isLoading } = useGetChats(id);
 
 	const handleOpenChange = (open: boolean) => {
 		useAppState.setState({ chatHistoryOpen: open });
 		!open && editor.commands.focus();
 	};
 
+	useShortcut({ name: "chatHistory", action: () => handleOpenChange(!chatHistoryOpen) });
+
 	const handleSelectChat = async (chatId: string) => {
 		const messages = await getMessages(chatId, queryClient);
-		createChat({ id: chatId, messages });
+		useChatStore.setState({ chat: createChat({ id: chatId, messages }) });
 		handleOpenChange(false);
 	};
 
-	useShortcut({ name: "chatHistory", action: () => handleOpenChange(!chatHistoryOpen) });
-
-	const handleSetValue = (chatId: string) => {
-		// setValue(chatId);
-		queryClient.prefetchQuery(convexQuery(api.chat.functions.getMessages, { chatId }));
+	const handleHighlightedValueChange = (chatId: string) => {
+		prefetchMessages(chatId, queryClient);
 	};
 
 	return (
@@ -66,8 +65,7 @@ export function ChatHistory() {
 				<Command
 					filter={(value, search, keywords) => (keywords?.join().toLowerCase().includes(search.toLowerCase()) ? 1 : 0)}
 					loop
-					onValueChange={handleSetValue}
-					// value={value}
+					onValueChange={handleHighlightedValueChange}
 				>
 					<CommandInput placeholder="Search chat history" wrapperClassName="border-none bg-muted rounded-lg" />
 					<CommandList className="no-scrollbar min-h-80 overflow-auto pt-1 pb-7">

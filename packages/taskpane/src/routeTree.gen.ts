@@ -12,7 +12,6 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as TaskpaneRouteRouteImport } from './routes/taskpane/route'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as TaskpaneIndexRouteImport } from './routes/taskpane/index'
-import { Route as TaskpaneSignInRouteImport } from './routes/taskpane/sign-in'
 import { Route as TaskpaneSettingsRouteImport } from './routes/taskpane/settings'
 import { Route as AuthRedirectRouteImport } from './routes/auth/redirect'
 import { Route as AuthCallbackRouteImport } from './routes/auth/callback'
@@ -30,11 +29,6 @@ const IndexRoute = IndexRouteImport.update({
 const TaskpaneIndexRoute = TaskpaneIndexRouteImport.update({
   id: '/',
   path: '/',
-  getParentRoute: () => TaskpaneRouteRoute,
-} as any)
-const TaskpaneSignInRoute = TaskpaneSignInRouteImport.update({
-  id: '/sign-in',
-  path: '/sign-in',
   getParentRoute: () => TaskpaneRouteRoute,
 } as any)
 const TaskpaneSettingsRoute = TaskpaneSettingsRouteImport.update({
@@ -59,7 +53,6 @@ export interface FileRoutesByFullPath {
   '/auth/callback': typeof AuthCallbackRoute
   '/auth/redirect': typeof AuthRedirectRoute
   '/taskpane/settings': typeof TaskpaneSettingsRoute
-  '/taskpane/sign-in': typeof TaskpaneSignInRoute
   '/taskpane/': typeof TaskpaneIndexRoute
 }
 export interface FileRoutesByTo {
@@ -67,7 +60,6 @@ export interface FileRoutesByTo {
   '/auth/callback': typeof AuthCallbackRoute
   '/auth/redirect': typeof AuthRedirectRoute
   '/taskpane/settings': typeof TaskpaneSettingsRoute
-  '/taskpane/sign-in': typeof TaskpaneSignInRoute
   '/taskpane': typeof TaskpaneIndexRoute
 }
 export interface FileRoutesById {
@@ -77,7 +69,6 @@ export interface FileRoutesById {
   '/auth/callback': typeof AuthCallbackRoute
   '/auth/redirect': typeof AuthRedirectRoute
   '/taskpane/settings': typeof TaskpaneSettingsRoute
-  '/taskpane/sign-in': typeof TaskpaneSignInRoute
   '/taskpane/': typeof TaskpaneIndexRoute
 }
 export interface FileRouteTypes {
@@ -88,7 +79,6 @@ export interface FileRouteTypes {
     | '/auth/callback'
     | '/auth/redirect'
     | '/taskpane/settings'
-    | '/taskpane/sign-in'
     | '/taskpane/'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -96,7 +86,6 @@ export interface FileRouteTypes {
     | '/auth/callback'
     | '/auth/redirect'
     | '/taskpane/settings'
-    | '/taskpane/sign-in'
     | '/taskpane'
   id:
     | '__root__'
@@ -105,7 +94,6 @@ export interface FileRouteTypes {
     | '/auth/callback'
     | '/auth/redirect'
     | '/taskpane/settings'
-    | '/taskpane/sign-in'
     | '/taskpane/'
   fileRoutesById: FileRoutesById
 }
@@ -139,13 +127,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof TaskpaneIndexRouteImport
       parentRoute: typeof TaskpaneRouteRoute
     }
-    '/taskpane/sign-in': {
-      id: '/taskpane/sign-in'
-      path: '/sign-in'
-      fullPath: '/taskpane/sign-in'
-      preLoaderRoute: typeof TaskpaneSignInRouteImport
-      parentRoute: typeof TaskpaneRouteRoute
-    }
     '/taskpane/settings': {
       id: '/taskpane/settings'
       path: '/settings'
@@ -172,13 +153,11 @@ declare module '@tanstack/react-router' {
 
 interface TaskpaneRouteRouteChildren {
   TaskpaneSettingsRoute: typeof TaskpaneSettingsRoute
-  TaskpaneSignInRoute: typeof TaskpaneSignInRoute
   TaskpaneIndexRoute: typeof TaskpaneIndexRoute
 }
 
 const TaskpaneRouteRouteChildren: TaskpaneRouteRouteChildren = {
   TaskpaneSettingsRoute: TaskpaneSettingsRoute,
-  TaskpaneSignInRoute: TaskpaneSignInRoute,
   TaskpaneIndexRoute: TaskpaneIndexRoute,
 }
 

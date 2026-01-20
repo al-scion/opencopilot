@@ -20,6 +20,7 @@ import { Paragraph } from "@tiptap/extension-paragraph";
 import { Text } from "@tiptap/extension-text";
 import { Placeholder } from "@tiptap/extensions";
 import { EditorContent, type Range, useEditor, useEditorState } from "@tiptap/react";
+import { useAuth } from "@workos-inc/authkit-react";
 import type { FileUIPart } from "ai";
 import { ArrowUp, Paperclip, Plus, SquareMousePointer, Table2 } from "lucide-react";
 import { useRef, useState } from "react";
@@ -34,11 +35,11 @@ import { UserMessage } from "@/components/chat/user-message";
 import { SettingsMenu } from "@/components/settings-menu";
 import { TooltipButton } from "@/components/tooltip-button";
 import { getShortcutString, useShortcut } from "@/lib/browser-shortcuts";
-import { createChat } from "@/lib/chat";
+import { createChat, useChatTransport } from "@/lib/chat";
 import { ALLOWED_MIME_TYPES, MAX_FILE_SIZE } from "@/lib/constants";
 import { saveFileToStorage } from "@/lib/excel/checkpoint";
-import { server } from "@/lib/server";
-import { useAppState } from "@/lib/state";
+// import { server } from "@/lib/server";
+import { useAppState, useChatStore } from "@/lib/state";
 import type { MentionItem } from "@/lib/types";
 import { fileToDataUrl } from "@/lib/utils";
 
@@ -48,14 +49,16 @@ export const Route = createFileRoute("/taskpane/")({
 });
 
 function RouteComponent() {
+	const auth = useAuth();
 	const [query, setQuery] = useState<string | null>(null);
 	const [queryRange, setQueryRange] = useState<Range | null>(null);
 	const commandInputRef = useRef<HTMLInputElement>(null);
-	const { chat, workbookState, tanstackChat } = useAppState();
+	const { workbookState } = useAppState();
+	const { chat, tanstackChat } = useChatStore();
 	const activeRange = workbookState.activeRange;
 
-	// const { append, messages, stop, error, isLoading } = useTanstackChat(tanstackChat);
-	const { sendMessage, messages, status, stop, error, id } = useChat({ chat });
+	// const { append } = useTanstackChat(tanstackChat);
+	const { sendMessage, messages, status, stop, error } = useChat({ chat });
 
 	const fileInputRef = useRef<HTMLInputElement>(null);
 	const [uploadedFiles, setUploadedFiles] = useState<FileUIPart[]>([]);
@@ -87,7 +90,7 @@ function RouteComponent() {
 	};
 
 	const newChat = () => {
-		messages.length > 0 && useAppState.setState({ chat: createChat() });
+		messages.length > 0 && useChatStore.setState({ chat: createChat() });
 		editor.commands.clearContent();
 		setUploadedFiles([]);
 		editor.commands.focus();
@@ -229,9 +232,6 @@ function RouteComponent() {
 					isMention && console.log(node);
 				},
 			},
-			onMount: ({ editor }) => {
-				useAppState.setState({ editor });
-			},
 			onCreate: ({ editor }) => {
 				useAppState.setState({ editor });
 			},
@@ -256,7 +256,7 @@ function RouteComponent() {
 	return (
 		<>
 			<div className={cn("flex flex-row items-center p-1.5")}>
-				{/* TODO: Insert chat title here */}
+				<ModeSelector />
 				<div className="ml-auto flex flex-row items-center gap-0.5">
 					<TooltipButton
 						onClick={newChat}
@@ -320,7 +320,7 @@ function RouteComponent() {
 									<Paperclip />
 								</TooltipButton>
 								{/* <ToolMenu /> */}
-								<ModeSelector />
+
 								<ModelMenu />
 							</div>
 							<div className="ml-auto flex flex-row items-center gap-1">
