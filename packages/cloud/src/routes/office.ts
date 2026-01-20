@@ -1,4 +1,4 @@
-import { getCustomFunctionsConfig, getShortcutsConfig } from "@packages/shared";
+import { getCustomFunctionsConfig, getShortcutsConfig } from "@packages/shared/server";
 import { Hono } from "hono";
 import { describeRoute } from "hono-openapi";
 import type { Variables } from "../index";

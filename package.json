@@ -6,6 +6,7 @@
   "packageManager": "bun@1.3.6",
   "scripts": {
     "dev": "turbo run dev",
+    "checktypes": "turbo run checktypes",
     "knip": "knip",
     "lint": "biome check .",
     "lint:fix": "ultracite fix"

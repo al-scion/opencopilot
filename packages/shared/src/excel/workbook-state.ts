@@ -1,25 +1,8 @@
-import { z } from "zod";
-import { getOfficeMetadata, officeMetadataSchema } from "./metadata";
+import type { z } from "zod";
+import { getOfficeMetadata } from "./metadata";
+import type { workbookStateSchema } from "./schema";
 
-export const workbookStateSchema = z.object({
-	metadata: officeMetadataSchema,
-	workbookName: z.string(),
-	worksheets: z.array(
-		z.object({
-			name: z.string(),
-			position: z.number(),
-		})
-	),
-	currentWorksheet: z.object({
-		name: z.string(),
-		usedRange: z.string(),
-		selectedRange: z.string(),
-	}),
-});
-
-type WorkbookState = z.infer<typeof workbookStateSchema>;
-
-export const getWorkbookState = async (): Promise<WorkbookState> => {
+export const getWorkbookState = async (): Promise<z.infer<typeof workbookStateSchema>> => {
 	return await Excel.run({ delayForCellEdit: true }, async (context) => {
 		const workbook = context.workbook.load({ name: true });
 		const worksheets = context.workbook.worksheets.load({ name: true, position: true });

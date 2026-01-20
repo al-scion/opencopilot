@@ -1,6 +1,6 @@
 import type { FinishReason, LanguageModelUsage, UIMessage } from "ai";
 import { z } from "zod";
-import { workbookStateSchema } from "../excel/workbook-state";
+import { workbookStateSchema } from "../excel/schema";
 import { agentConfigSchema } from "./config";
 import type { ToolDefinitions } from "./tool-registry";
 

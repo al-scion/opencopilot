@@ -8,7 +8,7 @@ import {
 	modelRegistry,
 	resolveTools,
 	toolRegistry,
-} from "@packages/shared";
+} from "@packages/shared/server";
 import { chat, toServerSentEventsResponse } from "@tanstack/ai";
 import { openaiText } from "@tanstack/ai-openai";
 import {
