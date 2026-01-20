@@ -7,4 +7,3 @@ export * from "./agent/modes";
 export * from "./agent/prompt";
 export * from "./agent/tool-registry";
 export * from "./excel/config";
-export * from "./types";

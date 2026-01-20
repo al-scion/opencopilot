@@ -18,4 +18,3 @@ export * from "./excel/schema";
 export * from "./excel/tool-handler";
 export * from "./excel/tools";
 export * from "./excel/workbook-state";
-export * from "./types";
