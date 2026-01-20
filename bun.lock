@@ -83,9 +83,12 @@
       "name": "@packages/convex",
       "version": "0.0.0",
       "dependencies": {
+        "@ai-sdk/google": "catalog:",
         "@convex-dev/crons": "^0.2.0",
         "@convex-dev/r2": "^0.8.1",
         "@convex-dev/workflow": "^0.3.3",
+        "@packages/shared": "workspace:*",
+        "ai": "catalog:",
         "convex": "catalog:",
         "convex-helpers": "^0.1.107",
         "zod": "catalog:",
