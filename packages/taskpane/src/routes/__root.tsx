@@ -15,8 +15,5 @@ export interface RouterContext {
 
 export const Route = createRootRouteWithContext<RouterContext>()({
 	component: Outlet,
-	beforeLoad: ({ context }) => {
-		useAppState.setState({ auth: context.auth });
-	},
 	loader: async ({ context }) => {},
 });

@@ -5,6 +5,7 @@ import { AuthKitProvider, useAuth } from "@workos-inc/authkit-react";
 import { ConvexReactClient } from "convex/react";
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
+import { WORKOS_ACCESS_TOKEN_KEY } from "./lib/constants";
 import { initWorkbook } from "./lib/excel/_init";
 import { createAppRouter } from "./router";
 
@@ -27,6 +28,7 @@ export const router = createAppRouter({
 	auth: undefined!,
 });
 
+// Office.initialize(Office.InitializationReason.DocumentOpened);
 console.log(Office.context);
 if (
 	Office.context?.platform === Office.PlatformType.Mac ||
@@ -48,6 +50,8 @@ createRoot(document.getElementById("root")!).render(
 	<StrictMode>
 		<AuthKitProvider
 			clientId={import.meta.env.VITE_WORKOS_CLIENT_ID}
+			onRefresh={(response) => sessionStorage.setItem(WORKOS_ACCESS_TOKEN_KEY, response.accessToken)}
+			onRefreshFailure={() => sessionStorage.removeItem(WORKOS_ACCESS_TOKEN_KEY)}
 			redirectUri={`${window.location.origin}/auth/callback`}
 		>
 			<App />

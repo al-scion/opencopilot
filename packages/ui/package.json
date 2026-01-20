@@ -3,11 +3,11 @@
   "version": "0.0.0",
   "private": true,
   "type": "module",
-  "scripts": {
-    "checktypes": "tsgo --noEmit"
-  },
   "exports": {
     "./*": "./src/*"
+  },
+  "scripts": {
+    "checktypes": "tsgo --noEmit"
   },
   "devDependencies": {
     "@types/bun": "catalog:",

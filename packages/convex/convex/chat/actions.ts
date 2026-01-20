@@ -1,5 +1,5 @@
 import { google } from "@ai-sdk/google";
-import { generateTitlePrompt } from "@packages/shared";
+import { generateTitlePrompt } from "@packages/shared/server";
 import { convertToModelMessages, generateText } from "ai";
 import { v } from "convex/values";
 import { api } from "../_generated/api";

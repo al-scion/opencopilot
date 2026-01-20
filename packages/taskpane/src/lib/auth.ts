@@ -1,4 +1,4 @@
-import { useAppState } from "@/lib/state";
+import { WORKOS_ACCESS_TOKEN_KEY, WORKOS_REFRESH_TOKEN_KEY } from "./constants";
 
 export const signInWithDialog = () => {
 	Office.context.ui.displayDialogAsync(
@@ -11,19 +11,11 @@ export const signInWithDialog = () => {
 					return;
 				}
 				const refreshToken = event.message;
-				localStorage.setItem("workos:refresh-token", refreshToken);
-				await useAppState.getState().auth.getAccessToken({ forceRefresh: true });
+				localStorage.setItem(WORKOS_REFRESH_TOKEN_KEY, refreshToken);
 				window.location.href = `${window.location.origin}/taskpane`;
-				// await router.navigate({ to: "/taskpane" });
 			});
 		}
 	);
 };
 
-export const getAccessToken = async (): Promise<string> => {
-	const auth = useAppState.getState().auth;
-	if (auth.user === null) {
-		return "";
-	}
-	return await auth.getAccessToken();
-};
+export const getAccessToken = () => sessionStorage.getItem(WORKOS_ACCESS_TOKEN_KEY);

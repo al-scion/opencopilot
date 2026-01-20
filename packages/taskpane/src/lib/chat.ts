@@ -2,21 +2,23 @@ import { Chat } from "@ai-sdk/react";
 import { excelToolHandler, excelToolNames, getWorkbookState, type MessageType } from "@packages/shared";
 import type { UIMessage } from "@tanstack/ai-react";
 import { createChatClientOptions, fetchServerSentEvents } from "@tanstack/ai-react";
-import type { useAuth } from "@workos-inc/authkit-react";
 import {
 	DefaultChatTransport,
 	lastAssistantMessageIsCompleteWithApprovalResponses,
 	lastAssistantMessageIsCompleteWithToolCalls,
 } from "ai";
 import { getAccessToken } from "@/lib/auth";
-import { useAgentConfig, useAppState } from "@/lib/state";
+import { server } from "@/lib/server";
+import { useAgentConfig } from "@/lib/state";
 
 export const createTanstackChat = ({ id, messages }: { id?: string; messages?: UIMessage[] } = {}) => {
 	const chatOptions = createChatClientOptions({
 		id: id ?? crypto.randomUUID(),
 		initialMessages: messages ?? [],
-		connection: fetchServerSentEvents(`${import.meta.env.VITE_SERVER_URL}/chat/tanstack`, {
-			headers: {},
+		connection: fetchServerSentEvents(server.chat.tanstack.$url().href, {
+			headers: {
+				Authorization: getAccessToken() ?? "",
+			},
 			body: async () => ({}),
 		}),
 		tools: [],
@@ -24,33 +26,21 @@ export const createTanstackChat = ({ id, messages }: { id?: string; messages?: U
 	return chatOptions;
 };
 
-export const useChatTransport = (auth: ReturnType<typeof useAuth>) => {
-	const transport = new DefaultChatTransport({
-		api: `${import.meta.env.VITE_SERVER_URL}/chat`,
-		headers: async () => ({
-			Authorization: await getAccessToken(),
-		}),
-		body: async () => ({
-			workbook: await getWorkbookState(),
-			agentConfig: useAgentConfig.getState(),
-		}),
-	});
-	return transport;
-};
-
 export const createChat = ({ id, messages }: { id?: string; messages?: MessageType[] } = {}) => {
 	const chat = new Chat<MessageType>({
 		id,
 		messages,
 		transport: new DefaultChatTransport({
+			// api: server.chat.$url().href,
 			api: `${import.meta.env.VITE_SERVER_URL}/chat`,
 			headers: async () => ({
-				Authorization: `Bearer ${await getAccessToken()}`,
+				Authorization: getAccessToken() ?? "",
 			}),
 			body: async () => ({
 				workbook: await getWorkbookState(),
 				agentConfig: useAgentConfig.getState(),
 			}),
+			credentials: "include",
 		}),
 		generateId: () => crypto.randomUUID(),
 		sendAutomaticallyWhen:

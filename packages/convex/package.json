@@ -7,12 +7,15 @@
   "scripts": {
     "dev": "convex dev",
     "deploy": "convex deploy",
+    "checktypes": "tsgo --noEmit",
     "setenv": "bun scripts/set-env.ts",
     "setenv:prod": "bun scripts/set-env.ts --prod",
     "setenv:all": "bun scripts/set-env.ts --all"
   },
   "devDependencies": {
-    "@types/bun": "catalog:"
+    "@types/bun": "catalog:",
+    "typescript": "catalog:",
+    "@typescript/native-preview": "catalog:"
   },
   "dependencies": {
     "@ai-sdk/google": "catalog:",

@@ -1,6 +1,6 @@
 import { authErrorCell, getCellValueCard, inPreviewErrorCell } from "@packages/shared";
+import { getAccessToken } from "@/lib/auth";
 import { server } from "@/lib/server";
-import { useAppState } from "@/lib/state";
 
 export const memoize = <T extends (...args: any[]) => any>(fn: T): ((...args: Parameters<T>) => Promise<void>) => {
 	const cache = new Map<string, any>();
@@ -36,7 +36,7 @@ export const memoize = <T extends (...args: any[]) => any>(fn: T): ((...args: Pa
 		}
 
 		// Check for auth state
-		if (useAppState.getState().auth.user === null) {
+		if (getAccessToken() === null) {
 			invocation.setResult([[authErrorCell]]);
 			return;
 		}
