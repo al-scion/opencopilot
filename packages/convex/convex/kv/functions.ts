@@ -1,6 +1,5 @@
 import { v } from "convex/values";
 import { mutation, query } from "../_generated/server";
-import { kvTables } from "./schema";
 
 export const getKV = query({
 	args: { key: v.string() },
@@ -9,7 +8,11 @@ export const getKV = query({
 			.query("kv")
 			.withIndex("by_key", (q) => q.eq("key", args.key))
 			.unique();
-		return kv?.value;
+
+		if (!kv) {
+			return null;
+		}
+		return kv.value;
 	},
 });
 
@@ -20,21 +23,23 @@ export const deleteKV = mutation({
 			.query("kv")
 			.withIndex("by_key", (q) => q.eq("key", args.key))
 			.unique();
-
-		kv && (await ctx.db.delete(kv._id));
+		if (kv) {
+			await ctx.db.delete(kv._id);
+		}
 	},
 });
 
 export const setKV = mutation({
-	args: kvTables.kv.validator,
+	args: { key: v.string(), value: v.any() },
 	handler: async (ctx, args) => {
 		const existing = await ctx.db
 			.query("kv")
 			.withIndex("by_key", (q) => q.eq("key", args.key))
 			.unique();
-
-		existing
-			? await ctx.db.patch(existing._id, { value: args.value })
-			: await ctx.db.insert("kv", args);
+		if (existing) {
+			await ctx.db.patch("kv", existing._id, { value: args.value });
+		} else {
+			await ctx.db.insert("kv", args);
+		}
 	},
 });

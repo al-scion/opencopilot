@@ -9,6 +9,9 @@
     },
     "packages/docs": {
       "ignore": ["content/**"]
+    },
+    "packages/convex": {
+      "ignore": ["convex/_generated/**"]
     }
   }
 }

@@ -18,7 +18,7 @@ const queryClient = new QueryClient({
 		},
 	},
 });
-convexQueryClient.connect(queryClient)
+convexQueryClient.connect(queryClient);
 
 export const router = createAppRouter({
 	queryClient,

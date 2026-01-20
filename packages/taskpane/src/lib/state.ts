@@ -1,5 +1,6 @@
 import type { Chat } from "@ai-sdk/react";
 import type { agentConfigSchema, MessageType, officeMetadataSchema } from "@packages/shared";
+import { METADATA_STORAGE_KEY } from "@packages/shared";
 import type { createChatClientOptions } from "@tanstack/ai-react";
 import type { Editor } from "@tiptap/react";
 import type { useAuth } from "@workos-inc/authkit-react";
@@ -14,7 +15,7 @@ type WorkbookState = {
 	workbook: Excel.Workbook;
 };
 
-export type AppState = {
+type AppState = {
 	operatingSystem: "mac" | "windows";
 	modelMenuOpen: boolean;
 	settingsMenuOpen: boolean;
@@ -62,7 +63,7 @@ export const useOfficeMetadata = create<z.infer<typeof officeMetadataSchema>>()(
 			id: crypto.randomUUID(),
 		}),
 		{
-			name: "workbook-metadata",
+			name: METADATA_STORAGE_KEY,
 			storage: {
 				getItem: (name) => {
 					return Office.context.document.settings.get(name);

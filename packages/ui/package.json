@@ -6,11 +6,16 @@
   "scripts": {
     "checktypes": "tsgo --noEmit"
   },
+  "exports": {
+    "./*": "./src/*"
+  },
   "devDependencies": {
     "@types/bun": "catalog:",
     "@types/node": "catalog:",
     "@types/react": "catalog:",
     "@types/react-dom": "catalog:",
+    "typescript": "catalog:",
+    "@typescript/native-preview": "catalog:",
     "tailwindcss": "catalog:"
   },
   "dependencies": {

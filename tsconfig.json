@@ -1,7 +1,8 @@
 {
   "$schema": "https://json.schemastore.org/tsconfig",
+  // This is based on the bun settings from https://bun.com/docs/typescript
   "compilerOptions": {
-    "lib": ["ESNext", "DOM", "DOM.Iterable"],
+    "lib": ["ESNext", "DOM", "DOM.Iterable"], // Added DOM and DOM.Iterable for browser compatibility
     "target": "ESNext",
     "module": "Preserve",
     "moduleDetection": "force",

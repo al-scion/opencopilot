@@ -36,9 +36,6 @@
     "@workos-inc/authkit-react": "^0.16.0",
     "lucide-react": "catalog:",
     "react": "catalog:",
-    "react-dom": "catalog:",
-    "react-hotkeys-hook": "catalog:",
-    "zod": "catalog:",
-    "zustand": "catalog:"
+    "react-dom": "catalog:"
   }
 }

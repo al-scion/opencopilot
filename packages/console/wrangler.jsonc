@@ -1,8 +1,8 @@
 {
-	"name": "fabric-console",
-	"compatibility_date": "2025-12-10",
-	"compatibility_flags": ["nodejs_compat"],
-	"observability": { "enabled": true },
-	"routes": [{ "custom_domain": true, "pattern": "console.usefabric.xyz" }],
-	"main": "src/index.ts"
+  "name": "fabric-console",
+  "compatibility_date": "2025-12-10",
+  "compatibility_flags": ["nodejs_compat"],
+  "observability": { "enabled": true },
+  "routes": [{ "custom_domain": true, "pattern": "console.usefabric.xyz" }],
+  "main": "src/index.ts"
 }

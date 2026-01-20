@@ -1,4 +1,4 @@
-import { imageModelSchema, languageModelSchema, modelRegistry } from "@packages/shared";
+import { imageModelSchema, languageModelSchema, modelRegistry } from "@packages/shared/server";
 import { generateText } from "ai";
 import { Hono } from "hono";
 import { describeRoute, validator } from "hono-openapi";

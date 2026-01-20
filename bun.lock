@@ -5,7 +5,7 @@
     "": {
       "name": "fabric",
       "devDependencies": {
-        "@biomejs/biome": "2.3.11",
+        "@biomejs/biome": "^2.3.11",
         "knip": "^5.82.1",
         "turbo": "^2.7.5",
         "typescript": "catalog:",
@@ -23,9 +23,6 @@
         "lucide-react": "catalog:",
         "react": "catalog:",
         "react-dom": "catalog:",
-        "react-hotkeys-hook": "catalog:",
-        "zod": "catalog:",
-        "zustand": "catalog:",
       },
       "devDependencies": {
         "@cloudflare/vite-plugin": "catalog:",
@@ -47,10 +44,6 @@
       "name": "@packages/cloud",
       "version": "0.0.0",
       "dependencies": {
-        "@ai-sdk/anthropic": "catalog:",
-        "@ai-sdk/google": "catalog:",
-        "@ai-sdk/openai": "catalog:",
-        "@ai-sdk/react": "catalog:",
         "@hono/standard-validator": "catalog:",
         "@packages/convex": "workspace:*",
         "@packages/shared": "workspace:*",
@@ -64,6 +57,7 @@
         "zod": "catalog:",
       },
       "devDependencies": {
+        "@types/bun": "catalog:",
         "@types/node": "catalog:",
         "@typescript/native-preview": "catalog:",
         "typescript": "catalog:",
@@ -78,7 +72,6 @@
         "@scalar/hono-api-reference": "catalog:",
         "hono": "catalog:",
         "hono-openapi": "catalog:",
-        "zod": "catalog:",
       },
       "devDependencies": {
         "@types/node": "catalog:",
@@ -95,10 +88,14 @@
         "@convex-dev/crons": "^0.2.0",
         "@convex-dev/r2": "^0.8.1",
         "@convex-dev/workflow": "^0.3.3",
+        "@packages/shared": "workspace:*",
         "ai": "catalog:",
         "convex": "catalog:",
-        "convex-helpers": "^0.1.107",
+        "convex-helpers": "^0.1.111",
         "zod": "catalog:",
+      },
+      "devDependencies": {
+        "@types/bun": "catalog:",
       },
     },
     "packages/shared": {
@@ -113,8 +110,12 @@
         "zod": "catalog:",
       },
       "devDependencies": {
+        "@types/bun": "catalog:",
         "@types/custom-functions-runtime": "catalog:",
+        "@types/node": "catalog:",
         "@types/office-js": "catalog:",
+        "@typescript/native-preview": "catalog:",
+        "typescript": "catalog:",
       },
     },
     "packages/taskpane": {
@@ -140,19 +141,14 @@
         "@tiptap/react": "^3.15.3",
         "@workos-inc/authkit-react": "^0.16.0",
         "ai": "catalog:",
-        "class-variance-authority": "^0.7.1",
-        "clsx": "^2.1.1",
-        "cmdk": "^1.1.1",
         "convex": "catalog:",
         "fflate": "^0.8.2",
         "hono": "catalog:",
         "lucide-react": "^0.562.0",
-        "next-themes": "^0.4.6",
         "react": "catalog:",
         "react-dom": "catalog:",
         "react-hotkeys-hook": "catalog:",
         "streamdown": "^2.1.0",
-        "tailwind-merge": "catalog:",
         "use-stick-to-bottom": "^1.1.1",
         "zod": "catalog:",
         "zustand": "catalog:",
@@ -168,8 +164,7 @@
         "@typescript/native-preview": "catalog:",
         "@vitejs/plugin-react": "catalog:",
         "babel-plugin-react-compiler": "catalog:",
-        "tailwindcss": "catalog:",
-        "tw-animate-css": "catalog:",
+        "class-variance-authority": "catalog:",
         "typescript": "catalog:",
         "vite": "catalog:",
         "vite-plugin-mkcert": "catalog:",
@@ -198,7 +193,9 @@
         "@types/node": "catalog:",
         "@types/react": "catalog:",
         "@types/react-dom": "catalog:",
+        "@typescript/native-preview": "catalog:",
         "tailwindcss": "catalog:",
+        "typescript": "catalog:",
       },
     },
     "packages/website": {
@@ -1320,7 +1317,7 @@
 
     "convex": ["convex@1.31.5", "", { "dependencies": { "esbuild": "0.27.0", "prettier": "^3.0.0" }, "peerDependencies": { "@auth0/auth0-react": "^2.0.1", "@clerk/clerk-react": "^4.12.8 || ^5.0.0", "react": "^18.0.0 || ^19.0.0-0 || ^19.0.0" }, "optionalPeers": ["@auth0/auth0-react", "@clerk/clerk-react", "react"], "bin": { "convex": "bin/main.js" } }, "sha512-E1IuJKFwMCHDToNGukBPs6c7RFaarR3t8chLF9n98TM5/Tgmj8lM6l7sKM1aJ3VwqGaB4wbeUAPY8osbCOXBhQ=="],
 
-    "convex-helpers": ["convex-helpers@0.1.109", "", { "peerDependencies": { "@standard-schema/spec": "^1.0.0", "convex": "^1.25.4", "hono": "^4.0.5", "react": "^17.0.2 || ^18.0.0 || ^19.0.0", "typescript": "^5.5", "zod": "^3.25.0 || ^4.0.0" }, "optionalPeers": ["@standard-schema/spec", "hono", "react", "typescript", "zod"], "bin": { "convex-helpers": "bin.cjs" } }, "sha512-3Yzi+4M+szpqze2/NjTqBdA6nit1vgtU0M3Ga6lUw2oNjOMrQ6si2Dx2M524GHXJ+5icBNM/6cii4Nrx58zMEw=="],
+    "convex-helpers": ["convex-helpers@0.1.111", "", { "peerDependencies": { "@standard-schema/spec": "^1.0.0", "convex": "^1.25.4", "hono": "^4.0.5", "react": "^17.0.2 || ^18.0.0 || ^19.0.0", "typescript": "^5.5", "zod": "^3.25.0 || ^4.0.0" }, "optionalPeers": ["@standard-schema/spec", "hono", "react", "typescript", "zod"], "bin": { "convex-helpers": "bin.cjs" } }, "sha512-0O59Ohi8HVc3+KULxSC6JHsw8cQJyc8gZ7OAfNRVX7T5Wy6LhPx3l8veYN9avKg7UiPlO7m1eBiQMHKclIyXyQ=="],
 
     "convex-svelte": ["convex-svelte@0.0.11", "", { "peerDependencies": { "convex": "^1.10.0", "svelte": "^5.0.0" } }, "sha512-N/29gg5Zqy72vKL4xHSLk3jGwXVKIWXPs6xzq6KxGL84y/D6hG85pG2CPOzn08EzMmByts5FTkJ5p3var6yDng=="],
 
@@ -2367,6 +2364,8 @@
     "@babel/helper-compilation-targets/lru-cache": ["lru-cache@5.1.1", "", { "dependencies": { "yallist": "^3.0.2" } }, "sha512-KpNARQA3Iwv+jTA0utUVVbrh+Jlrr1Fv0e56GGzAFOXN7dk/FviaDW8LHmK52DlcH4WP2n6gI8vN1aesBFgo9w=="],
 
     "@babel/helper-compilation-targets/semver": ["semver@6.3.1", "", { "bin": { "semver": "bin/semver.js" } }, "sha512-BR7VvDCVHO+q2xBEWskxS6DJE1qRnb7DxzUrogb71CWoSficBxYsiAGd+Kl0mmq/MprG9yArRkyrQxTO6XjMzA=="],
+
+    "@convex-dev/r2/convex-helpers": ["convex-helpers@0.1.109", "", { "peerDependencies": { "@standard-schema/spec": "^1.0.0", "convex": "^1.25.4", "hono": "^4.0.5", "react": "^17.0.2 || ^18.0.0 || ^19.0.0", "typescript": "^5.5", "zod": "^3.25.0 || ^4.0.0" }, "optionalPeers": ["@standard-schema/spec", "hono", "react", "typescript", "zod"], "bin": { "convex-helpers": "bin.cjs" } }, "sha512-3Yzi+4M+szpqze2/NjTqBdA6nit1vgtU0M3Ga6lUw2oNjOMrQ6si2Dx2M524GHXJ+5icBNM/6cii4Nrx58zMEw=="],
 
     "@convex-dev/workos/@workos-inc/authkit-react": ["@workos-inc/authkit-react@0.11.0", "", { "dependencies": { "@workos-inc/authkit-js": "0.13.0" }, "peerDependencies": { "react": ">=17" } }, "sha512-67HFSxP4wXC8ECGyvc1yGMwuD5NGkwT2OPt8DavHoKAlO+hRaAlu9wwzqUx1EJrHht0Dcx+l20Byq8Ab0bEhlg=="],
 
