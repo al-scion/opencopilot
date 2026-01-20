@@ -4,6 +4,7 @@ import { METADATA_STORAGE_KEY } from "@packages/shared";
 import type { createChatClientOptions } from "@tanstack/ai-react";
 import type { Editor } from "@tiptap/react";
 import type { z } from "zod";
+import id from "zod/v4/locales/id.cjs";
 import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
 import { createChat, createTanstackChat } from "./chat";
@@ -56,16 +57,25 @@ export const useChatStore = create<ChatStore>()(() => ({
 
 export const useOfficeMetadata = create<z.infer<typeof officeMetadataSchema>>()(
 	persist(
-		(set, get, options) => ({
-			id: crypto.randomUUID(),
-		}),
+		(set, get, options) => {
+			console.log("Initializing office metadata store");
+			// DO NOT EDIT! Temporary fix to make zustand persist work on first hydration!!
+			if (Office.context.document.settings.get(METADATA_STORAGE_KEY) === null) {
+				set({ id: crypto.randomUUID() });
+			}
+			return {
+				id: crypto.randomUUID(),
+			};
+		},
 		{
 			name: METADATA_STORAGE_KEY,
 			storage: {
 				getItem: (name) => {
+					console.log("loading office metadata", name);
 					return Office.context.document.settings.get(name);
 				},
 				setItem: (name, value) => {
+					console.log("saving office metadata", name, value);
 					Office.context.document.settings.set(name, value);
 					Office.context.document.settings.saveAsync();
 				},
@@ -77,12 +87,6 @@ export const useOfficeMetadata = create<z.infer<typeof officeMetadataSchema>>()(
 		}
 	)
 );
-// DO NOT EDIT! Temporary fix to make zustand persist work on first hydration!!
-useOfficeMetadata.persist.onFinishHydration((state) => {
-	if (Office.context.document.settings.get(METADATA_STORAGE_KEY) === null) {
-		useOfficeMetadata.setState({ id: crypto.randomUUID() });
-	}
-});
 
 export const useAgentConfig = create<z.infer<typeof agentConfigSchema>>()(
 	persist(

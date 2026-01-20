@@ -38,7 +38,7 @@ import { getShortcutString, useShortcut } from "@/lib/browser-shortcuts";
 import { createChat } from "@/lib/chat";
 import { ALLOWED_MIME_TYPES, MAX_FILE_SIZE } from "@/lib/constants";
 import { saveFileToStorage } from "@/lib/excel/checkpoint";
-import { useAppState, useChatStore, useOfficeMetadata } from "@/lib/state";
+import { useAppState, useChatStore } from "@/lib/state";
 import type { MentionItem } from "@/lib/types";
 import { fileToDataUrl } from "@/lib/utils";
 
@@ -54,10 +54,7 @@ function RouteComponent() {
 	const commandInputRef = useRef<HTMLInputElement>(null);
 	const { workbookState } = useAppState();
 	const { chat, tanstackChat } = useChatStore();
-	const { id } = useOfficeMetadata();
 	const activeRange = workbookState.activeRange;
-
-	// const { append } = useTanstackChat(tanstackChat);
 	const { sendMessage, messages, status, stop, error } = useChat({ chat });
 
 	const fileInputRef = useRef<HTMLInputElement>(null);
@@ -271,7 +268,6 @@ function RouteComponent() {
 					<SettingsMenu />
 				</div>
 			</div>
-			{id}
 			<StickToBottom className="relative flex-1 overflow-y-auto" initial="instant" resize="instant">
 				<StickToBottom.Content className="p-1.5 pt-0">
 					{messages.map((message) => {
