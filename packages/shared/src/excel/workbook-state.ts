@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { officeMetadataSchema, getOfficeMetadata } from "./metadata";
+import { getOfficeMetadata, officeMetadataSchema } from "./metadata";
 
 export const workbookStateSchema = z.object({
 	metadata: officeMetadataSchema,

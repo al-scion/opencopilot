@@ -33,8 +33,6 @@ export const setKV = mutation({
 			.withIndex("by_key", (q) => q.eq("key", args.key))
 			.unique();
 
-		existing
-			? await ctx.db.patch(existing._id, { value: args.value })
-			: await ctx.db.insert("kv", args);
+		existing ? await ctx.db.patch(existing._id, { value: args.value }) : await ctx.db.insert("kv", args);
 	},
 });

@@ -1,40 +1,17 @@
-import type { CustomFunctionsConfig, ShortcutsConfig } from "@packages/shared";
+import { getCustomFunctionsConfig, getShortcutsConfig } from "@packages/shared";
 import { Hono } from "hono";
-import { describeRoute, validator } from "hono-openapi";
-import { z } from "zod";
+import { describeRoute } from "hono-openapi";
 import type { Variables } from "../index";
 
 export const officeRouter = new Hono<{ Variables: Variables }>()
 	.get("/excel/shortcuts", describeRoute({}), async (c) => {
-		const config: ShortcutsConfig = {
-			actions: [
-				{
-					id: "toggleTaskpane",
-					name: "toggleTaskpane",
-					type: "ExecuteFunction",
-				},
-			],
-			shortcuts: [
-				{
-					action: "toggleTaskpane",
-					key: {
-						windows: "Ctrl+J",
-						mac: "Command+J",
-					},
-				},
-			],
-		};
+		const config = getShortcutsConfig();
 
 		return c.json(config);
 	})
 
 	.get("/excel/functions", describeRoute({}), async (c) => {
-		const config: CustomFunctionsConfig = {
-			allowCustomDataForDataTypeAny: true,
-			allowErrorForDataTypeAny: true,
-			functions: [],
-			enums: [],
-		};
+		const config = getCustomFunctionsConfig();
 
 		return c.json(config);
 	});

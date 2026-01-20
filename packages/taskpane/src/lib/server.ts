@@ -9,11 +9,11 @@ export const server = hc<AppType>(import.meta.env.VITE_SERVER_URL, {
 	}),
 });
 
-export const useServer = (auth: ReturnType<typeof useAuth>) => {
-	const server = hc<AppType>(import.meta.env.VITE_SERVER_URL, {
-		headers: async () => ({
-			Authorization: await auth.getAccessToken(),
-		}),
-	});
-	return server;
-};
+// export const useServer = (auth: ReturnType<typeof useAuth>) => {
+// 	const server = hc<AppType>(import.meta.env.VITE_SERVER_URL, {
+// 		headers: async () => ({
+// 			Authorization: await auth.getAccessToken(),
+// 		}),
+// 	});
+// 	return server;
+// };

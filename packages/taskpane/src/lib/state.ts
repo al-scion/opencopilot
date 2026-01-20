@@ -14,7 +14,7 @@ type WorkbookState = {
 	workbook: Excel.Workbook;
 };
 
-export type AppState = {
+type AppState = {
 	operatingSystem: "mac" | "windows";
 	modelMenuOpen: boolean;
 	settingsMenuOpen: boolean;

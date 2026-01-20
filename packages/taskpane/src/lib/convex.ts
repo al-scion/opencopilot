@@ -2,33 +2,27 @@ import { convexQuery, useConvexAction, useConvexMutation, useConvexQuery } from 
 import { api } from "@packages/convex";
 import type { MessageType } from "@packages/shared/";
 import { type QueryClient, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { convertFileListToFileUIParts, validateUIMessages } from "ai";
+import { validateUIMessages } from "ai";
 
-export const useGetKv = (key: string) => {
-	const isValid = key !== "";
-	return useQuery({
-		...convexQuery(api.kv.functions.getKV, isValid ? { key } : "skip"),
-	});
-};
+// export const useGetKv = (key: string) => {
+// 	const isValid = key !== "";
+// 	return useQuery({
+// 		...convexQuery(api.kv.functions.getKV, isValid ? { key } : "skip"),
+// 	});
+// };
 
-export const useSetKv = () => {
-	return useMutation({
-		mutationFn: useConvexMutation(api.kv.functions.setKV).withOptimisticUpdate((localStore, args) => {
-			localStore.setQuery(api.kv.functions.getKV, { key: args.key }, args.value);
-		}),
-	});
-};
+// export const useSetKv = () => {
+// 	return useMutation({
+// 		mutationFn: useConvexMutation(api.kv.functions.setKV).withOptimisticUpdate((localStore, args) => {
+// 			localStore.setQuery(api.kv.functions.getKV, { key: args.key }, args.value);
+// 		}),
+// 	});
+// };
 
 export const useGetChats = (namespace?: string) => {
 	const isValid = namespace !== undefined;
 	return useQuery({
 		...convexQuery(api.chat.functions.getChats, isValid ? { namespace } : "skip"),
-	});
-};
-
-export const useGetMessages = (chatId: string) => {
-	return useQuery({
-		...convexQuery(api.chat.functions.getMessages, { chatId }),
 	});
 };
 

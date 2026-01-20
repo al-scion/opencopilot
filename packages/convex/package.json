@@ -11,8 +11,6 @@
   "dependencies": {
     "zod": "catalog:",
     "convex": "catalog:",
-    "ai": "catalog:",
-    "@ai-sdk/google": "catalog:",
     "@convex-dev/crons": "^0.2.0",
     "@convex-dev/r2": "^0.8.1",
     "@convex-dev/workflow": "^0.3.3",

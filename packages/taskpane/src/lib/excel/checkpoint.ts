@@ -1,7 +1,7 @@
 import { unzipSync, zipSync } from "fflate";
 import { server } from "../server";
 
-export const getWorkbookAsFile = async (): Promise<File> => {
+const getWorkbookAsFile = async (): Promise<File> => {
 	const fileName = await Excel.run({ delayForCellEdit: true }, async (context) => {
 		const workbook = context.workbook.load({ name: true });
 		await context.sync();
