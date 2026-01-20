@@ -37,7 +37,7 @@ export const setKV = mutation({
 			.withIndex("by_key", (q) => q.eq("key", args.key))
 			.unique();
 		if (existing) {
-			await ctx.db.delete(existing._id);
+			await ctx.db.patch("kv", existing._id, { value: args.value });
 		} else {
 			await ctx.db.insert("kv", args);
 		}

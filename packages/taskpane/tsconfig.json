@@ -4,9 +4,6 @@
     "types": ["vite/client", "office-js", "custom-functions-runtime"],
     "paths": {
       "@/*": ["./src/*"],
-      "@packages/shared/*": ["../../packages/shared/*"],
-      "@packages/convex": ["../../packages/convex"],
-      "@packages/cloud": ["../../packages/cloud"],
       "@packages/ui/*": ["../ui/src/*"]
     }
   }

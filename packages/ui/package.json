@@ -6,6 +6,9 @@
   "scripts": {
     "checktypes": "tsgo --noEmit"
   },
+  "exports": {
+    "./*": "./src/*"
+  },
   "devDependencies": {
     "@types/bun": "catalog:",
     "@types/node": "catalog:",

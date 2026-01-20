@@ -6,17 +6,23 @@
   "types": "./convex/_generated/api.d.ts",
   "scripts": {
     "dev": "convex dev",
-    "deploy": "convex deploy"
+    "deploy": "convex deploy",
+    "setenv": "bun scripts/set-env.ts",
+    "setenv:prod": "bun scripts/set-env.ts --prod",
+    "setenv:all": "bun scripts/set-env.ts --all"
+  },
+  "devDependencies": {
+    "@types/bun": "catalog:"
   },
   "dependencies": {
-    "ai": "catalog:",
     "@ai-sdk/google": "catalog:",
-    "zod": "catalog:",
-    "convex": "catalog:",
     "@convex-dev/crons": "^0.2.0",
     "@convex-dev/r2": "^0.8.1",
     "@convex-dev/workflow": "^0.3.3",
-    "convex-helpers": "^0.1.107",
-    "@packages/shared": "workspace:*"
+    "@packages/shared": "workspace:*",
+    "ai": "catalog:",
+    "convex": "catalog:",
+    "convex-helpers": "^0.1.111",
+    "zod": "catalog:"
   }
 }

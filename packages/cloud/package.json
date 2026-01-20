@@ -16,6 +16,7 @@
   },
   "devDependencies": {
     "@types/node": "catalog:",
+    "@types/bun": "catalog:",
     "wrangler": "catalog:",
     "typescript": "catalog:",
     "@typescript/native-preview": "catalog:"

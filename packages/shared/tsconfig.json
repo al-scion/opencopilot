@@ -1,10 +1,7 @@
 {
   "extends": "../../tsconfig.json",
   "compilerOptions": {
-    "types": ["custom-functions-runtime", "office-js"],
-    "paths": {
-      "@packages/shared/*": ["./src/*"]
-    }
+    "types": ["office-js", "custom-functions-runtime"],
   },
   "exclude": ["node_modules"]
 }
