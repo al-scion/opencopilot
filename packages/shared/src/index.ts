@@ -14,6 +14,7 @@ export * from "./excel/config";
 export * from "./excel/constants";
 export * from "./excel/metadata";
 export * from "./excel/navigation";
+export * from "./excel/schema";
 export * from "./excel/tool-handler";
 export * from "./excel/tools";
 export * from "./excel/workbook-state";

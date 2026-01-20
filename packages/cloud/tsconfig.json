@@ -1,8 +1,5 @@
 {
   "extends": "../../tsconfig.json",
-  "compilerOptions": {
-    "types": ["office-js"]
-  },
   "include": ["**/*.ts"],
   "exclude": ["node_modules"]
 }
