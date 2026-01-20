@@ -45,6 +45,7 @@ const browserShortcuts = [
 			enableOnContentEditable: true,
 			enableOnFormTags: true,
 			preventDefault: true,
+			keydown: true,
 		},
 	},
 	{

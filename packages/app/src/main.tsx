@@ -1,6 +1,7 @@
 import { createOpencodeClient } from "@opencode-ai/sdk/v2/client";
 import { QueryClient } from "@tanstack/react-query";
 import { RouterProvider } from "@tanstack/react-router";
+import { AuthKitProvider } from "@workos-inc/authkit-react";
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import { createAppRouter } from "./router";
@@ -17,6 +18,8 @@ const router = createAppRouter({
 
 createRoot(document.getElementById("root")!).render(
 	<StrictMode>
-		<RouterProvider router={router} />
+		<AuthKitProvider clientId={import.meta.env.VITE_WORKOS_CLIENT_ID} redirectUri={undefined}>
+			<RouterProvider router={router} />
+		</AuthKitProvider>
 	</StrictMode>
 );

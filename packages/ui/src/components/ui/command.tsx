@@ -1,3 +1,4 @@
+import { Autocomplete as AutocompletePrimitive } from "@base-ui/react/autocomplete";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@packages/ui/components/ui/dialog";
 import { cn } from "@packages/ui/lib/utils";
 import { Command as CommandPrimitive } from "cmdk";
@@ -58,7 +59,7 @@ function CommandInput({
 			<SearchIcon className="size-4 shrink-0 opacity-50" />
 			<CommandPrimitive.Input
 				className={cn(
-					"flex h-10 w-full rounded-md bg-transparent py-3 text-sm outline-hidden placeholder:text-muted-foreground disabled:cursor-not-allowed disabled:opacity-50",
+					"flex h-10 w-full rounded-md bg-transparent py-3 text-sm leading-12 outline-hidden placeholder:text-muted-foreground disabled:cursor-not-allowed disabled:opacity-50",
 					className
 				)}
 				data-slot="command-input"

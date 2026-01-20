@@ -1,9 +1,12 @@
 import { unzipSync, zipSync } from "fflate";
 import { server } from "../server";
-import { useAppState } from "../state";
 
 export const getWorkbookAsFile = async (): Promise<File> => {
-	const fileName = useAppState.getState().workbookState.name;
+	const fileName = await Excel.run({ delayForCellEdit: true }, async (context) => {
+		const workbook = context.workbook.load({ name: true });
+		await context.sync();
+		return workbook.name;
+	});
 	return await new Promise((resolve, reject) => {
 		Office.context.document.getFileAsync(Office.FileType.Compressed, {}, (result) => {
 			if (result.status === Office.AsyncResultStatus.Failed) {

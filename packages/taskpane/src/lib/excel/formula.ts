@@ -1,7 +1,6 @@
-import { authErrorCell, inPreviewErrorCell } from "@packages/shared";
+import { authErrorCell, getCellValueCard, inPreviewErrorCell } from "@packages/shared";
 import { server } from "@/lib/server";
 import { useAppState } from "@/lib/state";
-import { getCellValueCard } from "./cards";
 
 export const memoize = <T extends (...args: any[]) => any>(fn: T): ((...args: Parameters<T>) => Promise<void>) => {
 	const cache = new Map<string, any>();
@@ -36,13 +35,10 @@ export const memoize = <T extends (...args: any[]) => any>(fn: T): ((...args: Pa
 			return;
 		}
 
-		// Check twice as a workaround for the web platform
+		// Check for auth state
 		if (useAppState.getState().auth.user === null) {
-			await new Promise((resolve) => setTimeout(resolve, 2000)); // Wait for 2 seconds
-			if (useAppState.getState().auth.user === null) {
-				invocation.setResult([[authErrorCell]]);
-				return;
-			}
+			invocation.setResult([[authErrorCell]]);
+			return;
 		}
 
 		try {

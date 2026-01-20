@@ -1,15 +1,15 @@
 {
-	"recommendations": [
-		"bradlc.vscode-tailwindcss",
-		"remcohaszing.schemastore",
-		"oven.bun-vscode",
-		"biomejs.biome",
-		"James-Yu.latex-workshop",
-		"yoavbls.pretty-ts-errors",
-		"astro-build.astro-vscode",
-		"TypeScriptTeam.native-preview",
-		"tauri-apps.tauri-vscode",
-		"rust-lang.rust-analyzer",
-		"github.vscode-github-actions"
-	]
+  "recommendations": [
+    "TypeScriptTeam.native-preview",
+    "ms-vscode.vscode-typescript-next",
+    "bradlc.vscode-tailwindcss",
+    "remcohaszing.schemastore",
+    "oven.bun-vscode",
+    "biomejs.biome",
+    "yoavbls.pretty-ts-errors",
+    "astro-build.astro-vscode",
+    "tauri-apps.tauri-vscode",
+    "rust-lang.rust-analyzer",
+    "github.vscode-github-actions"
+  ]
 }

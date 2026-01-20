@@ -23,6 +23,8 @@
   "editor.formatOnSave": true,
   "editor.formatOnPaste": true,
   "editor.linkedEditing": true,
+  "editor.links": true,
+  "editor.definitionLinkOpensInPeek": true,
   "html.autoClosingTags": true,
   "javascript.autoClosingTags": true,
   "typescript.autoClosingTags": true,
@@ -52,5 +54,6 @@
   },
   "[typescriptreact]": {
     "editor.defaultFormatter": "biomejs.biome"
-  }
+  },
+  "chatgpt.commentCodeLensEnabled": false
 }

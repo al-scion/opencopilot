@@ -29,6 +29,8 @@
     "@packages/convex": "workspace:*",
     "@packages/shared": "workspace:*",
     "@scalar/hono-api-reference": "catalog:",
+    "@tanstack/ai": "^0.2.2",
+    "@tanstack/ai-openai": "^0.2.1",
     "ai": "catalog:",
     "convex": "catalog:",
     "hono": "catalog:",

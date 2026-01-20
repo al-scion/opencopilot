@@ -1,8 +1,8 @@
 import type { ChatOnToolCallCallback, InferToolInput, InferToolOutput } from "ai";
-import type { excelTools } from "../tools/excel";
 import { jsonToMarkdownTable } from "./markdown";
+import type { excelTools } from "./tools";
 
-export type ToolCall = Parameters<ChatOnToolCallCallback>[0]["toolCall"];
+type ToolCall = Parameters<ChatOnToolCallCallback>[0]["toolCall"];
 
 export const excelToolHandler = async (toolCall: ToolCall) => {
 	const toolName = toolCall.toolName as keyof typeof excelTools;

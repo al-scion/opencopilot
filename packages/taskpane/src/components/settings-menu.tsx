@@ -8,7 +8,8 @@ import {
 import { cn } from "@packages/ui/lib/utils";
 import { useRouter } from "@tanstack/react-router";
 import { useAuth } from "@workos-inc/authkit-react";
-import { CircleUserRoundIcon, Ellipsis, Keyboard, LogInIcon, LogOut, Settings } from "lucide-react";
+import { CircleUserRoundIcon, Ellipsis, Keyboard, LogOut, Settings } from "lucide-react";
+import { signInWithDialog } from "@/lib/auth";
 import { getShortcutString, useShortcut } from "@/lib/browser-shortcuts";
 import { useAppState } from "@/lib/state";
 import { TooltipButton } from "./tooltip-button";
@@ -22,14 +23,18 @@ export function SettingsMenu() {
 		router.navigate({ to: "/taskpane/settings" });
 	};
 
-	const handleAuth = () => {
+	const handleAuth = async () => {
 		if (user) {
 			signOut({ navigate: false });
 			window.location.href = `${window.location.origin}/taskpane`;
 		} else {
-			signIn({});
+			const isOfficeOnline = Office.context.platform === Office.PlatformType.OfficeOnline;
+			if (isOfficeOnline) {
+				signInWithDialog();
+			} else {
+				signIn({});
+			}
 		}
-		// signOut({ navigate: false });
 	};
 
 	const handleOpenChange = (open: boolean) => {

@@ -1,96 +1,93 @@
 import type { Chat } from "@ai-sdk/react";
-import type { MessageType } from "@packages/shared";
-import { type AgentConfig, initialAgentConfig } from "@packages/shared";
+import type { agentConfigSchema, MessageType, officeMetadataSchema } from "@packages/shared";
+import type { createChatClientOptions } from "@tanstack/ai-react";
 import type { Editor } from "@tiptap/react";
 import type { useAuth } from "@workos-inc/authkit-react";
+import type { z } from "zod";
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-import type { WorkbookMetadata } from "./excel/metadata";
-
-type WorkbookConfig = {
-	documentUrl: string;
-	documentMode: "readOnly" | "readWrite";
-	officePlatform: "mac" | "windows" | "web";
-	isDarkTheme: boolean;
-	loadOnStartup: boolean;
-};
+import { createChat, createTanstackChat } from "./chat";
 
 type WorkbookState = {
 	worksheets: Excel.Worksheet[];
 	activeRange: Excel.Range;
-	name: string;
+	workbook: Excel.Workbook;
 };
 
 export type AppState = {
 	operatingSystem: "mac" | "windows";
-	editor: Editor;
 	modelMenuOpen: boolean;
 	settingsMenuOpen: boolean;
 	chatHistoryOpen: boolean;
 	taskpaneOpen: boolean;
-
-	chat: Chat<MessageType>;
+	editor: Editor;
 	auth: ReturnType<typeof useAuth>;
 
-	// Agent speicific state
-	agentConfig: AgentConfig;
-	setAgentConfig: (config: Partial<AgentConfig>) => void;
-
 	// Excel specific states
-	workbookConfig: WorkbookConfig;
-	setWorkbookConfig: (config: Partial<WorkbookConfig>) => void;
-	workbookMetadata: WorkbookMetadata;
-	setWorkbookMetadata: (metadata: Partial<WorkbookMetadata>) => void;
 	workbookState: WorkbookState;
 	setWorkbookState: (state: Partial<WorkbookState>) => void;
 };
 
-export const useAppState = create<AppState>()(
+export const useAppState = create<AppState>()((set) => ({
+	operatingSystem: navigator.userAgent.toLowerCase().includes("mac") ? "mac" : "windows",
+	modelMenuOpen: false,
+	settingsMenuOpen: false,
+	chatHistoryOpen: false,
+	taskpaneOpen: false,
+	editor: undefined!,
+	auth: undefined!,
+
+	// Workbook specific data
+	workbookState: undefined!,
+	setWorkbookState: (workbookState) => {
+		set((state) => ({
+			workbookState: { ...state.workbookState, ...workbookState },
+		}));
+	},
+}));
+
+type ChatStore = {
+	chat: Chat<MessageType>;
+	tanstackChat: ReturnType<typeof createChatClientOptions>;
+};
+
+export const useChatStore = create<ChatStore>()(() => ({
+	chat: createChat(),
+	tanstackChat: createTanstackChat(),
+}));
+
+export const useOfficeMetadata = create<z.infer<typeof officeMetadataSchema>>()(
 	persist(
 		(set, get) => ({
-			operatingSystem: navigator.userAgent.toLowerCase().includes("mac") ? "mac" : "windows",
-			editor: undefined!,
-			modelMenuOpen: false,
-			settingsMenuOpen: false,
-			chatHistoryOpen: false,
-			taskpaneOpen: false,
-
-			chat: undefined!,
-			auth: undefined!,
-
-			agentConfig: initialAgentConfig,
-			setAgentConfig: (config) => {
-				set((state) => ({
-					agentConfig: { ...state.agentConfig, ...config },
-				}));
-			},
-
-			// Workbook specific data
-			workbookConfig: undefined!,
-			setWorkbookConfig: (config) => {
-				set((state) => ({
-					workbookConfig: { ...state.workbookConfig, ...config },
-				}));
-			},
-			workbookMetadata: undefined!,
-			setWorkbookMetadata: (metadata) => {
-				set((state) => ({
-					workbookMetadata: { ...state.workbookMetadata, ...metadata },
-				}));
-			},
-			workbookState: undefined!,
-			setWorkbookState: (workbookState) => {
-				set((state) => ({
-					workbookState: { ...state.workbookState, ...workbookState },
-				}));
-			},
+			id: crypto.randomUUID(),
 		}),
 		{
-			name: "app-state",
-			partialize: (state) => ({
-				agentConfig: state.agentConfig,
-				workbookConfig: state.workbookConfig,
-			}),
+			name: "workbook-metadata",
+			storage: {
+				getItem: (name) => {
+					return Office.context.document.settings.get(name);
+				},
+				setItem: (name, value) => {
+					Office.context.document.settings.set(name, value);
+					Office.context.document.settings.saveAsync();
+				},
+				removeItem: (name) => {
+					Office.context.document.settings.remove(name);
+					Office.context.document.settings.saveAsync();
+				},
+			},
+		}
+	)
+);
+
+export const useAgentConfig = create<z.infer<typeof agentConfigSchema>>()(
+	persist(
+		(set, get) => ({
+			model: "google/gemini-3-pro-preview",
+			mode: "agent",
+		}),
+		{
+			name: "agent-config",
 		}
 	)
 );

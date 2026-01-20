@@ -1,19 +1,18 @@
 import { useAppState } from "@/lib/state";
 
 export const toggleTaskpane = async () => {
-	const isTaskpaneOpen = useAppState.getState().taskpaneOpen;
-	const isEditorFocused = useAppState.getState().editor.isFocused;
+	const { taskpaneOpen, editor } = useAppState.getState();
 
-	if (!isTaskpaneOpen) {
+	if (!taskpaneOpen) {
 		return Office.addin.showAsTaskpane();
 	}
 
-	if (isTaskpaneOpen && isEditorFocused) {
+	if (taskpaneOpen && editor.isFocused) {
 		return Excel.run(async ({ workbook }) => workbook.focus());
 	}
 
-	if (isTaskpaneOpen && !isEditorFocused) {
-		await Office.addin.showAsTaskpane();
+	if (taskpaneOpen && !editor.isFocused) {
+		Office.addin.showAsTaskpane();
 		useAppState.getState().editor.commands.focus("end");
 		return;
 	}

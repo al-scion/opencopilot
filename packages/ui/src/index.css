@@ -49,10 +49,6 @@
 	--color-sidebar-border: var(--sidebar-border);
 	--color-sidebar-ring: var(--sidebar-ring);
 
-	--color-taskpane-background-mac: #ecebec;
-	--color-taskpane-background-web: #f5f5f5;
-	--color-taskpane-background-windows: #f0f0f0;
-
 	--color-primary-50: var(--primary-50);
 	--color-primary-100: var(--primary-100);
 	--color-primary-200: var(--primary-200);

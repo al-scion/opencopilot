@@ -1,5 +1,3 @@
-import { convexQuery } from "@convex-dev/react-query";
-import { api } from "@packages/convex";
 import {
 	Command,
 	CommandEmpty,
@@ -13,37 +11,37 @@ import { Dialog, DialogContent, DialogHeader, DialogTrigger } from "@packages/ui
 import { Kbd } from "@packages/ui/components/ui/kbd";
 import { cn } from "@packages/ui/lib/utils";
 import { useQueryClient } from "@tanstack/react-query";
-import { ArrowUpDown, ChevronDown, History } from "lucide-react";
+import { ArrowDownIcon, ArrowUpIcon, CornerDownLeft, History } from "lucide-react";
+import { TooltipButton } from "@/components/tooltip-button";
 import { getShortcutString, useShortcut } from "@/lib/browser-shortcuts";
 import { createChat } from "@/lib/chat";
-import { getMessages, useGetChats } from "@/lib/convex";
-import { useAppState } from "@/lib/state";
+import { getMessages, prefetchMessages, useGetChats } from "@/lib/convex";
+import { useAppState, useChatStore, useOfficeMetadata } from "@/lib/state";
 import { getRelativeTime } from "@/lib/utils";
-import { TooltipButton } from "../tooltip-button";
 
 export function ChatHistory() {
 	const queryClient = useQueryClient();
-	const { workbookMetadata, chatHistoryOpen, chat, editor } = useAppState();
-	const { data: chats, isLoading } = useGetChats(workbookMetadata.documentId);
-	const currentChatTitle = chats?.find((item) => item.chatId === chat.id)?.title ?? "New chat";
-	// const [value, setValue] = useState("");
+	const { chat } = useChatStore();
+	const { chatHistoryOpen, editor } = useAppState();
+	const { id } = useOfficeMetadata();
+
+	const { data: chats, isLoading } = useGetChats(id);
 
 	const handleOpenChange = (open: boolean) => {
 		useAppState.setState({ chatHistoryOpen: open });
 		!open && editor.commands.focus();
 	};
 
+	useShortcut({ name: "chatHistory", action: () => handleOpenChange(!chatHistoryOpen) });
+
 	const handleSelectChat = async (chatId: string) => {
 		const messages = await getMessages(chatId, queryClient);
-		createChat({ id: chatId, messages });
+		useChatStore.setState({ chat: createChat({ id: chatId, messages }) });
 		handleOpenChange(false);
 	};
 
-	useShortcut({ name: "chatHistory", action: () => handleOpenChange(!chatHistoryOpen) });
-
-	const handleSetValue = (chatId: string) => {
-		// setValue(chatId);
-		queryClient.prefetchQuery(convexQuery(api.chat.functions.getMessages, { chatId }));
+	const handleHighlightedValueChange = (chatId: string) => {
+		prefetchMessages(chatId, queryClient);
 	};
 
 	return (
@@ -67,8 +65,7 @@ export function ChatHistory() {
 				<Command
 					filter={(value, search, keywords) => (keywords?.join().toLowerCase().includes(search.toLowerCase()) ? 1 : 0)}
 					loop
-					onValueChange={handleSetValue}
-					// value={value}
+					onValueChange={handleHighlightedValueChange}
 				>
 					<CommandInput placeholder="Search chat history" wrapperClassName="border-none bg-muted rounded-lg" />
 					<CommandList className="no-scrollbar min-h-80 overflow-auto pt-1 pb-7">
@@ -93,14 +90,19 @@ export function ChatHistory() {
 				</Command>
 				<div className="absolute inset-x-0 bottom-0 z-20 flex items-center gap-3 rounded-b-xl border-t bg-muted px-3 py-2 text-foreground text-xs">
 					<div className="flex items-center gap-1.5">
-						<Kbd className="border bg-background p-0.5 text-foreground shadow-xs">
-							<ArrowUpDown strokeWidth={2.1} />
+						<Kbd className="size-5 rounded-xs border bg-background text-muted-foreground">
+							<ArrowUpIcon />
 						</Kbd>
-						Navigate
+						<Kbd className="-ml-1 size-5 rounded-xs border bg-background text-muted-foreground">
+							<ArrowDownIcon />
+						</Kbd>
+						<span className="text-muted-foreground">Navigate</span>
 					</div>
 					<div className="flex items-center gap-1.5">
-						<Kbd className="border bg-background p-0.5 font-normal text-foreground shadow-xs">⏎</Kbd>
-						Select
+						<Kbd className="size-5 rounded-xs border bg-background text-muted-foreground">
+							<CornerDownLeft />
+						</Kbd>
+						<span className="text-muted-foreground">Select</span>
 					</div>
 				</div>
 			</DialogContent>

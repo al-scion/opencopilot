@@ -32,6 +32,12 @@ export const useGetMessages = (chatId: string) => {
 	});
 };
 
+export const prefetchMessages = async (chatId: string, queryClient: QueryClient) => {
+	queryClient.prefetchQuery({
+		...convexQuery(api.chat.functions.getMessages, { chatId }),
+	});
+};
+
 export const getMessages = async (chatId: string, queryClient: QueryClient) => {
 	const data = await queryClient.fetchQuery({
 		...convexQuery(api.chat.functions.getMessages, { chatId }),
