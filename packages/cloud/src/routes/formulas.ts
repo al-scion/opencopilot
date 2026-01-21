@@ -1,5 +1,5 @@
 import { imageModelSchema, languageModelSchema, modelRegistry } from "@packages/shared/server";
-import { generateText } from "ai";
+import { generateImage, generateText } from "ai";
 import { Hono } from "hono";
 import { describeRoute, validator } from "hono-openapi";
 import { z } from "zod";
@@ -12,19 +12,24 @@ export const formulasRouter = new Hono<{ Bindings: Env; Variables: Variables }>(
 		validator(
 			"json",
 			z.object({
-				text: z.string(),
-				model: z.string().optional(),
+				prompt: z.string(),
+				model: languageModelSchema,
 			})
 		),
 		async (c) => {
-			const { text, model } = c.req.valid("json");
-			const parsedModel = languageModelSchema.safeParse(model);
-			const modelId = parsedModel.success ? parsedModel.data : "google/gemini-3-pro-preview";
+			const abortSignal = c.req.raw.signal;
+			const handleAbort = () => {
+				console.info("formulas:text request aborted");
+			};
+			abortSignal.addEventListener("abort", handleAbort, { once: true });
+			const { prompt, model } = c.req.valid("json");
+
 			const response = await generateText({
-				model: modelRegistry.languageModel(modelId),
-				prompt: text,
-				abortSignal: c.req.raw.signal,
+				model: modelRegistry.languageModel(model),
+				prompt,
+				abortSignal,
 			});
+			abortSignal.removeEventListener("abort", handleAbort);
 			return c.json(response.text);
 		}
 	)
@@ -32,20 +37,25 @@ export const formulasRouter = new Hono<{ Bindings: Env; Variables: Variables }>(
 	.post(
 		"/image",
 		describeRoute({}),
-		validator("json", z.object({ prompt: z.string(), model: z.string().optional() })),
+		validator("json", z.object({ prompt: z.string(), model: imageModelSchema })),
 		async (c) => {
+			const abortSignal = c.req.raw.signal;
+			const handleAbort = () => {
+				console.info("formulas:image request aborted");
+			};
+			abortSignal.addEventListener("abort", handleAbort, { once: true });
 			const { prompt, model } = c.req.valid("json");
-			const parsedModel = imageModelSchema.safeParse(model);
-			const modelId = parsedModel.success ? parsedModel.data : "google/gemini-3-pro-image-preview";
-			const response = await generateText({
-				model: modelRegistry.languageModel(modelId),
+			const response = await generateImage({
+				model: modelRegistry.imageModel(model),
 				prompt,
-				abortSignal: c.req.raw.signal,
+				abortSignal,
 			});
+			abortSignal.removeEventListener("abort", handleAbort);
 			const fileKey = crypto.randomUUID();
-			const img = response.files[0]!;
+			const img = response.image;
+			const imageBytes = img.uint8Array;
 
-			await c.env.STORAGE.put(fileKey, img.uint8Array, {
+			await c.env.STORAGE.put(fileKey, imageBytes, {
 				httpMetadata: { contentType: img.mediaType },
 				customMetadata: { prompt },
 			});

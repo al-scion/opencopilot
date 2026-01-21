@@ -80,10 +80,10 @@ export function SettingsMenu() {
 						<Settings />
 						Settings
 					</DropdownMenuItem>
-					<DropdownMenuItem>
+					{/* <DropdownMenuItem>
 						<Keyboard />
 						Shortcuts
-					</DropdownMenuItem>
+					</DropdownMenuItem> */}
 					{/* <DropdownMenuSeparator /> */}
 					<DropdownMenuItem onClick={handleAuth}>
 						{user ? <LogOut /> : <CircleUserRoundIcon />}

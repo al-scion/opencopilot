@@ -1,4 +1,12 @@
-import { authErrorCell, getCellValueCard, inPreviewErrorCell } from "@packages/shared";
+import {
+	authErrorCell,
+	getCellValueCard,
+	IMAGE_MODELS,
+	imageModelSchema,
+	inPreviewErrorCell,
+	LANGUAGE_MODELS,
+	languageModelSchema,
+} from "@packages/shared";
 import { getAccessToken } from "@/lib/auth";
 import { server } from "@/lib/server";
 
@@ -6,15 +14,16 @@ export const memoize = <T extends (...args: any[]) => any>(fn: T): ((...args: Pa
 	const cache = new Map<string, any>();
 	const inFlight = new Map<string, Promise<any>>();
 	return async (...args: Parameters<T>) => {
-		console.log("memoize", args);
 		const invocation = args.at(-1) as CustomFunctions.StreamingInvocation<Excel.ErrorCellValue[][]>;
 
 		const functionArgs = args.slice(0, -1);
 		const cacheKeys = [functionArgs, invocation.functionName];
 		const cacheString = JSON.stringify(cacheKeys);
+		console.log("running custom function with key:", cacheString);
 
 		const abortController = new AbortController();
 		invocation.onCanceled = () => {
+			console.log("aborting", cacheString);
 			abortController.abort();
 			inFlight.delete(cacheString);
 		};
@@ -35,11 +44,11 @@ export const memoize = <T extends (...args: any[]) => any>(fn: T): ((...args: Pa
 			return;
 		}
 
-		// Check for auth state
-		if (getAccessToken() === null) {
-			invocation.setResult([[authErrorCell]]);
-			return;
-		}
+		// Check for auth state, TBD, auth check on the server maybe...
+		// if (getAccessToken() === null) {
+		// 	invocation.setResult([[authErrorCell]]);
+		// 	return;
+		// }
 
 		try {
 			const promise = fn(...functionArgs, abortController.signal);
@@ -57,11 +66,12 @@ export const memoize = <T extends (...args: any[]) => any>(fn: T): ((...args: Pa
 };
 
 export const generateText = async (prompt: string, model: string | null, signal: AbortSignal) => {
+	const modelId = languageModelSchema.parse(model ?? LANGUAGE_MODELS[0]!.id);
 	const response = await server.formulas.text.$post(
 		{
 			json: {
-				text: prompt,
-				model: model ?? undefined,
+				prompt,
+				model: modelId,
 			},
 		},
 		{ init: { signal } }
@@ -73,11 +83,12 @@ export const generateText = async (prompt: string, model: string | null, signal:
 };
 
 export const generateImage = async (prompt: string, model: string | null, signal: AbortSignal) => {
+	const modelId = imageModelSchema.parse(model ?? IMAGE_MODELS[0]!.id);
 	const response = await server.formulas.image.$post(
 		{
 			json: {
 				prompt,
-				model: model ?? undefined,
+				model: modelId,
 			},
 		},
 		{ init: { signal } }

@@ -29,7 +29,7 @@ export const LANGUAGE_MODELS = [
 
 export const IMAGE_MODELS = [
 	{
-		id: "google/gemini-2.5-flash-image",
+		id: "google/gemini-2.5-flash-image-preview",
 		name: "Gemini 2.5 Flash Image (default)",
 	},
 	{
@@ -38,7 +38,7 @@ export const IMAGE_MODELS = [
 	},
 ] as const;
 
-export type ImageModelId = (typeof IMAGE_MODELS)[number]["id"];
-export const imageModelSchema = z.enum(IMAGE_MODELS.map(({ id }) => id));
 export type LanguageModelId = (typeof LANGUAGE_MODELS)[number]["id"];
-export const languageModelSchema = z.enum(LANGUAGE_MODELS.map(({ id }) => id));
+export const languageModelSchema = z.enum(LANGUAGE_MODELS.map((m) => m.id));
+export type ImageModelId = (typeof IMAGE_MODELS)[number]["id"];
+export const imageModelSchema = z.enum(IMAGE_MODELS.map((m) => m.id));

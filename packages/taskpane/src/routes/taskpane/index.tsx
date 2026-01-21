@@ -15,18 +15,19 @@ import { fetchServerSentEvents, useChat as useTanstackChat } from "@tanstack/ai-
 import { createFileRoute, redirect, useRouteContext } from "@tanstack/react-router";
 import { Document } from "@tiptap/extension-document";
 import { HardBreak } from "@tiptap/extension-hard-break";
-import { Mention, type MentionNodeAttrs } from "@tiptap/extension-mention";
+import { Mention, type MentionNodeAttrs, type MentionOptions } from "@tiptap/extension-mention";
 import { Paragraph } from "@tiptap/extension-paragraph";
 import { Text } from "@tiptap/extension-text";
 import { Placeholder } from "@tiptap/extensions";
 import { EditorContent, type Range, useEditor, useEditorState } from "@tiptap/react";
-import { useAuth } from "@workos-inc/authkit-react";
+
 import type { FileUIPart } from "ai";
 import { ArrowUp, Paperclip, Plus, SquareMousePointer, Table2 } from "lucide-react";
 import { useRef, useState } from "react";
 import { StickToBottom } from "use-stick-to-bottom";
 import { AssistantMessage } from "@/components/chat/assistant-message";
 import { ChatHistory } from "@/components/chat/chat-history";
+import { CommandMenu, MentionPluginKey } from "@/components/chat/command-menu";
 import { ErrorMessage } from "@/components/chat/error-message";
 import { ModeSelector } from "@/components/chat/mode-selector";
 import { ModelMenu } from "@/components/chat/model-menu";
@@ -48,13 +49,11 @@ export const Route = createFileRoute("/taskpane/")({
 });
 
 function RouteComponent() {
-	const auth = useAuth();
-	const [query, setQuery] = useState<string | null>(null);
-	const [queryRange, setQueryRange] = useState<Range | null>(null);
+	// const [query, setQuery] = useState<string | null>(null);
+	// const [queryRange, setQueryRange] = useState<Range | null>(null);
 	const commandInputRef = useRef<HTMLInputElement>(null);
-	const { workbookState } = useAppState();
+	const { worksheets, activeRange } = useAppState();
 	const { chat, tanstackChat } = useChatStore();
-	const activeRange = workbookState.activeRange;
 	const { sendMessage, messages, status, stop, error } = useChat({ chat });
 
 	const fileInputRef = useRef<HTMLInputElement>(null);
@@ -119,7 +118,7 @@ function RouteComponent() {
 		editor.commands.clearContent();
 	};
 
-	const worksheetOptions: MentionItem[] = workbookState.worksheets.map((worksheet) => ({
+	const worksheetOptions: MentionItem[] = worksheets.map((worksheet) => ({
 		id: worksheet.name,
 		label: worksheet.name,
 		icon: Table2,
@@ -139,7 +138,7 @@ function RouteComponent() {
 	const handleSelectMention = (id: string, label: string) => {
 		editor
 			.chain()
-			.insertContentAt(queryRange!, [
+			.insertContentAt(editorState.suggestion!.range!, [
 				{ type: "mention", attrs: { id, label } satisfies MentionNodeAttrs },
 				{ type: "text", text: " " },
 			])
@@ -168,20 +167,10 @@ function RouteComponent() {
 						{
 							char: "@",
 							allowSpaces: false,
-							// command: (props) => {},
+							// pluginKey: SuggestionPluginKey,
+							pluginKey: MentionPluginKey,
+							// command: ({editor, props, range}) => {},
 							render: () => ({
-								onStart: (props) => {
-									setQuery(props.query);
-									setQueryRange(props.range);
-								},
-								onUpdate: (props) => {
-									setQuery(props.query);
-									setQueryRange(props.range);
-								},
-								onExit: (props) => {
-									setQuery(null);
-									setQueryRange(props.range);
-								},
 								onKeyDown: ({ event, range, view }) => {
 									if (event.key === "ArrowDown" || event.key === "ArrowUp") {
 										event.preventDefault();
@@ -217,7 +206,7 @@ function RouteComponent() {
 			autofocus: true,
 			editorProps: {
 				handleKeyDown: (view, event) => {
-					if (event.key === "Enter" && event.shiftKey === false && query === null) {
+					if (event.key === "Enter" && event.shiftKey === false && editorState.suggestion?.active === false) {
 						handleSendMessage();
 						return true;
 					}
@@ -226,7 +215,6 @@ function RouteComponent() {
 				handleClick: (view, pos, event) => {
 					const node = view.state.doc.nodeAt(pos);
 					const isMention = node?.type.name === "mention";
-					isMention && console.log(node);
 				},
 			},
 			onCreate: ({ editor }) => {
@@ -247,6 +235,8 @@ function RouteComponent() {
 			isEmpty: editor.isEmpty,
 			isFocused: editor.isFocused,
 			selection: editor.state.selection,
+			suggestion: MentionPluginKey.getState(editor.state),
+			// suggestion: SuggestionPluginKey.getState(editor.state) as MentionPluginState,
 		}),
 	});
 
@@ -268,6 +258,7 @@ function RouteComponent() {
 					<SettingsMenu />
 				</div>
 			</div>
+			<pre>{JSON.stringify(editorState, null, 2)}</pre>
 			<StickToBottom className="relative flex-1 overflow-y-auto" initial="instant" resize="instant">
 				<StickToBottom.Content className="p-1.5 pt-0">
 					{messages.map((message) => {
@@ -334,15 +325,17 @@ function RouteComponent() {
 						</div>
 					</CardContentItem>
 				</CardContent>
+				<CommandMenu mentionState={editorState.suggestion} />
+				{/* <CommandMenu mentionState={editorState.mention}} /> */}
 				<Command
 					className={cn(
 						"absolute bottom-[calc(100%+4px)] left-1/2 h-fit w-[calc(100%-4px)] -translate-x-1/2 rounded-lg border shadow",
-						query === null && "hidden"
+						editorState.suggestion?.query === null && "hidden"
 					)}
 					filter={(_value, search, keywords) => (keywords?.join().toLowerCase().includes(search.toLowerCase()) ? 1 : 0)}
 					loop
 				>
-					<CommandInput ref={commandInputRef} value={query || ""} wrapperClassName="hidden" />
+					<CommandInput ref={commandInputRef} value={editorState.suggestion?.query ?? ""} wrapperClassName="hidden" />
 					<CommandList>
 						<CommandEmpty>No results</CommandEmpty>
 						<CommandGroup>
