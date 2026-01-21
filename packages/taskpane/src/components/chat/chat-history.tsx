@@ -10,10 +10,9 @@ import {
 	type CommandItemData,
 	CommandList,
 	CommandShortcut,
-} from "@packages/ui/components/ui/command-new";
+} from "@packages/ui/components/ui/command";
 import { Dialog, DialogContent, DialogHeader, DialogTrigger } from "@packages/ui/components/ui/dialog";
 import { Kbd } from "@packages/ui/components/ui/kbd";
-import { cn } from "@packages/ui/lib/utils";
 import { useQueryClient } from "@tanstack/react-query";
 import { ArrowDownIcon, ArrowUpIcon, ChevronDown, CornerDownLeft, History } from "lucide-react";
 import { TooltipButton } from "@/components/tooltip-button";
@@ -89,13 +88,13 @@ export function ChatHistory() {
 					<CommandEmpty>No chats found</CommandEmpty>
 					<CommandList>
 						{(group: CommandGroupData, index) => (
-							<CommandGroup className="p-0" items={group.items} key={index}>
+							<CommandGroup items={group.items} key={index}>
 								{group.label && <CommandGroupLabel>{group.label}</CommandGroupLabel>}
 								<CommandCollection>
 									{(item: CommandItemData) => (
 										<CommandItem key={item.value} onClick={item.onClick} value={item.value}>
 											{item.icon}
-											{item.label}
+											<span className="truncate">{item.label}</span>
 											{item.shortcut && <CommandShortcut>{item.shortcut}</CommandShortcut>}
 										</CommandItem>
 									)}

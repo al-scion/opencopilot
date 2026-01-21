@@ -17,7 +17,7 @@ type AppState = {
 	editor: Editor;
 
 	worksheets: Excel.Worksheet[];
-	activeRange: Excel.Range;
+	selectedRange: Excel.Range;
 };
 
 const initialWorkbookState = await Excel.run({ delayForCellEdit: true }, async (context) => {
@@ -39,10 +39,10 @@ export const useAppState = create<AppState>()((set) => {
 	Excel.run({ delayForCellEdit: true }, async (context) => {
 		context.runtime.set({ enableEvents: true });
 		context.workbook.onSelectionChanged.add(async (e) => {
-			const activeRange = context.workbook.getSelectedRange().load({ address: true })!;
+			const selectedRange = context.workbook.getSelectedRange().load({ address: true })!;
 			await context.sync();
 			console.log("Active range changed");
-			set({ activeRange });
+			set({ selectedRange });
 		});
 		context.workbook.worksheets.onChanged.add(async (e) => {
 			const worksheets = context.workbook.worksheets.load({ $all: true });
@@ -60,7 +60,7 @@ export const useAppState = create<AppState>()((set) => {
 		editor: undefined!,
 
 		worksheets: initialWorkbookState.worksheets,
-		activeRange: initialWorkbookState.activeRange,
+		selectedRange: initialWorkbookState.activeRange,
 	};
 });
 

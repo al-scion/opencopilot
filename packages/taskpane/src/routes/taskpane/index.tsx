@@ -1,18 +1,9 @@
 import { useChat } from "@ai-sdk/react";
 import { Card, CardContent, CardContentItem } from "@packages/ui/components/ui/card";
-import {
-	Command,
-	CommandEmpty,
-	CommandGroup,
-	CommandInput,
-	CommandItem,
-	CommandList,
-	CommandShortcut,
-} from "@packages/ui/components/ui/command";
 import { toastManager } from "@packages/ui/components/ui/toast";
 import { cn } from "@packages/ui/lib/utils";
 import { fetchServerSentEvents, useChat as useTanstackChat } from "@tanstack/ai-react";
-import { createFileRoute, redirect, useRouteContext } from "@tanstack/react-router";
+import { createFileRoute } from "@tanstack/react-router";
 import { Document } from "@tiptap/extension-document";
 import { HardBreak } from "@tiptap/extension-hard-break";
 import { Mention, type MentionNodeAttrs, type MentionOptions } from "@tiptap/extension-mention";
@@ -20,9 +11,10 @@ import { Paragraph } from "@tiptap/extension-paragraph";
 import { Text } from "@tiptap/extension-text";
 import { Placeholder } from "@tiptap/extensions";
 import { EditorContent, type Range, useEditor, useEditorState } from "@tiptap/react";
+import { exitSuggestion } from "@tiptap/suggestion";
 
 import type { FileUIPart } from "ai";
-import { ArrowUp, Paperclip, Plus, SquareMousePointer, Table2 } from "lucide-react";
+import { ArrowUp, Paperclip, Plus } from "lucide-react";
 import { useRef, useState } from "react";
 import { StickToBottom } from "use-stick-to-bottom";
 import { AssistantMessage } from "@/components/chat/assistant-message";
@@ -40,19 +32,14 @@ import { createChat } from "@/lib/chat";
 import { ALLOWED_MIME_TYPES, MAX_FILE_SIZE } from "@/lib/constants";
 import { saveFileToStorage } from "@/lib/excel/checkpoint";
 import { useAppState, useChatStore } from "@/lib/state";
-import type { MentionItem } from "@/lib/types";
 import { fileToDataUrl } from "@/lib/utils";
 
 export const Route = createFileRoute("/taskpane/")({
 	component: RouteComponent,
-	beforeLoad: async ({ context }) => {},
 });
 
 function RouteComponent() {
-	// const [query, setQuery] = useState<string | null>(null);
-	// const [queryRange, setQueryRange] = useState<Range | null>(null);
 	const commandInputRef = useRef<HTMLInputElement>(null);
-	const { worksheets, activeRange } = useAppState();
 	const { chat, tanstackChat } = useChatStore();
 	const { sendMessage, messages, status, stop, error } = useChat({ chat });
 
@@ -118,34 +105,6 @@ function RouteComponent() {
 		editor.commands.clearContent();
 	};
 
-	const worksheetOptions: MentionItem[] = worksheets.map((worksheet) => ({
-		id: worksheet.name,
-		label: worksheet.name,
-		icon: Table2,
-		menuLabel: worksheet.name,
-		menuSubLabel: "Worksheet",
-	}));
-	const activeRangeOption: MentionItem = {
-		id: activeRange.address,
-		label: activeRange.address,
-		icon: SquareMousePointer,
-		menuLabel: activeRange.address.split("!")[1]!,
-		menuSubLabel: "Selection",
-	};
-
-	const selectOptions: MentionItem[] = [activeRangeOption, ...worksheetOptions];
-
-	const handleSelectMention = (id: string, label: string) => {
-		editor
-			.chain()
-			.insertContentAt(editorState.suggestion!.range!, [
-				{ type: "mention", attrs: { id, label } satisfies MentionNodeAttrs },
-				{ type: "text", text: " " },
-			])
-			.focus()
-			.run();
-	};
-
 	const editor = useEditor(
 		{
 			extensions: [
@@ -167,9 +126,7 @@ function RouteComponent() {
 						{
 							char: "@",
 							allowSpaces: false,
-							// pluginKey: SuggestionPluginKey,
 							pluginKey: MentionPluginKey,
-							// command: ({editor, props, range}) => {},
 							render: () => ({
 								onKeyDown: ({ event, range, view }) => {
 									if (event.key === "ArrowDown" || event.key === "ArrowUp") {
@@ -206,7 +163,7 @@ function RouteComponent() {
 			autofocus: true,
 			editorProps: {
 				handleKeyDown: (view, event) => {
-					if (event.key === "Enter" && event.shiftKey === false && editorState.suggestion?.active === false) {
+					if (event.key === "Enter" && event.shiftKey === false && editorState.mention?.active === false) {
 						handleSendMessage();
 						return true;
 					}
@@ -235,8 +192,7 @@ function RouteComponent() {
 			isEmpty: editor.isEmpty,
 			isFocused: editor.isFocused,
 			selection: editor.state.selection,
-			suggestion: MentionPluginKey.getState(editor.state),
-			// suggestion: SuggestionPluginKey.getState(editor.state) as MentionPluginState,
+			mention: MentionPluginKey.getState(editor.state),
 		}),
 	});
 
@@ -258,7 +214,6 @@ function RouteComponent() {
 					<SettingsMenu />
 				</div>
 			</div>
-			<pre>{JSON.stringify(editorState, null, 2)}</pre>
 			<StickToBottom className="relative flex-1 overflow-y-auto" initial="instant" resize="instant">
 				<StickToBottom.Content className="p-1.5 pt-0">
 					{messages.map((message) => {
@@ -307,8 +262,6 @@ function RouteComponent() {
 									/>
 									<Paperclip />
 								</TooltipButton>
-								{/* <ToolMenu /> */}
-
 								<ModelMenu />
 							</div>
 							<div className="ml-auto flex flex-row items-center gap-1">
@@ -325,35 +278,7 @@ function RouteComponent() {
 						</div>
 					</CardContentItem>
 				</CardContent>
-				<CommandMenu mentionState={editorState.suggestion} />
-				{/* <CommandMenu mentionState={editorState.mention}} /> */}
-				<Command
-					className={cn(
-						"absolute bottom-[calc(100%+4px)] left-1/2 h-fit w-[calc(100%-4px)] -translate-x-1/2 rounded-lg border shadow",
-						editorState.suggestion?.query === null && "hidden"
-					)}
-					filter={(_value, search, keywords) => (keywords?.join().toLowerCase().includes(search.toLowerCase()) ? 1 : 0)}
-					loop
-				>
-					<CommandInput ref={commandInputRef} value={editorState.suggestion?.query ?? ""} wrapperClassName="hidden" />
-					<CommandList>
-						<CommandEmpty>No results</CommandEmpty>
-						<CommandGroup>
-							{selectOptions.map((item, index) => (
-								<CommandItem
-									key={index}
-									keywords={[item.menuLabel, item.menuSubLabel]}
-									onSelect={(value) => handleSelectMention(value, item.label)}
-									value={item.id}
-								>
-									<item.icon className="size-4" />
-									<span className="truncate">{item.menuLabel}</span>
-									<CommandShortcut className="tracking-normal">{item.menuSubLabel}</CommandShortcut>
-								</CommandItem>
-							))}
-						</CommandGroup>
-					</CommandList>
-				</Command>
+				<CommandMenu editor={editor} inputRef={commandInputRef} mentionState={editorState.mention} />
 			</Card>
 		</>
 	);
