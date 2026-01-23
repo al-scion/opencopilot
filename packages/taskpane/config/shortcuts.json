@@ -1,0 +1,18 @@
+{
+  "actions": [
+    {
+      "id": "toggleTaskpane",
+      "name": "toggleTaskpane",
+      "type": "ExecuteFunction"
+    }
+  ],
+  "shortcuts": [
+    {
+      "action": "toggleTaskpane",
+      "key": {
+        "windows": "Ctrl+J",
+        "mac": "Command+J"
+      }
+    }
+  ]
+}
