@@ -8,7 +8,7 @@ import { sideloadAddIn, unregisterAddIn } from "office-addin-dev-settings";
 import { defineConfig, type Plugin } from "vite";
 import mkcert from "vite-plugin-mkcert";
 import tsConfigPaths from "vite-tsconfig-paths";
-import { customFunctionsConfig, shortcutsConfig } from "../shared/src/excel/config";
+import { customFunctionsConfig, shortcutsConfig } from "./src/lib/excel/config";
 
 const officePlugin = ({ manifestPath }: { manifestPath: string }): Plugin => ({
 	name: "officePlugin",

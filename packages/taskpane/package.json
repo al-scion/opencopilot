@@ -7,8 +7,7 @@
     "serve": "vite preview",
     "start": "vite",
     "checktypes": "tsgo --noEmit",
-    "deploy": "wrangler deploy",
-    "secrets": "wrangler secret bulk .env.production && wrangler types --env-file=.env.production"
+    "deploy": "wrangler deploy"
   },
   "devDependencies": {
     "@types/bun": "catalog:",

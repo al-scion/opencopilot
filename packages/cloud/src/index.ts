@@ -12,7 +12,6 @@ import { describeRoute, openAPIRouteHandler } from "hono-openapi";
 import { WORKOS_JWKS_URI } from "./constants";
 import { chatRouter } from "./routes/chat";
 import { formulasRouter } from "./routes/formulas";
-import { officeRouter } from "./routes/office";
 import { storageRouter } from "./routes/storage";
 
 export type Variables = {
@@ -35,7 +34,6 @@ const app = new Hono<{ Bindings: Env; Variables: Variables }>()
 	.get("/health", describeRoute({}), (c) => c.json({ status: "OK" }))
 	.route("/storage", storageRouter)
 	.route("/chat", chatRouter)
-	.route("/office", officeRouter)
 	.route("/formulas", formulasRouter);
 
 app.get("/", (c) => c.redirect("/docs"));

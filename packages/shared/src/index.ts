@@ -10,7 +10,6 @@ export * from "./excel/auto-format";
 export * from "./excel/cards";
 export * from "./excel/cell-value";
 export * from "./excel/conditional-format";
-export * from "./excel/config";
 export * from "./excel/constants";
 export * from "./excel/metadata";
 export * from "./excel/navigation";

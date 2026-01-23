@@ -1,14 +1,189 @@
-import type { CustomFunctionIds, ShortcutIds } from "@packages/shared";
+import { IMAGE_MODELS, LANGUAGE_MODELS } from "@packages/shared";
 import { generateImage, generateText, memoize } from "./formula";
 import { toggleTaskpane } from "./shortcuts";
 
+// References
+// WARNING: DO NOT EDIT THIS TYPE DEFINITION!!
+// https://learn.microsoft.com/en-us/office/dev/add-ins/design/keyboard-shortcuts?tabs=xmlmanifest#define-custom-keyboard-shortcuts
+type ShortcutsConfig = {
+	actions: {
+		id: string;
+		name: string;
+		type: "ExecuteFunction";
+	}[];
+	shortcuts: {
+		action: string;
+		key: {
+			default?: string;
+			windows?: string;
+			mac?: string;
+			web?: string;
+		};
+	}[];
+	resources?: {
+		default: {
+			[key: string]: {
+				value: string;
+				comment?: string;
+			};
+		};
+	};
+};
+
+// References
+// WARNING: DO NOT EDIT THIS TYPE DEFINITION!!
+// https://developer.microsoft.com/json-schemas/office-js/custom-functions.schema.json
+// https://learn.microsoft.com/en-us/office/dev/add-ins/excel/custom-functions-json
+type CustomFunctionsConfig = {
+	allowCustomDataForDataTypeAny?: boolean;
+	allowErrorForDataTypeAny?: boolean;
+	enums?: {
+		id: string;
+		type: "string" | "number";
+		values: {
+			name: string;
+			stringValue?: string;
+			numberValue?: number;
+			tooltip?: string;
+		}[];
+	}[];
+	functions: {
+		id: string;
+		name: string;
+		description?: string;
+		helpUrl?: string;
+		result: {
+			type?: "boolean" | "number" | "string" | "any";
+			dimensionality?: "scalar" | "matrix";
+		};
+		parameters: {
+			name: string;
+			description?: string;
+			type?: "boolean" | "number" | "string" | "any";
+			dimensionality?: "scalar" | "matrix";
+			optional?: boolean;
+			repeating?: boolean;
+			customEnumId?: string;
+			cellValueType?:
+				| "cellvalue"
+				| "booleancellvalue"
+				| "doublecellvalue"
+				| "entitycellvalue"
+				| "errorcellvalue"
+				| "linkedentitycellvalue"
+				| "localimagecellvalue"
+				| "stringcellvalue"
+				| "webimagecellvalue";
+		}[];
+		options?: {
+			stream?: boolean;
+			cancelable?: boolean;
+			capturesCallingObject?: boolean;
+			excludeFromAutoComplete?: boolean;
+			linkedEntityLoadService?: boolean;
+			requiresAddress?: boolean;
+			requiresParameterAddresses?: boolean;
+			requiresStreamAddress?: boolean;
+			requiresStreamParameterAddresses?: boolean;
+			supportSync?: boolean;
+			volatile?: boolean;
+		};
+	}[];
+};
+
+export const shortcutsDefinitions = [
+	{
+		id: "toggleTaskpane",
+		key: {
+			windows: "Ctrl+J",
+			mac: "Command+J",
+		},
+		action: toggleTaskpane,
+	},
+] as const satisfies {
+	id: string;
+	key: ShortcutsConfig["shortcuts"][number]["key"];
+	action: Function;
+}[];
+
+export const customFunctionsDefinitions = [
+	{
+		id: "GENERATE.TEXT",
+		description: "Generate text with AI",
+		parameters: [
+			{ name: "prompt", type: "string" },
+			{ name: "model", optional: true, customEnumId: "LANGUAGE_MODELS", type: "string" },
+		],
+		action: generateText,
+	},
+	{
+		id: "GENERATE.IMAGE",
+		description: "Generate an image with AI",
+		parameters: [
+			{ name: "prompt", type: "string" },
+			{ name: "model", optional: true, customEnumId: "IMAGE_MODELS", type: "string" },
+		],
+		action: generateImage,
+	},
+] as const satisfies {
+	id: string;
+	description?: string;
+	parameters: CustomFunctionsConfig["functions"][number]["parameters"];
+	action: Function;
+}[];
+
+export const customFunctionsConfig = {
+	allowCustomDataForDataTypeAny: true,
+	allowErrorForDataTypeAny: true,
+	functions: customFunctionsDefinitions.map((item) => ({
+		id: item.id,
+		name: item.id,
+		description: item.description,
+		helpUrl: "https://docs.usefabric.xyz",
+		parameters: item.parameters,
+		result: { dimensionality: "matrix", type: "any" },
+		options: { stream: true, requiresStreamAddress: true, requiresStreamParameterAddresses: true },
+	})),
+	enums: [
+		{
+			id: "LANGUAGE_MODELS",
+			type: "string",
+			values: LANGUAGE_MODELS.map((item) => ({
+				name: item.name,
+				stringValue: item.id,
+			})),
+		},
+		{
+			id: "IMAGE_MODELS",
+			type: "string",
+			values: IMAGE_MODELS.map((item) => ({
+				name: item.name,
+				stringValue: item.id,
+			})),
+		},
+	],
+};
+
+export const shortcutsConfig: ShortcutsConfig = {
+	actions: shortcutsDefinitions.map((item) => ({
+		id: item.id,
+		name: item.id,
+		type: "ExecuteFunction",
+	})),
+	shortcuts: shortcutsDefinitions.map((item) => ({
+		action: item.id,
+		key: item.key,
+	})),
+};
+
 export const registerCustomFunctions = () => {
-	CustomFunctions.associate({
-		"GENERATE.TEXT": memoize(generateText),
-		"GENERATE.IMAGE": memoize(generateImage),
-	});
+	CustomFunctions.associate(
+		Object.fromEntries(customFunctionsDefinitions.map((item) => [item.id, memoize(item.action)]))
+	);
 };
 
 export const registerShortcuts = () => {
-	Office.actions.associate("toggleTaskpane", toggleTaskpane);
+	shortcutsDefinitions.forEach((item) => {
+		Office.actions.associate(item.id, item.action);
+	});
 };
