@@ -4,21 +4,26 @@
   "scripts": {
     "dev": "astro dev",
     "build": "astro build",
-    "preview": "astro preview",
     "astro": "astro",
     "deploy": "wrangler deploy",
     "checktypes": "tsgo --noEmit"
   },
   "devDependencies": {
+    "@types/bun": "catalog:",
     "@types/node": "catalog:",
     "typescript": "catalog:",
     "@typescript/native-preview": "catalog:",
-    "wrangler": "catalog:"
+    "vite": "^6.4.1",
+    "wrangler": "catalog:",
+    "@tailwindcss/vite": "^4.1.18"
   },
   "dependencies": {
     "@astrojs/cloudflare": "^12.6.12",
     "@astrojs/mdx": "^4.3.13",
     "@astrojs/sitemap": "^3.6.0",
-    "astro": "^5.16.6"
+    "@tailwindcss/vite": "^4.1.18",
+    "astro": "^5.16.14",
+    "hono": "catalog:",
+    "tailwindcss": "^4.1.18"
   }
 }

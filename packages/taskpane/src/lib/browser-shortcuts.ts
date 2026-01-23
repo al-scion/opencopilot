@@ -36,10 +36,22 @@ const browserShortcuts = [
 		},
 	},
 	{
+		name: "shortcutMenu",
+		key: {
+			mac: "meta+slash",
+			windows: "ctrl+slash",
+		},
+		options: {
+			enableOnFormTags: true,
+			enableOnContentEditable: true,
+			preventDefault: true,
+		},
+	},
+	{
 		name: "toggleMode",
 		key: {
-			mac: "tab",
-			windows: "tab",
+			mac: "alt+p",
+			windows: "alt+p",
 		},
 		options: {
 			enableOnContentEditable: true,

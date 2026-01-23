@@ -32,7 +32,7 @@ export function ModelMenu() {
 			<DropdownMenuTrigger
 				render={(props, state) => (
 					<TooltipButton
-						className={cn(state.open && "bg-muted")}
+						className={cn("rounded-full", state.open && "bg-muted")}
 						shortcutKeys={getShortcutString("toggleModel")}
 						size="icon"
 						tooltip={selectedModel.name}
@@ -58,6 +58,7 @@ export function ModelMenu() {
 						WebkitMaskPosition: "center",
 					}}
 				/>
+				{/* <span className="font-light text-muted-foreground text-sm">{selectedModel.name}</span> */}
 			</DropdownMenuTrigger>
 			<DropdownMenuContent align="center" className="w-48 min-w-fit">
 				<DropdownMenuGroup>

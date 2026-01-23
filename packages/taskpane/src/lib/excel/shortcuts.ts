@@ -1,7 +1,7 @@
 import { useAppState } from "@/lib/state";
 
 export const toggleTaskpane = async () => {
-	const { taskpaneOpen, editor } = useAppState.getState();
+	const { taskpaneOpen, editor, taskpaneFocused } = useAppState.getState();
 
 	if (!taskpaneOpen) {
 		return Office.addin.showAsTaskpane();

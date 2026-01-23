@@ -11,5 +11,9 @@ export const initWorkbook = async () => {
 		registerCustomFunctions();
 		// All of this will stay pending until the user exits cell edit state
 		await registerNamedRange();
+		// Office.addin.beforeDocumentCloseNotification.enable();
+		// Office.addin.beforeDocumentCloseNotification.onCloseActionCancelled(() =>
+		// 	console.log("beforeDocumentCloseNotification")
+		// );
 	});
 };

@@ -2,19 +2,19 @@ export const MODES = [
 	{
 		id: "agent",
 		name: "Agent",
-		description: "Automatically plan and execute tasks",
+		description: "Edit automatically",
 		writeRequired: true,
 	},
 	{
 		id: "format",
 		name: "Format",
-		description: "Format the data in the workbook",
+		description: "Ask before editing",
 		writeRequired: true,
 	},
 	{
 		id: "ask",
 		name: "Ask",
-		description: "Ask a question to the agent",
+		description: "Plan mode",
 		writeRequired: false,
 	},
 ] as const;

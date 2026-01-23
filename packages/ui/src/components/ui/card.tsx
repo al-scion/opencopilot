@@ -11,7 +11,7 @@ function CardTitle({ className, ...props }: React.ComponentProps<"div">) {
 function CardHeader({ className, ...props }: React.ComponentProps<"div">) {
 	return (
 		<div
-			className={cn("flex min-h-8 flex-row items-center px-2 py-1 font-medium text-sm", className)}
+			className={cn("flex flex-row items-center px-2 py-1 text-muted-foreground text-xs", className)}
 			data-slot="card-header"
 			{...props}
 		/>
@@ -39,7 +39,7 @@ function CardContentItem({ className, ...props }: React.ComponentProps<"div">) {
 	return (
 		<div
 			className={cn(
-				"group/card-item flex select-none flex-row items-center gap-2 border-b p-2 last:border-b-0",
+				"group/card-item flex select-none flex-row items-center gap-2 overflow-auto border-b p-2 last:border-b-0",
 				className
 			)}
 			data-slot="card-content-item"

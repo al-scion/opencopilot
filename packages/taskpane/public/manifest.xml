@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<OfficeApp
+  xmlns="http://schemas.microsoft.com/office/appforoffice/1.1"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:bt="http://schemas.microsoft.com/office/officeappbasictypes/1.0"
+  xmlns:ov="http://schemas.microsoft.com/office/taskpaneappversionoverrides"
+  xsi:type="TaskPaneApp">
+  <Id>dac8f4c2-ab45-4714-9e5b-eddc1457e727</Id>
+  <Version>1.0.0.3</Version>
+  <ProviderName>Command Space Inc.</ProviderName>
+  <DefaultLocale>en-US</DefaultLocale>
+  <DisplayName DefaultValue="Fabric" />
+  <Description DefaultValue="The AI agent builder" />
+  <IconUrl DefaultValue="https://taskpane.usefabric.xyz/logo-32.png" />
+  <HighResolutionIconUrl DefaultValue="https://taskpane.usefabric.xyz/logo-64.png" />
+  <SupportUrl DefaultValue="https://docs.usefabric.xyz" />
+
+  <!-- Domains that will be allowed when navigating. For example, if you use ShowTaskpane and then
+  have an href link, navigation will only be allowed if the domain is on this list. -->
+  <AppDomains>
+    <AppDomain>https://taskpane.usefabric.xyz</AppDomain>
+    <AppDomain>https://storage.usefabric.xyz</AppDomain>
+    <AppDomain>https://auth.usefabric.xyz</AppDomain>
+    <AppDomain>https://local.usefabric.xyz</AppDomain>
+    <AppDomain>https://plentiful-gust-36.authkit.app</AppDomain>
+    <AppDomain>https://api.workos.com</AppDomain>
+    <AppDomain>https://accounts.google.com</AppDomain>
+  </AppDomains>
+  <Hosts>
+    <Host Name="Workbook" />
+  </Hosts>
+  <Requirements>
+    <Sets DefaultMinVersion="1.1">
+      <Set Name="ExcelApi" MinVersion="1.5" />
+      <Set Name="CustomFunctionsRuntime" MinVersion="1.1" />
+      <Set Name="SharedRuntime" MinVersion="1.1" />
+      <Set Name="KeyboardShortcuts" MinVersion="1.1" />
+      <Set Name="DialogApi" MinVersion="1.2" />
+    </Sets>
+  </Requirements>
+  <DefaultSettings>
+    <SourceLocation DefaultValue="https://taskpane.usefabric.xyz/taskpane" />
+  </DefaultSettings>
+  <Permissions>ReadWriteDocument</Permissions>
+  <VersionOverrides xmlns="http://schemas.microsoft.com/office/taskpaneappversionoverrides"
+    xsi:type="VersionOverridesV1_0">
+    <Hosts>
+      <Host xsi:type="Workbook">
+        <Runtimes>
+          <Runtime resid="Taskpane.Url" lifetime="long" />
+        </Runtimes>
+        <AllFormFactors>
+          <ExtensionPoint xsi:type="CustomFunctions">
+            <Script>
+              <SourceLocation resid="Taskpane.Url" />
+            </Script>
+            <Page>
+              <SourceLocation resid="Taskpane.Url" />
+            </Page>
+            <Metadata>
+              <SourceLocation resid="Functions.Metadata.Url" />
+            </Metadata>
+            <Namespace resid="Functions.Namespace" />
+          </ExtensionPoint>
+        </AllFormFactors>
+        <DesktopFormFactor>
+          <GetStarted>
+            <Title resid="Label.GetStarted" />
+            <Description resid="Description.GetStarted" />
+            <LearnMoreUrl resid="Taskpane.Documentation.Url" />
+          </GetStarted>
+          <FunctionFile resid="Taskpane.Url" />
+          <ExtensionPoint xsi:type="PrimaryCommandSurface">
+            <OfficeTab id="TabHome">
+              <Group id="Group1">
+                <Label resid="Label.Group.Main" />
+                <Icon>
+                  <bt:Image size="16" resid="Icon.16x16" />
+                  <bt:Image size="32" resid="Icon.32x32" />
+                  <bt:Image size="80" resid="Icon.80x80" />
+                </Icon>
+                <Control xsi:type="Button" id="TaskpaneButton">
+                  <Label resid="Label.Button.Taskpane" />
+                  <Supertip>
+                    <Title resid="Label.Button.Taskpane" />
+                    <Description resid="Description.Click" />
+                  </Supertip>
+                  <Icon>
+                    <bt:Image size="16" resid="Icon.16x16" />
+                    <bt:Image size="32" resid="Icon.32x32" />
+                    <bt:Image size="80" resid="Icon.80x80" />
+                  </Icon>
+                  <Action xsi:type="ShowTaskpane">
+                    <TaskpaneId>taskpane</TaskpaneId>
+                    <SourceLocation resid="Taskpane.Url" />
+                    <Title resid="Label.TaskpaneTitle.Main" />
+                  </Action>
+                </Control>
+              </Group>
+            </OfficeTab>
+          </ExtensionPoint>
+        </DesktopFormFactor>
+      </Host>
+    </Hosts>
+    <Resources>
+      <bt:Images>
+        <bt:Image id="Icon.16x16" DefaultValue="https://taskpane.usefabric.xyz/logo-16.png" />
+        <bt:Image id="Icon.32x32" DefaultValue="https://taskpane.usefabric.xyz/logo-32.png" />
+        <bt:Image id="Icon.80x80" DefaultValue="https://taskpane.usefabric.xyz/logo-80.png" />
+      </bt:Images>
+      <bt:Urls>
+        <bt:Url id="Taskpane.Url" DefaultValue="https://taskpane.usefabric.xyz/taskpane" />
+        <bt:Url id="Taskpane.Documentation.Url" DefaultValue="https://docs.usefabric.xyz" />
+        <bt:Url id="Functions.Metadata.Url"
+          DefaultValue="https://taskpane.usefabric.xyz/api/config/functions" />
+      </bt:Urls>
+      <bt:ShortStrings>
+        <bt:String id="Functions.Namespace" DefaultValue="AI" />
+        <bt:String id="Label.GetStarted" DefaultValue="Welcome to Fabric!" />
+        <bt:String id="Label.TaskpaneTitle.Main" DefaultValue="Fabric" />
+        <bt:String id="Label.Group.Main" DefaultValue="Fabric" />
+        <bt:String id="Label.Button.Taskpane" DefaultValue="Fabric" />
+      </bt:ShortStrings>
+      <bt:LongStrings>
+        <bt:String id="Description.GetStarted" DefaultValue="Click here to get started" />
+        <bt:String id="Description.Click" DefaultValue="Click here" />
+      </bt:LongStrings>
+    </Resources>
+  </VersionOverrides>
+  <ExtendedOverrides Url="https://taskpane.usefabric.xyz/api/config/shortcuts"></ExtendedOverrides>
+</OfficeApp>

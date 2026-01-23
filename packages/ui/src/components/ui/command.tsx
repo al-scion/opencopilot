@@ -1,18 +1,23 @@
 import { Autocomplete as AutocompletePrimitive } from "@base-ui/react/autocomplete";
+import { Dialog, DialogContent, DialogTrigger } from "@packages/ui/components/ui/dialog";
 import { cn } from "@packages/ui/lib/utils";
 import { SearchIcon } from "lucide-react";
 
-export type CommandItemData = {
+type CommandItemData = {
 	value: string;
 	label: string;
 	icon?: React.ReactNode;
 	shortcut?: React.ReactNode;
 	onClick?: () => void;
 };
-export type CommandGroupData = {
+type CommandGroupData = {
 	label?: string;
 	items: CommandItemData[];
 };
+
+const CommandDialog = Dialog;
+const CommandDialogTrigger = DialogTrigger;
+const CommandDialogContent = DialogContent;
 
 function Command({
 	autoHighlight = "always",
@@ -43,7 +48,7 @@ function CommandInput({
 }: React.ComponentProps<typeof AutocompletePrimitive.Input> & { wrapperClassName?: string }) {
 	return (
 		<div
-			className={cn("flex h-9 items-center gap-2 border-b px-3", wrapperClassName)}
+			className={cn("flex h-9 items-center gap-2 rounded-lg border-none bg-muted px-3", wrapperClassName)}
 			data-slot="command-input-wrapper"
 		>
 			<SearchIcon className="size-4 shrink-0 opacity-50" />
@@ -140,6 +145,9 @@ function CommandShortcut({ className, ...props }: React.ComponentProps<"span">) 
 
 export {
 	Command,
+	CommandDialog,
+	CommandDialogContent,
+	CommandDialogTrigger,
 	CommandCollection,
 	CommandEmpty,
 	CommandGroup,
@@ -149,4 +157,6 @@ export {
 	CommandList,
 	CommandShortcut,
 	CommandSeparator,
+	type CommandGroupData,
+	type CommandItemData,
 };

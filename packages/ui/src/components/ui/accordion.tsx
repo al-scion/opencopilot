@@ -20,7 +20,7 @@ function AccordionTrigger({
 		<AccordionPrimitive.Header className="flex">
 			<AccordionPrimitive.Trigger
 				className={cn(
-					"flex flex-1 cursor-pointer items-center justify-between gap-4 rounded-md py-4 text-left font-medium text-sm outline-none transition-all focus-visible:ring-[3px] focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-64 [&[data-panel-open]>.accordion-chevron]:rotate-180",
+					"flex flex-1 cursor-pointer items-center justify-between gap-4 py-2 text-left font-normal text-sm outline-none transition-all focus-visible:ring-[3px] focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-64 [&[data-panel-open]>.accordion-chevron]:rotate-180",
 					"group/accordion-trigger [&_svg]:shrink-0",
 					className
 				)}

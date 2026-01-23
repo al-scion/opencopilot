@@ -12,9 +12,13 @@ type AppState = {
 	operatingSystem: "mac" | "windows";
 	modelMenuOpen: boolean;
 	settingsMenuOpen: boolean;
+	shortcutMenuOpen: boolean;
 	chatHistoryOpen: boolean;
 	taskpaneOpen: boolean;
+	taskpaneFocused: boolean;
 	editor: Editor;
+	chat: Chat<MessageType>;
+	tanstackChat: ReturnType<typeof createChatClientOptions>;
 
 	worksheets: Excel.Worksheet[];
 	selectedRange: Excel.Range;
@@ -30,10 +34,25 @@ const initialWorkbookState = await Excel.run({ delayForCellEdit: true }, async (
 	};
 });
 
-export const useAppState = create<AppState>()((set) => {
+const useAppState = create<AppState>()((set) => {
+	const updateTaskpaneFocus = () => {
+		const isVisible = document.visibilityState === "visible";
+		set({ taskpaneFocused: isVisible && document.hasFocus() });
+	};
+
+	window.addEventListener("focus", updateTaskpaneFocus);
+	window.addEventListener("blur", updateTaskpaneFocus);
+	document.addEventListener("visibilitychange", updateTaskpaneFocus);
+
 	// First, set up events to ensure sync
 	Office.addin.onVisibilityModeChanged((e) =>
-		set({ taskpaneOpen: e.visibilityMode === Office.VisibilityMode.taskpane })
+		set({
+			taskpaneOpen: e.visibilityMode === Office.VisibilityMode.taskpane,
+			taskpaneFocused:
+				e.visibilityMode === Office.VisibilityMode.taskpane &&
+				document.visibilityState === "visible" &&
+				document.hasFocus(),
+		})
 	);
 
 	Excel.run({ delayForCellEdit: true }, async (context) => {
@@ -55,26 +74,20 @@ export const useAppState = create<AppState>()((set) => {
 		operatingSystem: navigator.userAgent.toLowerCase().includes("mac") ? "mac" : "windows",
 		modelMenuOpen: false,
 		settingsMenuOpen: false,
+		shortcutMenuOpen: false,
 		chatHistoryOpen: false,
 		taskpaneOpen: false,
+		taskpaneFocused: document.visibilityState === "visible" && document.hasFocus(),
 		editor: undefined!,
+		chat: createChat(),
+		tanstackChat: createTanstackChat(),
 
 		worksheets: initialWorkbookState.worksheets,
 		selectedRange: initialWorkbookState.activeRange,
 	};
 });
 
-type ChatStore = {
-	chat: Chat<MessageType>;
-	tanstackChat: ReturnType<typeof createChatClientOptions>;
-};
-
-export const useChatStore = create<ChatStore>()(() => ({
-	chat: createChat(),
-	tanstackChat: createTanstackChat(),
-}));
-
-export const useOfficeMetadata = create<z.infer<typeof officeMetadataSchema>>()(
+const useOfficeMetadata = create<z.infer<typeof officeMetadataSchema>>()(
 	persist(
 		(set, get, options) => {
 			// DO NOT EDIT THIS! Temporary fix to make zustand persist work on first hydration!!
@@ -106,7 +119,7 @@ export const useOfficeMetadata = create<z.infer<typeof officeMetadataSchema>>()(
 	)
 );
 
-export const useAgentConfig = create<z.infer<typeof agentConfigSchema>>()(
+const useAgentConfig = create<z.infer<typeof agentConfigSchema>>()(
 	persist(
 		(set, get) => ({
 			model: "google/gemini-3-pro-preview",
@@ -117,3 +130,5 @@ export const useAgentConfig = create<z.infer<typeof agentConfigSchema>>()(
 		}
 	)
 );
+
+export { useAppState, useOfficeMetadata, useAgentConfig };

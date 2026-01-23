@@ -77,7 +77,8 @@ export function CommandMenu({
 		<Command
 			className={cn(
 				"absolute bottom-[calc(100%+4px)] left-1/2 h-fit w-[calc(100%-4px)] -translate-x-1/2 rounded-lg border p-1",
-				mentionState?.query == null && "hidden"
+				"origin-bottom transition-all duration-50 ease-in-out",
+				mentionState?.query == null ? "pointer-events-none scale-90 opacity-0" : "scale-100 opacity-100"
 			)}
 			items={commandGroupData}
 			itemToStringValue={(item) => (item as CommandItemData).label}

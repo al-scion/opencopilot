@@ -1,13 +1,30 @@
 import cloudflare from "@astrojs/cloudflare";
 import mdx from "@astrojs/mdx";
 import sitemap from "@astrojs/sitemap";
-import { defineConfig } from "astro/config";
+import tailwindcss from "@tailwindcss/vite";
+import { defineConfig, envField } from "astro/config";
 
 // https://astro.build/config
 export default defineConfig({
-	adapter: cloudflare({ imageService: "passthrough", platformProxy: { enabled: true } }),
+	output: "static",
+	site: "https://usefabric.xyz",
+	adapter: cloudflare({ imageService: "compile" }),
+	prefetch: { prefetchAll: true, defaultStrategy: "viewport" },
+	env: {
+		schema: {
+			WEB_EXTENSION_ID: envField.string({
+				access: "public",
+				context: "client",
+				default: "WA200009842",
+			}),
+			WORKOS_CLIENT_ID: envField.string({
+				access: "public",
+				context: "client",
+			}),
+		},
+	},
 	integrations: [mdx(), sitemap()],
-	server: {
-		port: 3002,
+	vite: {
+		plugins: [tailwindcss({ optimize: true })],
 	},
 });

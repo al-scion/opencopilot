@@ -9,18 +9,27 @@ import {
 	DropdownMenuTrigger,
 } from "@packages/ui/components/ui/dropdown-menu";
 import { cn } from "@packages/ui/lib/utils";
-import { Check, ChevronDown } from "lucide-react";
+import { Check, ChevronDown, FastForwardIcon, type LucideIcon, MessageCircleMoreIcon, PaletteIcon } from "lucide-react";
 import { TooltipButton } from "@/components/tooltip-button";
 import { getShortcutString, useShortcut } from "@/lib/browser-shortcuts";
 import { useAgentConfig, useAppState } from "@/lib/state";
 
+const iconMap: Record<ModeId, LucideIcon> = {
+	agent: FastForwardIcon,
+	ask: MessageCircleMoreIcon,
+	format: PaletteIcon,
+};
+
 export function ModeSelector() {
 	const { mode } = useAgentConfig();
-	const selectedMode = MODES.find((option) => option.id === mode)!;
-	const writeEnabled = Office.context.document.mode === Office.DocumentMode.ReadWrite;
+	const MODES_WITH_ICON = MODES.map((mode) => ({ ...mode, icon: iconMap[mode.id] }));
+	const selectedMode = MODES_WITH_ICON.find((option) => option.id === mode)!;
 
 	// Filter out write required modes if the document is read only
-	const availableModes = MODES.filter((option) => (option.writeRequired && writeEnabled) || !option.writeRequired);
+	const writeEnabled = Office.context.document.mode === Office.DocumentMode.ReadWrite;
+	const availableModes = MODES_WITH_ICON.filter(
+		(option) => (option.writeRequired && writeEnabled) || !option.writeRequired
+	);
 
 	const toggleMode = (e: KeyboardEvent) => {
 		e.stopPropagation();
@@ -40,11 +49,10 @@ export function ModeSelector() {
 			<DropdownMenuTrigger
 				render={(props, state) => (
 					<TooltipButton
-						className={cn(state.open && "bg-muted")}
+						className={cn("rounded-full", state.open && "bg-muted")}
 						shortcutKeys={getShortcutString("toggleMode")}
-						size="sm"
+						size="icon"
 						tooltip="Toggle mode"
-						tooltipAlign="start"
 						tooltipDisabled={state.open}
 						variant="ghost"
 						{...props}
@@ -52,18 +60,20 @@ export function ModeSelector() {
 					/>
 				)}
 			>
-				<span className="font-normal text-sm">{selectedMode.name} mode</span>
-				<ChevronDown className="-mx-0.5 size-3 text-foreground" />
+				<selectedMode.icon />
+				{/* <span className="font-light text-muted-foreground text-xs">{selectedMode.description}</span> */}
 			</DropdownMenuTrigger>
-			<DropdownMenuContent align="start" className="w-36 min-w-fit">
+			<DropdownMenuContent align="center" className="w-48 min-w-fit">
 				<DropdownMenuGroup>
+					<DropdownMenuLabel>Set permission</DropdownMenuLabel>
 					{availableModes.map((option) => (
 						<DropdownMenuItem
 							className="font-normal text-sm"
 							key={option.id}
 							onClick={() => handleSelectMode(option.id)}
 						>
-							<span>{option.name}</span>
+							<option.icon />
+							<span>{option.description}</span>
 							<DropdownMenuShortcut>{mode === option.id && <Check />}</DropdownMenuShortcut>
 						</DropdownMenuItem>
 					))}

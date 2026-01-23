@@ -11,6 +11,7 @@
     "secrets": "wrangler secret bulk .env && wrangler types --env-file=.env"
   },
   "devDependencies": {
+    "@types/bun": "catalog:",
     "@types/node": "catalog:",
     "@typescript/native-preview": "catalog:",
     "typescript": "catalog:",

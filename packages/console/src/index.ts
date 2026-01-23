@@ -3,7 +3,8 @@ import { Hono } from "hono";
 import { cors } from "hono/cors";
 import { logger } from "hono/logger";
 import { prettyJSON } from "hono/pretty-json";
-import { describeRoute, openAPIRouteHandler } from "hono-openapi";
+import { describeRoute, openAPIRouteHandler, validator } from "hono-openapi";
+import { z } from "zod";
 
 export type Variables = {};
 

@@ -46,13 +46,17 @@ function App() {
 	return <RouterProvider context={{ auth }} router={router} />;
 }
 
+type AuthKitProps = React.ComponentProps<typeof AuthKitProvider>;
+
 createRoot(document.getElementById("root")!).render(
 	<StrictMode>
 		<AuthKitProvider
 			clientId={import.meta.env.VITE_WORKOS_CLIENT_ID}
+			onRedirectCallback={(response) => sessionStorage.setItem(WORKOS_ACCESS_TOKEN_KEY, response.accessToken)}
 			onRefresh={(response) => sessionStorage.setItem(WORKOS_ACCESS_TOKEN_KEY, response.accessToken)}
 			onRefreshFailure={() => sessionStorage.removeItem(WORKOS_ACCESS_TOKEN_KEY)}
 			redirectUri={`${window.location.origin}/auth/callback`}
+			// onBeforeAutoRefresh={() => {}}
 		>
 			<App />
 		</AuthKitProvider>

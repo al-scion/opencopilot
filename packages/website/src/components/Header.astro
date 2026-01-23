@@ -1,6 +1,7 @@
 ---
 interface Props {
 	links?: Array<{ label: string; href: string }>;
+	downloadHref?: string;
 }
 
 const {
@@ -9,6 +10,7 @@ const {
 		{ label: "Pricing", href: "#pricing" },
 		{ label: "Docs", href: "/docs" },
 	],
+	downloadHref = "/download",
 } = Astro.props;
 ---
 
@@ -29,7 +31,7 @@ const {
 
 		<div class="header-actions">
 			<a href="/login" class="sign-in">Sign in</a>
-			<a href="/download" class="download-btn">Download</a>
+			<a href={downloadHref} class="download-btn">Download</a>
 		</div>
 	</div>
 </header>

@@ -1,5 +1,6 @@
 import { useChat } from "@ai-sdk/react";
 import { Card, CardContent, CardContentItem } from "@packages/ui/components/ui/card";
+import { Tabs, TabsList, TabsTrigger } from "@packages/ui/components/ui/tabs";
 import { toastManager } from "@packages/ui/components/ui/toast";
 import { cn } from "@packages/ui/lib/utils";
 import { fetchServerSentEvents, useChat as useTanstackChat } from "@tanstack/ai-react";
@@ -14,7 +15,7 @@ import { EditorContent, type Range, useEditor, useEditorState } from "@tiptap/re
 import { exitSuggestion } from "@tiptap/suggestion";
 
 import type { FileUIPart } from "ai";
-import { ArrowUp, Paperclip, Plus } from "lucide-react";
+import { ArrowUp, Paperclip, Plus, PlusIcon } from "lucide-react";
 import { useRef, useState } from "react";
 import { StickToBottom } from "use-stick-to-bottom";
 import { AssistantMessage } from "@/components/chat/assistant-message";
@@ -31,7 +32,7 @@ import { getShortcutString, useShortcut } from "@/lib/browser-shortcuts";
 import { createChat } from "@/lib/chat";
 import { ALLOWED_MIME_TYPES, MAX_FILE_SIZE } from "@/lib/constants";
 import { saveFileToStorage } from "@/lib/excel/checkpoint";
-import { useAppState, useChatStore } from "@/lib/state";
+import { useAppState } from "@/lib/state";
 import { fileToDataUrl } from "@/lib/utils";
 
 export const Route = createFileRoute("/taskpane/")({
@@ -40,7 +41,7 @@ export const Route = createFileRoute("/taskpane/")({
 
 function RouteComponent() {
 	const commandInputRef = useRef<HTMLInputElement>(null);
-	const { chat, tanstackChat } = useChatStore();
+	const { chat, tanstackChat, taskpaneFocused } = useAppState();
 	const { sendMessage, messages, status, stop, error } = useChat({ chat });
 
 	const fileInputRef = useRef<HTMLInputElement>(null);
@@ -73,7 +74,7 @@ function RouteComponent() {
 	};
 
 	const newChat = () => {
-		messages.length > 0 && useChatStore.setState({ chat: createChat() });
+		messages.length > 0 && useAppState.setState({ chat: createChat() });
 		editor.commands.clearContent();
 		setUploadedFiles([]);
 		editor.commands.focus();
@@ -114,10 +115,10 @@ function RouteComponent() {
 				HardBreak,
 				Placeholder.configure({
 					placeholder: (props) => {
-						if (!props.editor.isFocused) {
-							return "⌘J to focus chat, @ to mention";
+						if (props.editor.isFocused) {
+							return "@ to mention, / for commands";
 						}
-						return "⌘J to focus worksheet, @ to mention";
+						return "⌘J to focus input";
 					},
 				}),
 				Mention.configure({
@@ -198,8 +199,13 @@ function RouteComponent() {
 
 	return (
 		<>
-			<div className={cn("flex flex-row items-center p-1.5")}>
-				<ModeSelector />
+			<div className={cn("flex flex-row items-center p-2")}>
+				<Tabs defaultValue={"chat"}>
+					<TabsList>
+						<TabsTrigger value="chat">Chat</TabsTrigger>
+						<TabsTrigger value="review">Review</TabsTrigger>
+					</TabsList>
+				</Tabs>
 				<div className="ml-auto flex flex-row items-center gap-0.5">
 					<TooltipButton
 						onClick={newChat}
@@ -228,8 +234,8 @@ function RouteComponent() {
 					<ErrorMessage error={error} />
 				</StickToBottom.Content>
 			</StickToBottom>
-			<Card className="relative m-1.5 mt-0">
-				<CardContent className="p-0">
+			<Card className="relative m-1.5 mt-0 rounded-2xl">
+				<CardContent className="rounded-xl p-0">
 					<CardContentItem className={cn("px-2 py-1", !(status === "streaming" || status === "submitted") && "hidden")}>
 						<span className="font-light text-muted-foreground text-xs">Generating...</span>
 						<TooltipButton className="-mr-1 ml-auto rounded-sm" onClick={stop} size="sm" variant="secondary">
@@ -247,9 +253,10 @@ function RouteComponent() {
 						<div className="flex w-full flex-row">
 							<div className="flex flex-row items-center gap-1">
 								<TooltipButton
+									className="rounded-full bg-muted"
 									onClick={() => fileInputRef.current?.click()}
 									size="icon"
-									tooltip="Files"
+									tooltip="Upload files"
 									variant="ghost"
 								>
 									<input
@@ -260,9 +267,10 @@ function RouteComponent() {
 										ref={fileInputRef}
 										type="file"
 									/>
-									<Paperclip />
+									<PlusIcon />
 								</TooltipButton>
 								<ModelMenu />
+								<ModeSelector />
 							</div>
 							<div className="ml-auto flex flex-row items-center gap-1">
 								<TooltipButton

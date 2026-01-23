@@ -9,6 +9,7 @@ import { logger } from "hono/logger";
 import { prettyJSON } from "hono/pretty-json";
 import type { JWTPayload } from "hono/utils/jwt/types";
 import { describeRoute, openAPIRouteHandler } from "hono-openapi";
+import { WORKOS_JWKS_URI } from "./constants";
 import { chatRouter } from "./routes/chat";
 import { formulasRouter } from "./routes/formulas";
 import { officeRouter } from "./routes/office";
@@ -23,7 +24,7 @@ const app = new Hono<{ Bindings: Env; Variables: Variables }>()
 	.use(cors({ origin: "*" }))
 	.use(logger())
 	.use(prettyJSON({ force: true }))
-	// .use(jwk({ jwks_uri: `https://api.workos.com/sso/jwks/${process.env.WORKOS_CLIENT_ID}`, alg: ["RS256"] }))
+	// .use(jwk({ jwks_uri: WORKOS_JWKS_URI, alg: ["RS256"] }))
 	.use(async (c, next) => {
 		const ipAddress = c.req.header("x-real-ip") || c.req.header("cf-connecting-ip") || "";
 

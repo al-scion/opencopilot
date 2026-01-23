@@ -3,6 +3,7 @@ import {
 	DropdownMenuContent,
 	DropdownMenuGroup,
 	DropdownMenuItem,
+	DropdownMenuShortcut,
 	DropdownMenuTrigger,
 } from "@packages/ui/components/ui/dropdown-menu";
 import { cn } from "@packages/ui/lib/utils";
@@ -19,9 +20,7 @@ export function SettingsMenu() {
 	const router = useRouter();
 	const { editor, settingsMenuOpen } = useAppState();
 
-	const handleOpenSettings = () => {
-		router.navigate({ to: "/taskpane/settings" });
-	};
+	const handleOpenSettings = () => router.navigate({ to: "/taskpane/settings" });
 
 	const handleAuth = async () => {
 		if (user) {
@@ -37,10 +36,8 @@ export function SettingsMenu() {
 		}
 	};
 
-	const handleOpenChange = (open: boolean) => {
-		useAppState.setState({ settingsMenuOpen: open });
-		!open && editor.commands.focus();
-	};
+	const handleShortcutMenuOpen = () => useAppState.setState({ shortcutMenuOpen: true });
+	const handleOpenChange = (open: boolean) => useAppState.setState({ settingsMenuOpen: open });
 	useShortcut({ name: "openSettings", action: () => handleOpenChange(!settingsMenuOpen) });
 
 	return (
@@ -61,7 +58,7 @@ export function SettingsMenu() {
 			>
 				<Ellipsis />
 			</DropdownMenuTrigger>
-			<DropdownMenuContent align="center" className={"w-fit"}>
+			<DropdownMenuContent align="center" className={"min-w-36"}>
 				{/* <DropdownMenuGroup className="flex flex-row items-center gap-2 px-1 py-0">
 					<Avatar className="size-6">
 						<AvatarImage src={user?.profilePictureUrl ?? ""} />
@@ -80,10 +77,11 @@ export function SettingsMenu() {
 						<Settings />
 						Settings
 					</DropdownMenuItem>
-					{/* <DropdownMenuItem>
+					<DropdownMenuItem onClick={handleShortcutMenuOpen}>
 						<Keyboard />
 						Shortcuts
-					</DropdownMenuItem> */}
+						<DropdownMenuShortcut>{getShortcutString("shortcutMenu")}</DropdownMenuShortcut>
+					</DropdownMenuItem>
 					{/* <DropdownMenuSeparator /> */}
 					<DropdownMenuItem onClick={handleAuth}>
 						{user ? <LogOut /> : <CircleUserRoundIcon />}

@@ -27,6 +27,33 @@ export const LANGUAGE_MODELS = [
 	},
 ] as const;
 
+export const MODEL_PROVIDERS = [
+	{
+		id: "openai",
+		name: "OpenAI",
+		icon: "/assets/openai.svg",
+		apiKeyPrefix: "sk-",
+	},
+	{
+		id: "anthropic",
+		name: "Anthropic",
+		icon: "/assets/anthropic.svg",
+		apiKeyPrefix: "sk-ant-",
+	},
+	{
+		id: "gemini",
+		name: "Gemini",
+		icon: "/assets/gemini.png",
+		apiKeyPrefix: "AIzaSy",
+	},
+	{
+		id: "xai",
+		name: "xAI",
+		icon: "/assets/xai.svg",
+		apiKeyPrefix: "xai-",
+	},
+];
+
 export const IMAGE_MODELS = [
 	{
 		id: "google/gemini-2.5-flash-image-preview",
