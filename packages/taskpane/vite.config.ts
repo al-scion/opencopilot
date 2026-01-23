@@ -8,22 +8,12 @@ import { sideloadAddIn, unregisterAddIn } from "office-addin-dev-settings";
 import { defineConfig, type Plugin } from "vite";
 import mkcert from "vite-plugin-mkcert";
 import tsConfigPaths from "vite-tsconfig-paths";
-import { customFunctionsConfig, shortcutsConfig } from "./src/lib/excel/config";
 
 const officePlugin = ({ manifestPath }: { manifestPath: string }): Plugin => ({
 	name: "officePlugin",
 	configureServer: async (server) => {
 		const root = server.config.root;
-		const configDir = path.join(root, "public", "config");
 		const resolvedManifestPath = path.join(root, manifestPath);
-
-		const shortcuts = JSON.stringify(shortcutsConfig, null, 2);
-		const customFunctions = JSON.stringify(customFunctionsConfig, null, 2);
-
-		console.log("Writing office config files");
-		await mkdir(configDir, { recursive: true });
-		await writeFile(path.join(configDir, "shortcuts.json"), shortcuts);
-		await writeFile(path.join(configDir, "functions.json"), customFunctions);
 
 		server.httpServer?.once("listening", async () => {
 			console.log("listening");

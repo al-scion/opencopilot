@@ -91,7 +91,7 @@ type CustomFunctionsConfig = {
 	}[];
 };
 
-export const shortcutsDefinitions = [
+const shortcutsDefinitions = [
 	{
 		id: "toggleTaskpane",
 		key: {
@@ -106,7 +106,7 @@ export const shortcutsDefinitions = [
 	action: Function;
 }[];
 
-export const customFunctionsDefinitions = [
+const customFunctionsDefinitions = [
 	{
 		id: "GENERATE.TEXT",
 		description: "Generate text with AI",

@@ -1,6 +1,6 @@
 {
   "extends": "../../tsconfig.json",
   "compilerOptions": {},
-  "include": ["**/*.ts", ],
+  "include": ["**/*.ts"],
   "exclude": ["convex/_generated", "node_modules"]
 }

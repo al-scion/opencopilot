@@ -9,6 +9,16 @@
     "indentWidth": 2,
     "indentStyle": "tab"
   },
+  "overrides": [
+    {
+      "includes": ["**/*.astro"],
+      "linter": {
+        "rules": {
+          "style": { "useFilenamingConvention": "off" }
+        }
+      }
+    }
+  ],
   "javascript": {
     "globals": [
       "Office",
@@ -34,7 +44,6 @@
       },
       "suspicious": {
         "useAwait": "off",
-        "noConsole": "off",
         "noEmptyBlockStatements": "off",
         "noConfusingVoidType": "off",
         "noUnknownAtRules": "off",
@@ -54,12 +63,12 @@
       "complexity": {
         "noForEach": "off",
         "noBannedTypes": "off",
-        "noExcessiveCognitiveComplexity": "info"
+        "noExcessiveCognitiveComplexity": "off"
       },
       "performance": {
         "noBarrelFile": "off",
         "noNamespaceImport": "off",
-        "useTopLevelRegex": "info"
+        "useTopLevelRegex": "off"
       }
     }
   }

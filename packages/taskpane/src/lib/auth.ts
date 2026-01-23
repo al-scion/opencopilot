@@ -18,4 +18,4 @@ export const signInWithDialog = () => {
 	);
 };
 
-export const getAccessToken = () => sessionStorage.getItem(WORKOS_ACCESS_TOKEN_KEY);
+export const getAccessToken = () => sessionStorage.getItem(WORKOS_ACCESS_TOKEN_KEY) ?? "";

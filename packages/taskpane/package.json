@@ -2,6 +2,7 @@
   "name": "@packages/taskpane",
   "type": "module",
   "scripts": {
+    "predev": "bun run scripts/predev.ts",
     "dev": "vite dev",
     "build": "vite build",
     "serve": "vite preview",
