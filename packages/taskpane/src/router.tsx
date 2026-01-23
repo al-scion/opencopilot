@@ -15,6 +15,7 @@ declare module "@tanstack/react-router" {
 export const createAppRouter = (context: RouterContext) => {
 	const router = createRouter({
 		routeTree,
+		defaultPreload: "viewport",
 		defaultErrorComponent: (e) => <div>Error: {e.error.message}</div>,
 		defaultNotFoundComponent: (props) => <div>Not found {props.routeId}</div>,
 		defaultPendingComponent: () => <div>Loading...</div>,

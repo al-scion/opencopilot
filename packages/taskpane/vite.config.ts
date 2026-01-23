@@ -1,4 +1,3 @@
-import { mkdir, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { cloudflare } from "@cloudflare/vite-plugin";
 import tailwindcss from "@tailwindcss/vite";
@@ -9,19 +8,13 @@ import { defineConfig, type Plugin } from "vite";
 import mkcert from "vite-plugin-mkcert";
 import tsConfigPaths from "vite-tsconfig-paths";
 
-const officePlugin = ({ manifestPath }: { manifestPath: string }): Plugin => ({
+const officePlugin = (): Plugin => ({
 	name: "officePlugin",
 	configureServer: async (server) => {
 		const root = server.config.root;
-		const resolvedManifestPath = path.join(root, manifestPath);
-
+		const manifestPath = path.join(root, "manifest-dev.xml");
 		server.httpServer?.once("listening", async () => {
-			console.log("listening");
-			await sideloadAddIn(resolvedManifestPath);
-		});
-
-		server.httpServer?.once("close", async () => {
-			await unregisterAddIn(resolvedManifestPath).then(() => console.log("removed manifest"));
+			await sideloadAddIn(manifestPath);
 		});
 	},
 });
@@ -34,7 +27,7 @@ export default defineConfig({
 		tsConfigPaths({ projects: ["./tsconfig.json", "../ui/tsconfig.json"] }),
 		cloudflare(),
 		mkcert(),
-		officePlugin({ manifestPath: "manifest-dev.xml" }),
+		officePlugin(),
 	],
 	server: {
 		port: 3000,
