@@ -11,14 +11,14 @@
   <DefaultLocale>en-US</DefaultLocale>
   <DisplayName DefaultValue="Fabric" />
   <Description DefaultValue="The AI agent builder" />
-  <IconUrl DefaultValue="https://taskpane.usefabric.xyz/logo-32.png" />
-  <HighResolutionIconUrl DefaultValue="https://taskpane.usefabric.xyz/logo-64.png" />
+  <IconUrl DefaultValue="https://localhost:3000/logo-32.png" />
+  <HighResolutionIconUrl DefaultValue="https://localhost:3000/logo-64.png" />
   <SupportUrl DefaultValue="https://docs.usefabric.xyz" />
 
   <!-- Domains that will be allowed when navigating. For example, if you use ShowTaskpane and then
   have an href link, navigation will only be allowed if the domain is on this list. -->
   <AppDomains>
-    <AppDomain>https://taskpane.usefabric.xyz</AppDomain>
+    <AppDomain>https://localhost:3000</AppDomain>
     <AppDomain>https://storage.usefabric.xyz</AppDomain>
     <AppDomain>https://plentiful-gust-36.authkit.app</AppDomain>
     <AppDomain>https://api.workos.com</AppDomain>
@@ -37,7 +37,7 @@
     </Sets>
   </Requirements>
   <DefaultSettings>
-    <SourceLocation DefaultValue="https://taskpane.usefabric.xyz/taskpane" />
+    <SourceLocation DefaultValue="https://localhost:3000/taskpane" />
   </DefaultSettings>
   <Permissions>ReadWriteDocument</Permissions>
   <VersionOverrides xmlns="http://schemas.microsoft.com/office/taskpaneappversionoverrides"
@@ -102,15 +102,15 @@
     </Hosts>
     <Resources>
       <bt:Images>
-        <bt:Image id="Icon.16x16" DefaultValue="https://taskpane.usefabric.xyz/logo-16.png" />
-        <bt:Image id="Icon.32x32" DefaultValue="https://taskpane.usefabric.xyz/logo-32.png" />
-        <bt:Image id="Icon.80x80" DefaultValue="https://taskpane.usefabric.xyz/logo-80.png" />
+        <bt:Image id="Icon.16x16" DefaultValue="https://localhost:3000/logo-16.png" />
+        <bt:Image id="Icon.32x32" DefaultValue="https://localhost:3000/logo-32.png" />
+        <bt:Image id="Icon.80x80" DefaultValue="https://localhost:3000/logo-80.png" />
       </bt:Images>
       <bt:Urls>
-        <bt:Url id="Taskpane.Url" DefaultValue="https://taskpane.usefabric.xyz/taskpane" />
+        <bt:Url id="Taskpane.Url" DefaultValue="https://localhost:3000/taskpane" />
         <bt:Url id="Taskpane.Documentation.Url" DefaultValue="https://docs.usefabric.xyz" />
         <bt:Url id="Functions.Metadata.Url"
-          DefaultValue="https://taskpane.usefabric.xyz/api/config/functions" />
+          DefaultValue="https://localhost:3000/config/functions.json" />
       </bt:Urls>
       <bt:ShortStrings>
         <bt:String id="Functions.Namespace" DefaultValue="AI" />
@@ -125,5 +125,5 @@
       </bt:LongStrings>
     </Resources>
   </VersionOverrides>
-  <ExtendedOverrides Url="https://taskpane.usefabric.xyz/api/config/shortcuts"></ExtendedOverrides>
+  <ExtendedOverrides Url="https://localhost:3000/config/shortcuts.json"></ExtendedOverrides>
 </OfficeApp>

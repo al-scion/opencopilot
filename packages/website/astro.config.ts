@@ -15,7 +15,6 @@ export default defineConfig({
 			WEB_EXTENSION_ID: envField.string({
 				access: "public",
 				context: "client",
-				default: "WA200009842",
 			}),
 			WORKOS_CLIENT_ID: envField.string({
 				access: "public",

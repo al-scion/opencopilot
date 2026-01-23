@@ -55,6 +55,9 @@
   "[typescriptreact]": {
     "editor.defaultFormatter": "biomejs.biome"
   },
+  "[xml]": {
+    "editor.defaultFormatter": "redhat.vscode-xml"
+  },
   "chatgpt.commentCodeLensEnabled": false,
   "chatgpt.openOnStartup": false
 }

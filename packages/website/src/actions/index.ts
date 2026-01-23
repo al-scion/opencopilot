@@ -1,6 +1,6 @@
 import { defineAction } from "astro:actions";
 import { z } from "astro/zod";
-import { APPSOURCE_URL, EXCEL_DOWNLOAD_REGEX, EXCEL_URL } from "../constants";
+import { APPSOURCE_URL, EXCEL_DOWNLOAD_REGEX, EXCEL_URL, EXCEL_WEB_REGEX, EXCEL_WEB_URL } from "../constants";
 
 export const server = {
 	getDownloadUrl: defineAction({
@@ -11,6 +11,16 @@ export const server = {
 			});
 			const html = await response.text();
 			const match = html.match(EXCEL_DOWNLOAD_REGEX);
+			const url = match?.[1] ?? APPSOURCE_URL;
+			return { url };
+		},
+	}),
+	getExcelWebUrl: defineAction({
+		input: z.object({}),
+		handler: async (input, context) => {
+			const response = await fetch(EXCEL_WEB_URL);
+			const html = await response.text();
+			const match = html.match(EXCEL_WEB_REGEX);
 			const url = match?.[1] ?? APPSOURCE_URL;
 			return { url };
 		},

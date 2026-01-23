@@ -56,7 +56,6 @@ createRoot(document.getElementById("root")!).render(
 			onRefresh={(response) => sessionStorage.setItem(WORKOS_ACCESS_TOKEN_KEY, response.accessToken)}
 			onRefreshFailure={() => sessionStorage.removeItem(WORKOS_ACCESS_TOKEN_KEY)}
 			redirectUri={`${window.location.origin}/auth/callback`}
-			// onBeforeAutoRefresh={() => {}}
 		>
 			<App />
 		</AuthKitProvider>
