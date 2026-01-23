@@ -73,6 +73,7 @@
         "@scalar/hono-api-reference": "catalog:",
         "hono": "catalog:",
         "hono-openapi": "catalog:",
+        "zod": "catalog:",
       },
       "devDependencies": {
         "@types/bun": "catalog:",
