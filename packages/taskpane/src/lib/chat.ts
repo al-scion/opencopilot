@@ -34,7 +34,7 @@ export const createChat = ({ id, messages }: { id?: string; messages?: MessageTy
 			// api: server.chat.$url().href,
 			api: `${import.meta.env.VITE_SERVER_URL}/chat`,
 			headers: async () => ({
-				Authorization: getAccessToken() ?? "",
+				Authorization: getAccessToken(),
 			}),
 			body: async () => ({
 				workbook: await getWorkbookState(),

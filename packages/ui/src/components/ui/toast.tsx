@@ -48,7 +48,6 @@ function ToastList({ position = "bottom-right" }: { position: ToastPosition }) {
 				data-position={position}
 				data-slot="toast-viewport"
 			>
-				{/* biome-ignore lint/complexity/noExcessiveCognitiveComplexity: Complex toast rendering logic */}
 				{toasts.map((toast) => {
 					const Icon = toast.type ? TOAST_ICONS[toast.type as keyof typeof TOAST_ICONS] : null;
 

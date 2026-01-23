@@ -1,0 +1,12 @@
+pre-commit:
+  parallel: false
+  commands:
+    install:
+      run: bun install
+    fix:
+      run: bun run lint:fix
+      stage_fixed: true
+    typecheck:
+      run: bun run checktypes
+    knip:
+      run: bun run knip

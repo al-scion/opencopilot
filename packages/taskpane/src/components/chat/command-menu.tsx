@@ -14,7 +14,6 @@ import {
 import { cn } from "@packages/ui/lib/utils";
 import { PluginKey } from "@tiptap/pm/state";
 import type { Editor, Range } from "@tiptap/react";
-import { useEditorState } from "@tiptap/react";
 import type { SuggestionProps } from "@tiptap/suggestion";
 import { useAppState } from "@/lib/state";
 

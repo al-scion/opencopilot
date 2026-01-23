@@ -1,4 +1,4 @@
-import { useAppState } from "@/lib/state";
+import { useAppState } from "../state";
 
 export const toggleTaskpane = async () => {
 	const { taskpaneOpen, editor, taskpaneFocused } = useAppState.getState();

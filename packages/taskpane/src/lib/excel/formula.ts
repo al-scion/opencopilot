@@ -7,8 +7,7 @@ import {
 	LANGUAGE_MODELS,
 	languageModelSchema,
 } from "@packages/shared";
-import { getAccessToken } from "@/lib/auth";
-import { server } from "@/lib/server";
+import { server } from "../server";
 
 export const memoize = <T extends (...args: any[]) => any>(fn: T): ((...args: Parameters<T>) => Promise<void>) => {
 	const cache = new Map<string, any>();

@@ -1,7 +1,7 @@
 {
   "extends": "../../tsconfig.json",
   "compilerOptions": {
-    "types": ["office-js", "custom-functions-runtime"],
+    "types": ["office-js", "custom-functions-runtime"]
   },
   "exclude": ["node_modules"]
 }

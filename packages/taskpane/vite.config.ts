@@ -1,4 +1,3 @@
-import { mkdir, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { cloudflare } from "@cloudflare/vite-plugin";
 import tailwindcss from "@tailwindcss/vite";
@@ -8,30 +7,14 @@ import { sideloadAddIn, unregisterAddIn } from "office-addin-dev-settings";
 import { defineConfig, type Plugin } from "vite";
 import mkcert from "vite-plugin-mkcert";
 import tsConfigPaths from "vite-tsconfig-paths";
-import { customFunctionsConfig, shortcutsConfig } from "./src/lib/excel/config";
 
-const officePlugin = ({ manifestPath }: { manifestPath: string }): Plugin => ({
+const officePlugin = (): Plugin => ({
 	name: "officePlugin",
 	configureServer: async (server) => {
 		const root = server.config.root;
-		const configDir = path.join(root, "public", "config");
-		const resolvedManifestPath = path.join(root, manifestPath);
-
-		const shortcuts = JSON.stringify(shortcutsConfig, null, 2);
-		const customFunctions = JSON.stringify(customFunctionsConfig, null, 2);
-
-		console.log("Writing office config files");
-		await mkdir(configDir, { recursive: true });
-		await writeFile(path.join(configDir, "shortcuts.json"), shortcuts);
-		await writeFile(path.join(configDir, "functions.json"), customFunctions);
-
+		const manifestPath = path.join(root, "manifest-dev.xml");
 		server.httpServer?.once("listening", async () => {
-			console.log("listening");
-			await sideloadAddIn(resolvedManifestPath);
-		});
-
-		server.httpServer?.once("close", async () => {
-			await unregisterAddIn(resolvedManifestPath).then(() => console.log("removed manifest"));
+			await sideloadAddIn(manifestPath);
 		});
 	},
 });
@@ -44,7 +27,7 @@ export default defineConfig({
 		tsConfigPaths({ projects: ["./tsconfig.json", "../ui/tsconfig.json"] }),
 		cloudflare(),
 		mkcert(),
-		officePlugin({ manifestPath: "manifest-dev.xml" }),
+		officePlugin(),
 	],
 	server: {
 		port: 3000,

@@ -7,6 +7,7 @@ type EnvEntry = {
 
 const devEnvFileUrl = new URL("../.env", import.meta.url);
 const prodEnvFileUrl = new URL("../.env.production", import.meta.url);
+const WHITESPACE_REGEX = /\s+/;
 
 // Parse a .env-style file into key/value pairs for sync.
 const parseEnvFile = (contents: string): EnvEntry[] => {
@@ -59,7 +60,7 @@ const parseEnvList = (contents: string): string[] => {
 			continue;
 		}
 
-		const [firstToken] = line.split(/\s+/);
+		const [firstToken] = line.split(WHITESPACE_REGEX);
 		if (firstToken) {
 			keys.push(firstToken);
 		}
@@ -106,7 +107,6 @@ if (shouldRunAll) {
 	const prodEntries = await readEnvFile(prodEnvFileUrl);
 	await syncEntries(devEntries, []);
 	await syncEntries(prodEntries, ["--prod"]);
-
 } else if (shouldRunProdOnly) {
 	const prodEntries = await readEnvFile(prodEnvFileUrl);
 	await syncEntries(prodEntries, ["--prod"]);

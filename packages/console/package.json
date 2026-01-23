@@ -21,6 +21,7 @@
     "@hono/standard-validator": "catalog:",
     "@scalar/hono-api-reference": "catalog:",
     "hono": "catalog:",
-    "hono-openapi": "catalog:"
+    "hono-openapi": "catalog:",
+    "zod": "catalog:"
   }
 }

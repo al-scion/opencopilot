@@ -1,6 +1,4 @@
 import { IMAGE_MODELS, LANGUAGE_MODELS } from "@packages/shared";
-import { generateImage, generateText, memoize } from "./formula";
-import { toggleTaskpane } from "./shortcuts";
 
 // References
 // WARNING: DO NOT EDIT THIS TYPE DEFINITION!!
@@ -91,22 +89,20 @@ type CustomFunctionsConfig = {
 	}[];
 };
 
-export const shortcutsDefinitions = [
+const shortcutsDefinitions = [
 	{
 		id: "toggleTaskpane",
 		key: {
 			windows: "Ctrl+J",
 			mac: "Command+J",
 		},
-		action: toggleTaskpane,
 	},
 ] as const satisfies {
 	id: string;
 	key: ShortcutsConfig["shortcuts"][number]["key"];
-	action: Function;
 }[];
 
-export const customFunctionsDefinitions = [
+const customFunctionsDefinitions = [
 	{
 		id: "GENERATE.TEXT",
 		description: "Generate text with AI",
@@ -114,7 +110,6 @@ export const customFunctionsDefinitions = [
 			{ name: "prompt", type: "string" },
 			{ name: "model", optional: true, customEnumId: "LANGUAGE_MODELS", type: "string" },
 		],
-		action: generateText,
 	},
 	{
 		id: "GENERATE.IMAGE",
@@ -123,16 +118,14 @@ export const customFunctionsDefinitions = [
 			{ name: "prompt", type: "string" },
 			{ name: "model", optional: true, customEnumId: "IMAGE_MODELS", type: "string" },
 		],
-		action: generateImage,
 	},
 ] as const satisfies {
 	id: string;
 	description?: string;
 	parameters: CustomFunctionsConfig["functions"][number]["parameters"];
-	action: Function;
 }[];
 
-export const customFunctionsConfig = {
+export const customFunctionsConfig: CustomFunctionsConfig = {
 	allowCustomDataForDataTypeAny: true,
 	allowErrorForDataTypeAny: true,
 	functions: customFunctionsDefinitions.map((item) => ({
@@ -174,16 +167,4 @@ export const shortcutsConfig: ShortcutsConfig = {
 		action: item.id,
 		key: item.key,
 	})),
-};
-
-export const registerCustomFunctions = () => {
-	CustomFunctions.associate(
-		Object.fromEntries(customFunctionsDefinitions.map((item) => [item.id, memoize(item.action)]))
-	);
-};
-
-export const registerShortcuts = () => {
-	shortcutsDefinitions.forEach((item) => {
-		Office.actions.associate(item.id, item.action);
-	});
 };

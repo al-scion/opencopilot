@@ -12,7 +12,7 @@
     "dev": "wrangler dev",
     "checktypes": "tsgo --noEmit",
     "deploy": "wrangler deploy",
-    "secrets": "wrangler secret bulk .env && wrangler types --env-file=.env"
+    "secrets": "wrangler secret bulk .env.production && wrangler types --env-file=.env.production"
   },
   "devDependencies": {
     "@types/node": "catalog:",
