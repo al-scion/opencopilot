@@ -11,14 +11,15 @@
     "secrets": "wrangler secret bulk .env.production && wrangler types --env-file=.env.production"
   },
   "devDependencies": {
-    "@cloudflare/vite-plugin": "catalog:",
-    "@tailwindcss/vite": "catalog:",
-    "@tanstack/router-plugin": "catalog:",
     "@types/bun": "catalog:",
+    "@types/node": "catalog:",
     "@types/custom-functions-runtime": "catalog:",
     "@types/office-js": "catalog:",
     "@types/react": "catalog:",
     "@types/react-dom": "catalog:",
+    "@cloudflare/vite-plugin": "catalog:",
+    "@tailwindcss/vite": "catalog:",
+    "@tanstack/router-plugin": "catalog:",
     "@typescript/native-preview": "catalog:",
     "@vitejs/plugin-react": "catalog:",
     "babel-plugin-react-compiler": "catalog:",

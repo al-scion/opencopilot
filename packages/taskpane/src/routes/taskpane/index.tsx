@@ -199,7 +199,7 @@ function RouteComponent() {
 
 	return (
 		<>
-			<div className={cn("flex flex-row items-center p-2")}>
+			<div className={cn("flex flex-row items-center p-2 pr-2.5")}>
 				<Tabs defaultValue={"chat"}>
 					<TabsList>
 						<TabsTrigger value="chat">Chat</TabsTrigger>

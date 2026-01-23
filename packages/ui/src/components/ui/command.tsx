@@ -143,6 +143,38 @@ function CommandShortcut({ className, ...props }: React.ComponentProps<"span">) 
 	);
 }
 
+function CommandListTemplate({
+	groupClassName,
+	groupLabelClassName,
+	itemClassName,
+	itemShortcutClassName,
+	...props
+}: React.ComponentProps<typeof AutocompletePrimitive.List> & {
+	groupClassName?: string;
+	groupLabelClassName?: string;
+	itemClassName?: string;
+	itemShortcutClassName?: string;
+}) {
+	return (
+		<CommandList {...props}>
+			{(group: CommandGroupData, index) => (
+				<CommandGroup className={groupClassName} items={group.items} key={index}>
+					{group.label && <CommandGroupLabel className={groupLabelClassName}>{group.label}</CommandGroupLabel>}
+					<CommandCollection>
+						{(item: CommandItemData) => (
+							<CommandItem className={itemClassName} key={item.value} onClick={item.onClick} value={item.value}>
+								{item.icon}
+								<span className="truncate">{item.label}</span>
+								{item.shortcut && <CommandShortcut className={itemShortcutClassName}>{item.shortcut}</CommandShortcut>}
+							</CommandItem>
+						)}
+					</CommandCollection>
+				</CommandGroup>
+			)}
+		</CommandList>
+	);
+}
+
 export {
 	Command,
 	CommandDialog,
@@ -155,6 +187,7 @@ export {
 	CommandInput,
 	CommandItem,
 	CommandList,
+	CommandListTemplate,
 	CommandShortcut,
 	CommandSeparator,
 	type CommandGroupData,

@@ -165,6 +165,7 @@
         "@tanstack/router-plugin": "catalog:",
         "@types/bun": "catalog:",
         "@types/custom-functions-runtime": "catalog:",
+        "@types/node": "catalog:",
         "@types/office-js": "catalog:",
         "@types/react": "catalog:",
         "@types/react-dom": "catalog:",

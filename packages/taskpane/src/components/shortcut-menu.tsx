@@ -1,18 +1,12 @@
 import {
 	Command,
-	CommandCollection,
 	CommandDialog,
 	CommandDialogContent,
-	CommandGroup,
 	type CommandGroupData,
-	CommandGroupLabel,
 	CommandInput,
-	CommandItem,
-	type CommandItemData,
-	CommandList,
-	CommandShortcut,
+	CommandListTemplate,
 } from "@packages/ui/components/ui/command";
-import { getShortcutString, useShortcut } from "@/lib/browser-shortcuts";
+import { browserShortcuts, getShortcutString, useShortcut } from "@/lib/browser-shortcuts";
 import { useAppState } from "@/lib/state";
 
 export function ShortcutMenu() {
@@ -23,27 +17,25 @@ export function ShortcutMenu() {
 
 	useShortcut({ name: "shortcutMenu", action: () => handleOpenChange(!shortcutMenuOpen) });
 
+	const shortcutItems: CommandGroupData[] = [
+		{
+			items: browserShortcuts.map((shortcut) => ({
+				value: shortcut.name,
+				label: shortcut.label,
+				shortcut: getShortcutString(shortcut.name),
+			})),
+		},
+	];
+
 	return (
 		<CommandDialog onOpenChange={handleOpenChange} open={shortcutMenuOpen}>
 			<CommandDialogContent>
-				<Command>
+				<Command items={shortcutItems}>
 					<CommandInput placeholder={"Search shortcuts"} />
-					<CommandList>
-						{(group: CommandGroupData, index) => (
-							<CommandGroup items={group.items} key={index}>
-								{group.label && <CommandGroupLabel>{group.label}</CommandGroupLabel>}
-								<CommandCollection>
-									{(item: CommandItemData) => (
-										<CommandItem key={item.value} onClick={item.onClick} value={item.value}>
-											{item.icon}
-											<span className="truncate">{item.label}</span>
-											{item.shortcut && <CommandShortcut>{item.shortcut}</CommandShortcut>}
-										</CommandItem>
-									)}
-								</CommandCollection>
-							</CommandGroup>
-						)}
-					</CommandList>
+					<CommandListTemplate
+						itemClassName="data-highlighted:bg-background cursor-auto"
+						itemShortcutClassName={"tracking-widest"}
+					/>
 				</Command>
 			</CommandDialogContent>
 		</CommandDialog>

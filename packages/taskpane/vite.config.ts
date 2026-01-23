@@ -4,22 +4,21 @@ import { cloudflare } from "@cloudflare/vite-plugin";
 import tailwindcss from "@tailwindcss/vite";
 import { tanstackRouter } from "@tanstack/router-plugin/vite";
 import react from "@vitejs/plugin-react";
-import { registerAddIn, sideloadAddIn, unregisterAddIn, unregisterAllAddIns } from "office-addin-dev-settings";
+import { sideloadAddIn, unregisterAddIn } from "office-addin-dev-settings";
 import { defineConfig, type Plugin } from "vite";
 import mkcert from "vite-plugin-mkcert";
 import tsConfigPaths from "vite-tsconfig-paths";
-import { getCustomFunctionsConfig, getShortcutsConfig } from "../shared/src/excel/config";
+import { customFunctionsConfig, shortcutsConfig } from "../shared/src/excel/config";
 
-const officePlugin = (): Plugin => ({
+const officePlugin = ({ manifestPath }: { manifestPath: string }): Plugin => ({
 	name: "officePlugin",
-	apply: "serve",
 	configureServer: async (server) => {
 		const root = server.config.root;
 		const configDir = path.join(root, "public", "config");
-		const manifestPath = path.join(root, "manifest-dev.xml");
+		const resolvedManifestPath = path.join(root, manifestPath);
 
-		const shortcuts = JSON.stringify(getShortcutsConfig(), null, 2);
-		const customFunctions = JSON.stringify(getCustomFunctionsConfig(), null, 2);
+		const shortcuts = JSON.stringify(shortcutsConfig, null, 2);
+		const customFunctions = JSON.stringify(customFunctionsConfig, null, 2);
 
 		console.log("Writing office config files");
 		await mkdir(configDir, { recursive: true });
@@ -28,11 +27,11 @@ const officePlugin = (): Plugin => ({
 
 		server.httpServer?.once("listening", async () => {
 			console.log("listening");
-			await sideloadAddIn(manifestPath);
+			await sideloadAddIn(resolvedManifestPath);
 		});
 
 		server.httpServer?.once("close", async () => {
-			await unregisterAddIn(manifestPath).then(() => console.log("removed manifest"));
+			await unregisterAddIn(resolvedManifestPath).then(() => console.log("removed manifest"));
 		});
 	},
 });
@@ -45,7 +44,7 @@ export default defineConfig({
 		tsConfigPaths({ projects: ["./tsconfig.json", "../ui/tsconfig.json"] }),
 		cloudflare(),
 		mkcert(),
-		officePlugin(),
+		officePlugin({ manifestPath: "manifest-dev.xml" }),
 	],
 	server: {
 		port: 3000,

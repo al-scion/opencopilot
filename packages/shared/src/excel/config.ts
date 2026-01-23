@@ -129,8 +129,10 @@ export const customFunctionsDefinitions = [
 
 export type CustomFunctionIds = (typeof customFunctionsDefinitions)[number]["id"];
 
-export const getCustomFunctionsConfig = (): CustomFunctionsConfig => {
-	const functions = customFunctionsDefinitions.map((item) => ({
+export const customFunctionsConfig = {
+	allowCustomDataForDataTypeAny: true,
+	allowErrorForDataTypeAny: true,
+	functions: customFunctionsDefinitions.map((item) => ({
 		id: item.id,
 		name: item.id,
 		description: item.description,
@@ -138,43 +140,35 @@ export const getCustomFunctionsConfig = (): CustomFunctionsConfig => {
 		parameters: item.parameters,
 		result: { dimensionality: "matrix", type: "any" },
 		options: { stream: true, requiresStreamAddress: true, requiresStreamParameterAddresses: true },
-	})) satisfies CustomFunctionsConfig["functions"];
-
-	return {
-		allowCustomDataForDataTypeAny: true,
-		allowErrorForDataTypeAny: true,
-		functions,
-		enums: [
-			{
-				id: "LANGUAGE_MODELS",
-				type: "string",
-				values: LANGUAGE_MODELS.map((item) => ({
-					name: item.name,
-					stringValue: item.id,
-				})),
-			},
-			{
-				id: "IMAGE_MODELS",
-				type: "string",
-				values: IMAGE_MODELS.map((item) => ({
-					name: item.name,
-					stringValue: item.id,
-				})),
-			},
-		],
-	};
+	})),
+	enums: [
+		{
+			id: "LANGUAGE_MODELS",
+			type: "string",
+			values: LANGUAGE_MODELS.map((item) => ({
+				name: item.name,
+				stringValue: item.id,
+			})),
+		},
+		{
+			id: "IMAGE_MODELS",
+			type: "string",
+			values: IMAGE_MODELS.map((item) => ({
+				name: item.name,
+				stringValue: item.id,
+			})),
+		},
+	],
 };
 
-export const getShortcutsConfig = (): ShortcutsConfig => {
-	return {
-		actions: shortcutsDefinitions.map((item) => ({
-			id: item.id,
-			name: item.id,
-			type: "ExecuteFunction",
-		})),
-		shortcuts: shortcutsDefinitions.map((item) => ({
-			action: item.id,
-			key: item.key,
-		})),
-	};
+export const shortcutsConfig: ShortcutsConfig = {
+	actions: shortcutsDefinitions.map((item) => ({
+		id: item.id,
+		name: item.id,
+		type: "ExecuteFunction",
+	})),
+	shortcuts: shortcutsDefinitions.map((item) => ({
+		action: item.id,
+		key: item.key,
+	})),
 };

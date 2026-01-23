@@ -3,6 +3,7 @@ import { useAppState } from "./state";
 
 type BrowserShortcut = {
 	name: string;
+	label: string;
 	key: {
 		mac: Keys;
 		windows: Keys;
@@ -10,9 +11,10 @@ type BrowserShortcut = {
 	options?: Options;
 };
 
-const browserShortcuts = [
+export const browserShortcuts = [
 	{
 		name: "newChat",
+		label: "New chat",
 		key: {
 			mac: "alt+n",
 			windows: "alt+n",
@@ -24,7 +26,17 @@ const browserShortcuts = [
 		},
 	},
 	{
+		name: "toggleTaskpane",
+		label: "Focus input or worksheet",
+		key: {
+			mac: "meta+j",
+			windows: "ctrl+j",
+		},
+		options: {},
+	},
+	{
 		name: "chatHistory",
+		label: "Chat history",
 		key: {
 			mac: "alt+h",
 			windows: "alt+h",
@@ -37,6 +49,7 @@ const browserShortcuts = [
 	},
 	{
 		name: "shortcutMenu",
+		label: "Shortcut menu",
 		key: {
 			mac: "meta+slash",
 			windows: "ctrl+slash",
@@ -49,6 +62,7 @@ const browserShortcuts = [
 	},
 	{
 		name: "toggleMode",
+		label: "Set permission",
 		key: {
 			mac: "alt+p",
 			windows: "alt+p",
@@ -62,6 +76,7 @@ const browserShortcuts = [
 	},
 	{
 		name: "toggleModel",
+		label: "Select model",
 		key: {
 			mac: "alt+m",
 			windows: "alt+m",
@@ -74,6 +89,7 @@ const browserShortcuts = [
 	},
 	{
 		name: "openSettings",
+		label: "Open settings",
 		key: {
 			mac: "alt+s",
 			windows: "alt+s",
@@ -86,6 +102,7 @@ const browserShortcuts = [
 	},
 	{
 		name: "stopChat",
+		label: "Stop chat",
 		key: {
 			mac: "meta+backspace",
 			windows: "ctrl+backspace",
