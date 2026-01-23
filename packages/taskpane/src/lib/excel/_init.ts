@@ -7,7 +7,7 @@ import { toggleTaskpane } from "./shortcuts";
 export const initWorkbook = async () => {
 	await Office.onReady(async ({ host, platform }) => {
 		// First, wait for the office to be ready and execute
-		Office.addin.showAsTaskpane().then(() => useAppState.setState({ taskpaneOpen: true }));
+		await Office.addin.showAsTaskpane().then(() => useAppState.setState({ taskpaneOpen: true }));
 
 		// Then implement shortcuts and custom functions using the Office API
 		CustomFunctions.associate({
