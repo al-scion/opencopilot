@@ -2,11 +2,11 @@ import { MODEL_PROVIDERS } from "@packages/shared";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@packages/ui/components/ui/accordion";
 import { Card, CardContent, CardContentItem, CardHeader } from "@packages/ui/components/ui/card";
 import { Input } from "@packages/ui/components/ui/input";
-import { Select, SelectItem, SelectPopup, SelectTrigger, SelectValue } from "@packages/ui/components/ui/select";
+// import { Select, SelectItem, SelectPopup, SelectTrigger, SelectValue } from "@packages/ui/components/ui/select";
 import { Switch } from "@packages/ui/components/ui/switch";
 import { Tabs, TabsList, TabsPanel, TabsTrigger } from "@packages/ui/components/ui/tabs";
 import { createFileRoute, useRouter } from "@tanstack/react-router";
-import { ArrowLeftIcon, ChevronDownIcon, ChevronLeftIcon, Router } from "lucide-react";
+import { ArrowLeftIcon } from "lucide-react";
 import { useState } from "react";
 import { TooltipButton } from "@/components/tooltip-button";
 
