@@ -18,7 +18,9 @@ export const languageModelRegistry = {
 		name: "Claude Sonnet 4.5",
 		provider: "anthropic",
 		adapter: () => anthropicText("claude-sonnet-4-5"),
-		options: {} as AnthropicChatModelProviderOptionsByName["claude-sonnet-4-5"],
+		options: {
+			// thinking: { type: "enabled", budget_tokens: 2000 },
+		} as AnthropicChatModelProviderOptionsByName["claude-sonnet-4-5"],
 	},
 	"openai/gpt-5.2": {
 		name: "GPT 5.2",

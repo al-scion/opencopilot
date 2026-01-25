@@ -23,9 +23,9 @@
   },
   "dependencies": {
     "@tanstack/ai": "catalog:",
-    "@tanstack/ai-openai": "catalog:",
     "@tanstack/ai-anthropic": "catalog:",
     "@tanstack/ai-gemini": "catalog:",
+    "@tanstack/ai-openai": "catalog:",
     "zod": "catalog:"
   }
 }

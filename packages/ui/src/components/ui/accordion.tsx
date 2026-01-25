@@ -43,7 +43,7 @@ function AccordionPanel({ className, children, ...props }: AccordionPrimitive.Pa
 			data-slot="accordion-panel"
 			{...props}
 		>
-			<div className={cn("pt-0 pb-4", className)}>{children}</div>
+			<div className={cn("py-1", className)}>{children}</div>
 		</AccordionPrimitive.Panel>
 	);
 }

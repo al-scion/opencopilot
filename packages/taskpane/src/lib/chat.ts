@@ -1,10 +1,24 @@
-import { getWorkbookState } from "@packages/shared";
 import { clientTools, createChatClientOptions, type InferChatMessages } from "@tanstack/ai-client";
 import { fetchServerSentEvents } from "@tanstack/ai-react";
 import { getAccessToken } from "@/lib/auth";
-import { editRangeClient } from "@/lib/excel/tools";
+import {
+	clearRangeClient,
+	copyPasteClient,
+	createWorksheetClient,
+	deleteWorksheetClient,
+	editRangeClient,
+	editWorksheetClient,
+	editWorksheetLayoutClient,
+	readCommentsClient,
+	readWorksheetClient,
+	searchWorkbookClient,
+	traceFormulaDependentsClient,
+	traceFormulaPrecedentsClient,
+	writeCommentClient,
+} from "@/lib/excel/tools";
+import { getWorkbookState } from "@/lib/excel/workbook-state";
 import { server } from "@/lib/server";
-import { useAgentConfig, useOfficeMetadata } from "@/lib/state";
+import { useAgentConfig } from "@/lib/state";
 
 // Temporary fix: augment TextPart to include metadata (missing in @tanstack/ai-client)
 // See: https://github.com/TanStack/ai/blob/main/packages/typescript/ai-client/src/types.ts
@@ -13,6 +27,22 @@ declare module "@tanstack/ai-client" {
 		metadata?: Record<string, unknown>;
 	}
 }
+
+const tools = clientTools(
+	clearRangeClient,
+	copyPasteClient,
+	createWorksheetClient,
+	deleteWorksheetClient,
+	editRangeClient,
+	editWorksheetClient,
+	editWorksheetLayoutClient,
+	readCommentsClient,
+	readWorksheetClient,
+	searchWorkbookClient,
+	traceFormulaDependentsClient,
+	traceFormulaPrecedentsClient,
+	writeCommentClient
+);
 
 export const createChat = ({
 	id = crypto.randomUUID(),
@@ -33,7 +63,8 @@ export const createChat = ({
 		credentials: "include",
 	}));
 
-	const tools = clientTools(editRangeClient);
+	// const tools = clientTools(editRangeClient, editWorksheetClient, clearRangeDef);
+
 	const chatOptions = createChatClientOptions({
 		id,
 		initialMessages,

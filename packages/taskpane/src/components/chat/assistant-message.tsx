@@ -1,18 +1,6 @@
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@packages/ui/components/ui/accordion";
 import { cn } from "@packages/ui/lib/utils";
-import {
-	AlertCircle,
-	AlertTriangle,
-	ChevronDown,
-	ChevronRight,
-	Globe,
-	Lightbulb,
-	ListStart,
-	ScanText,
-	Search,
-	SquarePlus,
-	Table,
-} from "lucide-react";
+import { ChevronRight } from "lucide-react";
 import type { UIMessage } from "@/lib/chat";
 import { MarkdownText } from "./markdown-text";
 
@@ -33,7 +21,7 @@ function ToolMessageTrigger({
 	return (
 		<AccordionTrigger
 			className={cn(
-				"flex max-w-full flex-row items-center justify-start gap-2 p-0.5 font-normal text-muted-foreground",
+				"flex max-w-full flex-row items-center justify-start gap-1 p-0 font-medium text-muted-foreground",
 				className
 			)}
 			showIcon={false}
@@ -47,7 +35,8 @@ function ToolMessageTrigger({
 function ToolMessageContent({ className, children, ...props }: React.ComponentProps<typeof AccordionContent>) {
 	return (
 		<AccordionContent
-			className={cn("my-1 mr-1 ml-[8.5px] max-h-36 overflow-y-auto border-l-1 p-0.5 pl-[12.5px]", className)}
+			// className={cn("my-1 mr-1 ml-[8.5px] max-h-36 overflow-y-auto border-l-1 p-0.5 pl-[12.5px]", className)}
+			className={cn("max-h-36 overflow-y-auto", className)}
 			{...props}
 		>
 			{children}
@@ -65,12 +54,13 @@ export function AssistantMessage({ message }: { message: UIMessage }) {
 					return (
 						<ToolMessage key={key}>
 							<ToolMessageTrigger>
-								<Lightbulb className="size-3.5 group-hover/accordion-trigger:hidden" />
-								<ChevronRight className="hidden size-3.5 transition-transform duration-200 ease-in-out group-hover/accordion-trigger:block group-data-panel-open/accordion-trigger:rotate-90" />
-								Reasoning
+								<span>Reasoning</span>
+								<ChevronRight className="size-3 shrink-0 opacity-0 transition-all duration-200 ease-in-out group-hover/accordion-trigger:opacity-100 group-data-panel-open/accordion-trigger:rotate-90" />
 							</ToolMessageTrigger>
 							<ToolMessageContent>
-								<MarkdownText mode="static">{part.content}</MarkdownText>
+								<MarkdownText className="text-xs" mode="static">
+									{part.content}
+								</MarkdownText>
 							</ToolMessageContent>
 						</ToolMessage>
 					);
@@ -85,14 +75,28 @@ export function AssistantMessage({ message }: { message: UIMessage }) {
 				}
 
 				if (part.type === "tool-call") {
-					const result = message.parts.find((item) => item.type === "tool-result" && item.toolCallId === part.id);
+					if (part.name === "readWorksheet" && part.state === "input-complete") {
+						const input = JSON.parse(part.arguments) as (typeof part)["input"];
+						return <span className="text-muted-foreground text-xs">Read {input?.worksheet}</span>;
+					}
+
+					if (part.name === "editRange" && part.state === "input-complete") {
+						return (
+							<ToolMessage>
+								<ToolMessageTrigger>
+									<span>Edited {part.input?.worksheet}</span>
+								</ToolMessageTrigger>
+							</ToolMessage>
+						);
+					}
+
+					// const result = message.parts.find((item) => item.type === "tool-result" && item.toolCallId === part.id);
 					// const toolResu
 					return JSON.stringify(part, null, 2);
-					// return null;
 				}
 
 				if (part.type === "tool-result") {
-					return null;
+					return JSON.stringify(part, null, 2);
 				}
 
 				// if (part.type === "tool-readWorksheet") {

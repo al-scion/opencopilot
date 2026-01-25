@@ -5,17 +5,13 @@ export const officeMetadataSchema = z.object({
 });
 
 export const workbookStateSchema = z.object({
-	metadata: officeMetadataSchema,
 	workbookName: z.string(),
 	worksheets: z.array(
 		z.object({
 			name: z.string(),
 			position: z.number(),
+			usedRange: z.string().nullable(),
 		})
 	),
-	currentWorksheet: z.object({
-		name: z.string(),
-		usedRange: z.string(),
-		selectedRange: z.string(),
-	}),
+	selectedRange: z.string(),
 });

@@ -236,7 +236,7 @@ export function ChatMessages({ chat }: { chat: ReturnType<typeof createChat> }) 
 									size="icon"
 									tooltip="Send"
 								>
-									{isLoading ? <SquareIcon className="size-3.5" /> : <ArrowUp />}
+									<ArrowUp />
 								</TooltipButton>
 							</div>
 						</div>

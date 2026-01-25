@@ -8,7 +8,7 @@ export const chatRouter = new Hono<{ Bindings: Env; Variables: Variables }>().po
 
 	const modelConfig = languageModelRegistry[agentConfig.model];
 	const stream = chat({
-		conversationId: data.conversationId,
+		// conversationId: data.conversationId,
 		adapter: modelConfig.adapter(),
 		modelOptions: modelConfig.options,
 		messages,

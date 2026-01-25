@@ -18,5 +18,23 @@ export const initWorkbook = async () => {
 
 		// All of this will stay pending until the user exits cell edit state
 		await registerNamedRange();
+
+		if (import.meta.env.DEV === true) {
+			await Excel.run(async (ctx) => {
+				const comments = ctx.workbook.comments.load({ expand: "replies" });
+				await ctx.sync();
+				const commentsWithLocation = comments.items.map((comment) => ({
+					comment: comment.toJSON(),
+					location: comment.getLocation().load({ address: true }),
+				}));
+				await ctx.sync();
+
+				console.log(commentsWithLocation);
+				// await ctx.sync();
+				// console.log(comments.toJSON());
+
+				// ctx.workbook.comments.add(ctx.workbook.getActiveCell(), Date.now().toString(), "Plain");
+			});
+		}
 	});
 };
