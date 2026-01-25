@@ -1,11 +1,4 @@
-import type { useChat } from "@ai-sdk/react";
-
-type Chat = ReturnType<typeof useChat>;
-type ChatError = Chat["error"];
-type ClearError = Chat["clearError"];
-type Regenerate = Chat["regenerate"];
-
-export function ErrorMessage({ error }: { error: ChatError }) {
+export function ErrorMessage({ error }: { error: Error | undefined }) {
 	if (!error) {
 		return null;
 	}

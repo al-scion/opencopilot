@@ -1,4 +1,4 @@
-import { LANGUAGE_MODELS, type LanguageModelId } from "@packages/shared";
+import { languageModelOptions, providerRegistry } from "@packages/shared";
 import {
 	DropdownMenu,
 	DropdownMenuContent,
@@ -17,8 +17,8 @@ import { useAgentConfig, useAppState } from "@/lib/state";
 export function ModelMenu() {
 	const { editor, modelMenuOpen } = useAppState();
 	const { model } = useAgentConfig();
-	const handleSetModel = (modelId: LanguageModelId) => useAgentConfig.setState({ model: modelId });
-	const selectedModel = LANGUAGE_MODELS.find((m) => m.id === model)!;
+	const selectedModel = languageModelOptions.find((option) => option.id === model)!;
+	const selectedProvider = providerRegistry[selectedModel.provider];
 
 	useShortcut({ name: "toggleModel", action: () => handleOpenChange(!modelMenuOpen) });
 
@@ -48,26 +48,25 @@ export function ModelMenu() {
 					className="h-4 w-4 bg-muted-foreground"
 					role="img"
 					style={{
-						maskImage: `url(${selectedModel.icon})`,
+						maskImage: `url(${selectedProvider.iconUrl})`,
 						maskSize: "contain",
 						maskRepeat: "no-repeat",
 						maskPosition: "center",
-						WebkitMaskImage: `url(${selectedModel.icon})`,
+						WebkitMaskImage: `url(${selectedProvider.iconUrl})`,
 						WebkitMaskSize: "contain",
 						WebkitMaskRepeat: "no-repeat",
 						WebkitMaskPosition: "center",
 					}}
 				/>
-				{/* <span className="font-light text-muted-foreground text-sm">{selectedModel.name}</span> */}
 			</DropdownMenuTrigger>
 			<DropdownMenuContent align="center" className="w-48 min-w-fit">
 				<DropdownMenuGroup>
 					<DropdownMenuLabel>Select model</DropdownMenuLabel>
-					{LANGUAGE_MODELS.map((option) => (
-						<DropdownMenuItem key={option.id} onClick={() => handleSetModel(option.id)}>
-							<img alt={option.name} height={16} src={option.icon} width={16} />
+					{languageModelOptions.map((option) => (
+						<DropdownMenuItem key={option.id} onClick={() => useAgentConfig.setState({ model: option.id })}>
+							<img alt={option.name} height={16} src={providerRegistry[option.provider].iconUrl} width={16} />
 							<span>{option.name}</span>
-							<DropdownMenuShortcut>{option.id === model && <Check />}</DropdownMenuShortcut>
+							<DropdownMenuShortcut>{selectedModel.id === option.id && <Check />}</DropdownMenuShortcut>
 						</DropdownMenuItem>
 					))}
 				</DropdownMenuGroup>

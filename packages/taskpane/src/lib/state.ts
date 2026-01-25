@@ -1,12 +1,22 @@
-import type { Chat } from "@ai-sdk/react";
-import type { agentConfigSchema, MessageType, officeMetadataSchema } from "@packages/shared";
+import type { agentConfigSchema, officeMetadataSchema } from "@packages/shared";
 import { METADATA_STORAGE_KEY } from "@packages/shared";
-import type { createChatClientOptions } from "@tanstack/ai-react";
 import type { Editor } from "@tiptap/react";
 import type { z } from "zod";
 import { create } from "zustand";
-import { createJSONStorage, persist } from "zustand/middleware";
-import { createChat, createTanstackChat } from "./chat";
+import { persist } from "zustand/middleware";
+import { createChat } from "./chat";
+
+const useAgentConfig = create<z.infer<typeof agentConfigSchema>>()(
+	persist(
+		(set, get) => ({
+			model: "anthropic/claude-opus-4-5",
+			mode: "agent",
+		}),
+		{
+			name: "agent-config",
+		}
+	)
+);
 
 type AppState = {
 	operatingSystem: "mac" | "windows";
@@ -17,8 +27,7 @@ type AppState = {
 	taskpaneOpen: boolean;
 	taskpaneFocused: boolean;
 	editor: Editor;
-	chat: Chat<MessageType>;
-	tanstackChat: ReturnType<typeof createChatClientOptions>;
+	chat: ReturnType<typeof createChat>;
 
 	worksheets: Excel.Worksheet[];
 	selectedRange: Excel.Range;
@@ -80,7 +89,6 @@ const useAppState = create<AppState>()((set) => {
 		taskpaneFocused: document.visibilityState === "visible" && document.hasFocus(),
 		editor: undefined!,
 		chat: createChat(),
-		tanstackChat: createTanstackChat(),
 
 		worksheets: initialWorkbookState.worksheets,
 		selectedRange: initialWorkbookState.activeRange,
@@ -115,18 +123,6 @@ const useOfficeMetadata = create<z.infer<typeof officeMetadataSchema>>()(
 					Office.context.document.settings.saveAsync();
 				},
 			},
-		}
-	)
-);
-
-const useAgentConfig = create<z.infer<typeof agentConfigSchema>>()(
-	persist(
-		(set, get) => ({
-			model: "google/gemini-3-pro-preview",
-			mode: "agent",
-		}),
-		{
-			name: "agent-config",
 		}
 	)
 );

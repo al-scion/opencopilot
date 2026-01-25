@@ -1,12 +1,12 @@
 import type { AppType } from "@packages/cloud";
 import { hc } from "hono/client";
-import { getAccessToken } from "./auth";
+import { getAccessToken } from "@/lib/auth";
 
 export const server = hc<AppType>(import.meta.env.VITE_SERVER_URL, {
-	headers: async () => ({
+	headers: {
 		Authorization: getAccessToken(),
-	}),
-	init: {
-		credentials: "include",
 	},
+	// init: {
+	// 	credentials: "include",
+	// },
 });

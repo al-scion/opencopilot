@@ -64,7 +64,7 @@ export const saveMessage = mutation({
 	},
 });
 
-export const updateChat = mutation({
+export const updateChatTitle = mutation({
 	args: {
 		chatId: v.string(),
 		title: v.string(),

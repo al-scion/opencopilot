@@ -14,11 +14,9 @@ import {
 	CommandList,
 	CommandShortcut,
 } from "@packages/ui/components/ui/command";
-// import { Dialog, DialogContent, DialogHeader, DialogTrigger } from "@packages/ui/components/ui/dialog";
 import { Kbd } from "@packages/ui/components/ui/kbd";
 import { useQueryClient } from "@tanstack/react-query";
-import { ArrowDownIcon, ArrowUpIcon, ChevronDown, CornerDownLeft, History } from "lucide-react";
-import { use } from "react";
+import { ArrowDownIcon, ArrowUpIcon, CornerDownLeft, History } from "lucide-react";
 import { TooltipButton } from "@/components/tooltip-button";
 import { getShortcutString, useShortcut } from "@/lib/browser-shortcuts";
 import { createChat } from "@/lib/chat";
@@ -27,11 +25,11 @@ import { useAppState, useOfficeMetadata } from "@/lib/state";
 import { getRelativeTime } from "@/lib/utils";
 
 export function ChatHistory() {
-	const queryClient = useQueryClient();
+	// const queryClient = useQueryClient();
 	const { chatHistoryOpen, editor, chat } = useAppState();
 	const { id } = useOfficeMetadata();
 
-	const { data: chats, isLoading } = useGetChats(id);
+	const { data: chats } = useGetChats(id);
 
 	const commandGroupData: CommandGroupData[] = [
 		{
@@ -54,13 +52,14 @@ export function ChatHistory() {
 	useShortcut({ name: "chatHistory", action: () => handleOpenChange(!chatHistoryOpen) });
 
 	const handleSelectChat = async (chatId: string) => {
-		const messages = await getMessages(chatId, queryClient);
-		useAppState.setState({ chat: createChat({ id: chatId, messages }) });
+		const messages = await getMessages(chatId);
+		const chat = createChat({ id: chatId, initialMessages: messages });
+		useAppState.setState({ chat });
 		handleOpenChange(false);
 	};
 
 	const handleItemHighlighted = (chatId: string) => {
-		prefetchMessages(chatId, queryClient);
+		prefetchMessages(chatId);
 	};
 
 	return (

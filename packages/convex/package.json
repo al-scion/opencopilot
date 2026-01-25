@@ -9,8 +9,7 @@
     "deploy": "convex deploy",
     "checktypes": "tsgo --noEmit",
     "setenv": "bun scripts/set-env.ts",
-    "setenv:prod": "bun scripts/set-env.ts --prod",
-    "setenv:all": "bun scripts/set-env.ts --all"
+    "setenv:prod": "bun scripts/set-env.ts --prod"
   },
   "devDependencies": {
     "@types/bun": "catalog:",
@@ -18,12 +17,12 @@
     "@typescript/native-preview": "catalog:"
   },
   "dependencies": {
-    "@ai-sdk/google": "catalog:",
     "@convex-dev/crons": "^0.2.0",
     "@convex-dev/r2": "^0.8.1",
     "@convex-dev/workflow": "^0.3.3",
     "@packages/shared": "workspace:*",
-    "ai": "catalog:",
+    "@tanstack/ai-gemini": "catalog:",
+    "@tanstack/ai": "catalog:",
     "convex": "catalog:",
     "convex-helpers": "^0.1.111",
     "hono": "catalog:",

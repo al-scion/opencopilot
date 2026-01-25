@@ -97,17 +97,11 @@ const syncEntries = async (entries: EnvEntry[], commandArgs: string[]): Promise<
 	}
 };
 
-// Flags: --prod (prod only), --all (dev + prod), default (dev only).
+// Flags: --prod (prod), default (dev).
 const args = Bun.argv.slice(2);
-const shouldRunAll = args.includes("--all");
-const shouldRunProdOnly = args.includes("--prod");
+const shouldRunProd = args.includes("--prod");
 
-if (shouldRunAll) {
-	const devEntries = await readEnvFile(devEnvFileUrl);
-	const prodEntries = await readEnvFile(prodEnvFileUrl);
-	await syncEntries(devEntries, []);
-	await syncEntries(prodEntries, ["--prod"]);
-} else if (shouldRunProdOnly) {
+if (shouldRunProd) {
 	const prodEntries = await readEnvFile(prodEnvFileUrl);
 	await syncEntries(prodEntries, ["--prod"]);
 } else {

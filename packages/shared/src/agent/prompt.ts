@@ -1,5 +1,5 @@
 import type { z } from "zod";
-import type { agentConfigSchema } from "./config";
+import type { agentConfigSchema } from "./schema";
 
 export const getSystemPrompt = ({
 	workbookState,

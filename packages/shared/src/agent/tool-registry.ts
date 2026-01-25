@@ -1,21 +1,8 @@
-import type { InferUITools } from "ai";
+import type { Tool } from "@tanstack/ai";
 import type { z } from "zod";
-import { excelTools } from "../excel/tools";
-import type { agentConfigSchema } from "./config";
+import { editRangeDef, editWorksheetDef } from "../excel/ts-tools";
+import type { agentConfigSchema } from "./schema";
 
-export const toolRegistry = (modelId: string) => {
-	// Do some processing here
-
-	return {
-		...excelTools,
-	};
-};
-
-export type ToolDefinitions = InferUITools<ReturnType<typeof toolRegistry>>;
-export type ToolNames = keyof ReturnType<typeof toolRegistry>;
-
-export const resolveTools = ({ agentConfig }: { agentConfig: z.infer<typeof agentConfigSchema> }): ToolNames[] => {
-	// Do some processing here
-
-	return Object.keys(excelTools) as ToolNames[];
+export const toolRegistry = ({ agentConfig }: { agentConfig: z.infer<typeof agentConfigSchema> }): Tool[] => {
+	return [editRangeDef, editWorksheetDef];
 };

@@ -1,4 +1,4 @@
-import { IMAGE_MODELS, LANGUAGE_MODELS } from "@packages/shared";
+import { imageModelRegistry, languageModelRegistry } from "@packages/shared";
 
 // References
 // WARNING: DO NOT EDIT THIS TYPE DEFINITION!!
@@ -141,17 +141,17 @@ export const customFunctionsConfig: CustomFunctionsConfig = {
 		{
 			id: "LANGUAGE_MODELS",
 			type: "string",
-			values: LANGUAGE_MODELS.map((item) => ({
-				name: item.name,
-				stringValue: item.id,
+			values: Object.entries(languageModelRegistry).map(([key, model]) => ({
+				name: model.name,
+				stringValue: key,
 			})),
 		},
 		{
 			id: "IMAGE_MODELS",
 			type: "string",
-			values: IMAGE_MODELS.map((item) => ({
-				name: item.name,
-				stringValue: item.id,
+			values: Object.entries(imageModelRegistry).map(([key, model]) => ({
+				name: model.name,
+				stringValue: key,
 			})),
 		},
 	],

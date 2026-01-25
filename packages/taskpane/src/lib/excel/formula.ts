@@ -1,10 +1,8 @@
 import {
 	authErrorCell,
 	getCellValueCard,
-	IMAGE_MODELS,
 	imageModelSchema,
 	inPreviewErrorCell,
-	LANGUAGE_MODELS,
 	languageModelSchema,
 } from "@packages/shared";
 import { server } from "../server";
@@ -65,7 +63,7 @@ export const memoize = <T extends (...args: any[]) => any>(fn: T): ((...args: Pa
 };
 
 export const generateText = async (prompt: string, model: string | null, signal: AbortSignal) => {
-	const modelId = languageModelSchema.parse(model ?? LANGUAGE_MODELS[0]!.id);
+	const modelId = languageModelSchema.parse(model);
 	const response = await server.formulas.text.$post(
 		{
 			json: {
@@ -82,7 +80,7 @@ export const generateText = async (prompt: string, model: string | null, signal:
 };
 
 export const generateImage = async (prompt: string, model: string | null, signal: AbortSignal) => {
-	const modelId = imageModelSchema.parse(model ?? IMAGE_MODELS[0]!.id);
+	const modelId = imageModelSchema.parse(model);
 	const response = await server.formulas.image.$post(
 		{
 			json: {

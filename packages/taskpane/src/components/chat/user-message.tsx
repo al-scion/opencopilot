@@ -1,4 +1,3 @@
-import type { MessageType } from "@packages/shared";
 import { Card, CardContent, CardContentItem } from "@packages/ui/components/ui/card";
 import { toastManager } from "@packages/ui/components/ui/toast";
 import { useMutation } from "@tanstack/react-query";
@@ -10,11 +9,11 @@ import Text from "@tiptap/extension-text";
 import { EditorContent, useEditor, useEditorState } from "@tiptap/react";
 import { Loader2, Undo2 } from "lucide-react";
 import { TooltipButton } from "@/components/tooltip-button";
+import type { UIMessage } from "@/lib/chat";
 import { restoreCheckpoint } from "@/lib/excel/checkpoint";
 
-export function UserMessage({ message }: { message: MessageType }) {
-	const text = message.parts.find((part) => part.type === "text")?.text;
-	const files = message.parts.filter((part) => part.type === "file");
+export function UserMessage({ message }: { message: UIMessage }) {
+	const textPart = message.parts.find((part) => part.type === "text");
 
 	const { mutate: undoChanges, isPending } = useMutation({
 		mutationFn: restoreCheckpoint,
@@ -22,7 +21,7 @@ export function UserMessage({ message }: { message: MessageType }) {
 	});
 
 	const editor = useEditor({
-		content: message.metadata?.tiptap,
+		content: textPart?.metadata?.tiptap as any,
 		extensions: [Document, Paragraph, Text, HardBreak, Mention],
 		editable: false,
 	});
@@ -42,7 +41,7 @@ export function UserMessage({ message }: { message: MessageType }) {
 					<EditorContent editor={editor} />
 					<TooltipButton
 						className="absolute right-2 bottom-2 size-5 hover:bg-background"
-						onClick={() => undoChanges(message.metadata!.checkpointId!)}
+						onClick={() => undoChanges(message.id)}
 						size="icon"
 						tooltip="Undo changes"
 						variant="ghost"

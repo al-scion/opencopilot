@@ -58,7 +58,8 @@
         "noUnusedExpressions": "off"
       },
       "a11y": {
-        "noSvgWithoutTitle": "off"
+        "noSvgWithoutTitle": "off",
+        "useAltText": "off"
       },
       "complexity": {
         "noForEach": "off",

@@ -22,13 +22,10 @@
     "@typescript/native-preview": "catalog:"
   },
   "dependencies": {
-    "@hono/standard-validator": "catalog:",
-    "@packages/convex": "workspace:*",
     "@packages/shared": "workspace:*",
+    "@hono/standard-validator": "catalog:",
     "@scalar/hono-api-reference": "catalog:",
-    "@tanstack/ai": "^0.2.2",
-    "@tanstack/ai-openai": "^0.2.1",
-    "ai": "catalog:",
+    "@tanstack/ai": "catalog:",
     "convex": "catalog:",
     "hono": "catalog:",
     "hono-openapi": "catalog:",

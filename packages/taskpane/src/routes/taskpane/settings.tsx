@@ -1,4 +1,4 @@
-import { MODEL_PROVIDERS } from "@packages/shared";
+import { providerRegistry } from "@packages/shared";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@packages/ui/components/ui/accordion";
 import { Card, CardContent, CardContentItem, CardHeader } from "@packages/ui/components/ui/card";
 import { Input } from "@packages/ui/components/ui/input";
@@ -85,8 +85,8 @@ function RouteComponent() {
 					<Card>
 						<CardHeader className="px-3 py-1.5">Providers</CardHeader>
 						<CardContent>
-							{MODEL_PROVIDERS.map((provider) => (
-								<CardContentItem className="p-0" key={provider.id}>
+							{Object.values(providerRegistry).map((provider) => (
+								<CardContentItem className="p-0" key={provider.name}>
 									<Accordion className="w-full">
 										<AccordionItem>
 											<AccordionTrigger className="gap-3 px-3 py-2 hover:bg-muted">
@@ -95,11 +95,11 @@ function RouteComponent() {
 													className="h-4 w-4 bg-muted-foreground"
 													role="img"
 													style={{
-														maskImage: `url(${provider.icon})`,
+														maskImage: `url(${provider.iconUrl})`,
 														maskSize: "contain",
 														maskRepeat: "no-repeat",
 														maskPosition: "center",
-														WebkitMaskImage: `url(${provider.icon})`,
+														WebkitMaskImage: `url(${provider.iconUrl})`,
 														WebkitMaskSize: "contain",
 														WebkitMaskRepeat: "no-repeat",
 														WebkitMaskPosition: "center",
