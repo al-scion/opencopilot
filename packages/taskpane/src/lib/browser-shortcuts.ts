@@ -61,11 +61,11 @@ export const browserShortcuts = [
 		},
 	},
 	{
-		name: "toggleMode",
+		name: "togglePermission",
 		label: "Set permission",
 		key: {
-			mac: "alt+p",
-			windows: "alt+p",
+			mac: "tab",
+			windows: "tab",
 		},
 		options: {
 			enableOnContentEditable: true,

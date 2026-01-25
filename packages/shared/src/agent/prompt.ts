@@ -26,7 +26,7 @@ export const getSystemPrompt = ({
 	</workbook-state>
 
 	<mode>
-	  You are currently in ${agentConfig.mode} mode.
+	  This is the current mode: ${agentConfig}.
 	</mode>
 
 	## Data structure

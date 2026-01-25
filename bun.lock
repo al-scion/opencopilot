@@ -107,10 +107,8 @@
       "dependencies": {
         "@tanstack/ai": "catalog:",
         "@tanstack/ai-anthropic": "catalog:",
-        "@tanstack/ai-client": "catalog:",
         "@tanstack/ai-gemini": "catalog:",
         "@tanstack/ai-openai": "catalog:",
-        "convex": "catalog:",
         "zod": "catalog:",
       },
       "devDependencies": {

@@ -1,4 +1,4 @@
-import { languageModelOptions, providerRegistry } from "@packages/shared";
+import { languageModelRegistry, providerRegistry } from "@packages/shared";
 import {
 	DropdownMenu,
 	DropdownMenuContent,
@@ -17,7 +17,8 @@ import { useAgentConfig, useAppState } from "@/lib/state";
 export function ModelMenu() {
 	const { editor, modelMenuOpen } = useAppState();
 	const { model } = useAgentConfig();
-	const selectedModel = languageModelOptions.find((option) => option.id === model)!;
+	const availableModel = Object.keys(languageModelRegistry) as (keyof typeof languageModelRegistry)[];
+	const selectedModel = languageModelRegistry[model];
 	const selectedProvider = providerRegistry[selectedModel.provider];
 
 	useShortcut({ name: "toggleModel", action: () => handleOpenChange(!modelMenuOpen) });
@@ -62,13 +63,16 @@ export function ModelMenu() {
 			<DropdownMenuContent align="center" className="w-48 min-w-fit">
 				<DropdownMenuGroup>
 					<DropdownMenuLabel>Select model</DropdownMenuLabel>
-					{languageModelOptions.map((option) => (
-						<DropdownMenuItem key={option.id} onClick={() => useAgentConfig.setState({ model: option.id })}>
-							<img alt={option.name} height={16} src={providerRegistry[option.provider].iconUrl} width={16} />
-							<span>{option.name}</span>
-							<DropdownMenuShortcut>{selectedModel.id === option.id && <Check />}</DropdownMenuShortcut>
-						</DropdownMenuItem>
-					))}
+					{availableModel.map((key) => {
+						const value = languageModelRegistry[key];
+						return (
+							<DropdownMenuItem key={key} onClick={() => useAgentConfig.setState({ model: key })}>
+								<img alt={value.name} height={16} src={providerRegistry[value.provider].iconUrl} width={16} />
+								<span>{value.name}</span>
+								<DropdownMenuShortcut>{model === key && <Check />}</DropdownMenuShortcut>
+							</DropdownMenuItem>
+						);
+					})}
 				</DropdownMenuGroup>
 			</DropdownMenuContent>
 		</DropdownMenu>

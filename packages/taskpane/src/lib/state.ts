@@ -10,7 +10,7 @@ const useAgentConfig = create<z.infer<typeof agentConfigSchema>>()(
 	persist(
 		(set, get) => ({
 			model: "anthropic/claude-opus-4-5",
-			mode: "agent",
+			permission: "ask",
 		}),
 		{
 			name: "agent-config",

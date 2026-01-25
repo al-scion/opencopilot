@@ -10,48 +10,29 @@ import { type OpenAIChatModelProviderOptionsByName, openaiText } from "@tanstack
 export const languageModelRegistry = {
 	"anthropic/claude-opus-4-5": {
 		name: "Claude Opus 4.5",
+		provider: "anthropic",
 		adapter: () => anthropicText("claude-opus-4-5"),
 		options: {} as AnthropicChatModelProviderOptionsByName["claude-opus-4-5"],
 	},
 	"anthropic/claude-sonnet-4-5": {
 		name: "Claude Sonnet 4.5",
+		provider: "anthropic",
 		adapter: () => anthropicText("claude-sonnet-4-5"),
 		options: {} as AnthropicChatModelProviderOptionsByName["claude-sonnet-4-5"],
 	},
 	"openai/gpt-5.2": {
 		name: "GPT 5.2",
+		provider: "openai",
 		adapter: () => openaiText("gpt-5.2"),
 		options: {} as OpenAIChatModelProviderOptionsByName["gpt-5.2"],
 	},
 	"gemini/gemini-3-pro-preview": {
 		name: "Gemini 3 Pro",
+		provider: "gemini",
 		adapter: () => geminiText("gemini-3-pro-preview"),
 		options: {} as GeminiChatModelProviderOptionsByName["gemini-3-pro-preview"],
 	},
 } as const;
-
-export const languageModelOptions = [
-	{
-		id: "anthropic/claude-opus-4-5",
-		provider: "anthropic",
-		name: "Claude Opus 4.5",
-	},
-	{
-		id: "anthropic/claude-sonnet-4-5",
-		provider: "anthropic",
-		name: "Claude Sonnet 4.5",
-	},
-	{
-		id: "gemini/gemini-3-pro-preview",
-		provider: "gemini",
-		name: "Gemini 3 Pro",
-	},
-	{
-		id: "openai/gpt-5.2",
-		provider: "openai",
-		name: "Gemini 3 Pro",
-	},
-] as const;
 
 export const imageModelRegistry = {
 	"gemini/gemini-3-pro-image-preview": {

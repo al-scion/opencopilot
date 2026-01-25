@@ -1,5 +1,5 @@
 {
-  "typescript.experimental.useTsgo": false,
+  "typescript.experimental.useTsgo": true,
   "json.validate.enable": true,
   "json.schemaDownload.enable": true,
   "files.exclude": {
