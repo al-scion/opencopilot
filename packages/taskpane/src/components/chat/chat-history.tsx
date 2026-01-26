@@ -86,22 +86,24 @@ export function ChatHistory() {
 				>
 					<CommandInput placeholder="Search chat history" />
 					<CommandEmpty>No chats found</CommandEmpty>
-					<CommandList className="pb-9">
-						{(group: CommandGroupData, index) => (
-							<CommandGroup items={group.items} key={index}>
-								{group.label && <CommandGroupLabel>{group.label}</CommandGroupLabel>}
-								<CommandCollection>
-									{(item: CommandItemData) => (
-										<CommandItem key={item.value} onClick={item.onClick} value={item.value}>
-											{item.icon}
-											<span className="truncate">{item.label}</span>
-											{item.shortcut && <CommandShortcut>{item.shortcut}</CommandShortcut>}
-										</CommandItem>
-									)}
-								</CommandCollection>
-							</CommandGroup>
-						)}
-					</CommandList>
+					<div className="mask-y-from-[calc(100%-20px)]">
+						<CommandList className="max-h-[400px] pb-8">
+							{(group: CommandGroupData, index) => (
+								<CommandGroup items={group.items} key={index}>
+									{group.label && <CommandGroupLabel>{group.label}</CommandGroupLabel>}
+									<CommandCollection>
+										{(item: CommandItemData) => (
+											<CommandItem key={item.value} onClick={item.onClick} value={item.value}>
+												{item.icon}
+												<span className="truncate">{item.label}</span>
+												{item.shortcut && <CommandShortcut>{item.shortcut}</CommandShortcut>}
+											</CommandItem>
+										)}
+									</CommandCollection>
+								</CommandGroup>
+							)}
+						</CommandList>
+					</div>
 				</Command>
 				<div className="absolute inset-x-0 bottom-0 z-20 flex items-center gap-3 border-t bg-muted px-3 py-2">
 					<div className="flex items-center gap-1.5">

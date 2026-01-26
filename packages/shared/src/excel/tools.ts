@@ -37,6 +37,7 @@ const getScreenshot = tool({
 
 const editRange = tool({
 	description: "Edit a range in a worksheet",
+	strict: true,
 	inputSchema: z.object({
 		worksheet: z.string(),
 		address: z.string().describe("Range in A1 notation, for example 'A1', 'A1:A10'"),

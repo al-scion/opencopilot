@@ -100,22 +100,31 @@ export function AssistantMessage({ message }: { message: UIMessageType }) {
 					);
 				}
 
-				// if (part.type === "tool-editRange") {
-				// 	return (
-				// 		<ToolMessage key={key}>
-				// 			<ToolMessageTrigger>
-				// 				<Table className="size-3.5 group-hover/accordion-trigger:hidden" />
-				// 				<ChevronRight className="hidden size-3.5 transition-transform duration-200 ease-in-out group-hover/accordion-trigger:block group-data-panel-open/accordion-trigger:rotate-90" />
-				// 				<span className="truncate">Edited {part.input?.worksheet}</span>
-				// 				{part.state === "output-error" && <AlertCircle className="size-3.5 text-destructive" />}
-				// 			</ToolMessageTrigger>
-				// 			<ToolMessageContent>
-				// 				{JSON.stringify(part.input?.values, null, 2)}
-				// 				{JSON.stringify(part.output, null, 2)}
-				// 			</ToolMessageContent>
-				// 		</ToolMessage>
-				// 	);
-				// }
+				if (part.type === "tool-getScreenshot" && part.state === "output-available") {
+					const dataUrl = `data:image/png;base64,${part.output.base64String}`;
+					return (
+						<ToolMessage key={key}>
+							<ToolMessageTrigger className="rounded-md border bg-muted p-1 pl-2">
+								Screenshot
+								<img alt="Screenshot" className="ml-auto size-6 rounded border object-cover" src={dataUrl} />
+							</ToolMessageTrigger>
+						</ToolMessage>
+					);
+				}
+
+				if (part.type === "tool-editRange") {
+					return (
+						<ToolMessage key={key}>
+							<ToolMessageTrigger>
+								{/* <Table className="size-3.5 group-hover/accordion-trigger:hidden" /> */}
+								<ChevronRight className="hidden size-3.5 transition-transform duration-200 ease-in-out group-hover/accordion-trigger:block group-data-panel-open/accordion-trigger:rotate-90" />
+								<span>Edited</span>
+								<span className="text-muted-foreground/75">{part.input?.worksheet}</span>
+							</ToolMessageTrigger>
+							<ToolMessageContent>{JSON.stringify(part.output, null, 2)}</ToolMessageContent>
+						</ToolMessage>
+					);
+				}
 
 				// if (part.type === "tool-copyPaste") {
 				// 	return (

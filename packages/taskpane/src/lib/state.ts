@@ -80,11 +80,26 @@ const useAppState = create<AppState>()((set) => {
 				activeSelection: activeSelection.activeSelection,
 			});
 		});
+		context.workbook.worksheets.onAdded.add(async (e) => {
+			const worksheets = context.workbook.worksheets.load({ $all: true });
+			await context.sync();
+			set({ worksheets: worksheets.items });
+		});
+		context.workbook.worksheets.onDeleted.add(async (e) => {
+			const worksheets = context.workbook.worksheets.load({ $all: true });
+			await context.sync();
+			set({ worksheets: worksheets.items });
+		});
+		context.workbook.worksheets.onNameChanged.add(async (e) => {
+			const worksheets = context.workbook.worksheets.load({ $all: true });
+			await context.sync();
+			set({ worksheets: worksheets.items });
+		});
 		context.workbook.worksheets.onChanged.add(async (e) => {
-			const worksheets = context.workbook.worksheets.load({ $all: true, charts: { $all: true } });
+			const worksheets = context.workbook.worksheets.load({ charts: { $all: true } });
 			await context.sync();
 			const charts = worksheets.items.flatMap((worksheet) => worksheet.charts.items);
-			set({ worksheets: worksheets.items, charts });
+			set({ charts });
 		});
 	});
 

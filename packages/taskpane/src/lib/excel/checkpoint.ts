@@ -1,3 +1,4 @@
+import { getOfficeMetadata } from "@packages/shared";
 import { unzipSync, zipSync } from "fflate";
 import { server } from "../server";
 
@@ -40,7 +41,11 @@ const getWorkbookAsFile = async (): Promise<File> => {
 		});
 	});
 };
-
+export const getCheckpointId = () => {
+	const id = getOfficeMetadata().id;
+	const timeStamp = Date.now();
+	return `checkpoints/${id}/${timeStamp}`;
+};
 export const saveFileToStorage = async (key: string) => {
 	const file = await getWorkbookAsFile();
 	const response = await server.storage.upload.$post({ form: { file, key } });

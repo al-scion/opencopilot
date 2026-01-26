@@ -27,6 +27,7 @@ export const createChat = ({ id = crypto.randomUUID(), messages = [] }: { id?: s
 		transport,
 		generateId: () => crypto.randomUUID(),
 		sendAutomaticallyWhen: lastAssistantMessageIsCompleteWithToolCalls,
+		onError: (error) => console.error(error),
 		onToolCall: async ({ toolCall }) => {
 			if (toolCall.dynamic) {
 				return;
@@ -395,12 +396,20 @@ export const createChat = ({ id = crypto.randomUUID(), messages = [] }: { id?: s
 						const range = input.address ? worksheet.getRange(input.address) : worksheet.getUsedRangeOrNullObject(true);
 						const data = range.getImage();
 						await context.sync();
-						const base64String = data.value;
-						// const dataUrl = `data:image/png;base64,${base64String}`;
+						if (range.isNullObject === true) {
+							chat.addToolOutput({
+								tool: toolName,
+								toolCallId,
+								state: "output-error",
+								errorText: "The worksheet is empty",
+							});
+							return;
+						}
+
 						chat.addToolOutput({
 							tool: toolName,
 							toolCallId,
-							output: { base64String },
+							output: { base64String: data.value },
 						});
 					});
 

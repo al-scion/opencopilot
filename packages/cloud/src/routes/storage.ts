@@ -39,9 +39,8 @@ export const storageRouter = new Hono<{ Bindings: Env; Variables: Variables }>()
 			if (!file) {
 				return c.notFound();
 			}
-			return c.body(file.body, 200, {
-				"Content-Type": file.httpMetadata?.contentType ?? "",
-				...(download && { "Content-Disposition": `attachment; filename="${file.customMetadata?.name || "download"}"` }),
-			});
+			c.header("Content-Type", file.httpMetadata?.contentType);
+			download && c.header("Content-Disposition", `attachment; filename="${file.customMetadata?.name || "download"}"`);
+			return c.body(file.body);
 		}
 	);

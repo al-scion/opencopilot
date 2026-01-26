@@ -1,5 +1,7 @@
 import type { UseChatHelpers } from "@ai-sdk/react";
 import type { UIMessageType } from "@packages/shared";
+import { languageModelRegistry } from "@packages/shared";
+import { ProgressRing } from "@packages/ui/components/progress-ring";
 import { Card, CardContent, CardContentItem } from "@packages/ui/components/ui/card";
 import { toastManager } from "@packages/ui/components/ui/toast";
 import { cn } from "@packages/ui/lib/utils";
@@ -19,14 +21,17 @@ import { ModelMenu } from "@/components/chat/model-menu";
 import { TooltipButton } from "@/components/tooltip-button";
 import { useShortcut } from "@/lib/browser-shortcuts";
 import { ALLOWED_MIME_TYPES, MAX_FILE_SIZE } from "@/lib/constants";
-import { saveFileToStorage } from "@/lib/excel/checkpoint";
-import { useAppState } from "@/lib/state";
+import { getCheckpointId, saveFileToStorage } from "@/lib/excel/checkpoint";
+import { useAgentConfig, useAppState } from "@/lib/state";
 import { fileToDataUrl } from "@/lib/utils";
 
 export function ChatInput({ chat }: { chat: UseChatHelpers<UIMessageType> }) {
+	const { model } = useAgentConfig();
 	const [uploadedFiles, setFiles] = useState<FileUIPart[]>([]);
 	const commandInputRef = useRef<HTMLInputElement>(null);
 	const fileInputRef = useRef<HTMLInputElement>(null);
+	const contextWindow = languageModelRegistry[model].contextWindow;
+	const usage = chat.messages.findLast((m) => m.metadata?.usage?.totalTokens)?.metadata?.usage?.totalTokens ?? 0;
 
 	const editor = useEditor(
 		{
@@ -142,7 +147,7 @@ export function ChatInput({ chat }: { chat: UseChatHelpers<UIMessageType> }) {
 		if (editorState.isEmpty) {
 			return;
 		}
-		const checkpointId = crypto.randomUUID();
+		const checkpointId = getCheckpointId();
 		saveFileToStorage(checkpointId);
 		chat.sendMessage({
 			metadata: { tiptap: editor.getJSON(), checkpointId },
@@ -195,6 +200,15 @@ export function ChatInput({ chat }: { chat: UseChatHelpers<UIMessageType> }) {
 							<ModeSelector />
 						</div>
 						<div className="ml-auto flex flex-row items-center gap-1">
+							<TooltipButton
+								className={cn("cursor-default hover:bg-transparent", usage === 0 && "hidden")}
+								shortcutKeys="tokens used"
+								size="icon"
+								tooltip={usage.toLocaleString()}
+								variant="ghost"
+							>
+								<ProgressRing size={16} strokeWidth={2} value={(usage / contextWindow) * 100} />
+							</TooltipButton>
 							<TooltipButton
 								className={cn("rounded-full", editorState.isEmpty && "bg-foreground/50 hover:bg-foreground/50")}
 								onClick={handleSendMessage}

@@ -64,8 +64,8 @@ export const browserShortcuts = [
 		name: "togglePermission",
 		label: "Set permission",
 		key: {
-			mac: "tab",
-			windows: "tab",
+			mac: "shift+tab",
+			windows: "shift+tab",
 		},
 		options: {
 			enableOnContentEditable: true,

@@ -40,7 +40,8 @@
       "correctness": {
         "noUnusedImports": "off",
         "noUnusedVariables": "off",
-        "noUnusedFunctionParameters": "off"
+        "noUnusedFunctionParameters": "off",
+        "useImageSize": "off"
       },
       "suspicious": {
         "useAwait": "off",
