@@ -1,5 +1,4 @@
 import type { UIMessageType } from "@packages/shared";
-import { selectWorksheet } from "@packages/shared";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@packages/ui/components/ui/accordion";
 import { cn } from "@packages/ui/lib/utils";
 import { ChevronRight } from "lucide-react";
@@ -21,7 +20,10 @@ function ToolMessageTrigger({
 }: React.ComponentProps<typeof AccordionTrigger>) {
 	return (
 		<AccordionTrigger
-			className={cn("flex max-w-full flex-row items-center justify-start gap-1 p-0 text-muted-foreground", className)}
+			className={cn(
+				"mx-0.5 flex max-w-full flex-row items-center justify-start gap-1 p-0 text-muted-foreground",
+				className
+			)}
 			showIcon={false}
 			{...props}
 		>
@@ -84,6 +86,16 @@ export function AssistantMessage({ message }: { message: UIMessageType }) {
 								<span className="text-muted-foreground/75">{part.input?.worksheet}</span>
 							</ToolMessageTrigger>
 							{/* <ToolMessageContent>{JSON.stringify(part.input, null, 2)}</ToolMessageContent> */}
+						</ToolMessage>
+					);
+				}
+
+				if (part.type === "tool-createChart") {
+					return (
+						<ToolMessage key={key}>
+							<ToolMessageTrigger className="rounded-md border bg-muted p-2">
+								<span>Created chart</span>
+							</ToolMessageTrigger>
 						</ToolMessage>
 					);
 				}

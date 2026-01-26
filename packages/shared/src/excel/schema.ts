@@ -6,6 +6,7 @@ export const officeMetadataSchema = z.object({
 
 export const workbookStateSchema = z.object({
 	workbookName: z.string(),
+	activeWorksheet: z.string(),
 	worksheets: z.array(
 		z.object({
 			name: z.string(),
@@ -13,5 +14,8 @@ export const workbookStateSchema = z.object({
 			usedRange: z.string().nullable(),
 		})
 	),
-	selectedRange: z.string(),
+	activeSelection: z.object({
+		type: z.enum(["shape", "chart", "range"]),
+		data: z.any(),
+	}),
 });

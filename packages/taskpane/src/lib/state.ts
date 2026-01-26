@@ -4,6 +4,7 @@ import type { Editor } from "@tiptap/react";
 import type { z } from "zod";
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
+import { getActiveSelection } from "@/lib/excel/utils";
 import { createChat } from "./chat";
 
 const useAgentConfig = create<z.infer<typeof agentConfigSchema>>()(
@@ -30,16 +31,22 @@ type AppState = {
 	chat: ReturnType<typeof createChat>;
 
 	worksheets: Excel.Worksheet[];
-	selectedRange: Excel.Range;
+	charts: Excel.Chart[];
+	activeSelectionType: "shape" | "chart" | "range";
+	activeSelection: Excel.Shape | Excel.Chart | Excel.Range;
 };
 
 const initialWorkbookState = await Excel.run({ delayForCellEdit: true }, async (context) => {
-	const activeRange = context.workbook.getSelectedRange().load({ address: true });
-	const worksheets = context.workbook.worksheets.load({ $all: true });
+	const worksheets = context.workbook.worksheets.load({ $all: true, charts: { $all: true } });
 	await context.sync();
+	const charts = worksheets.items.flatMap((worksheet) => worksheet.charts.items);
+	const activeSelection = await getActiveSelection();
+
 	return {
 		worksheets: worksheets.items,
-		activeRange,
+		charts,
+		activeSelectionType: activeSelection.type,
+		activeSelection: activeSelection.activeSelection,
 	};
 });
 
@@ -67,15 +74,17 @@ const useAppState = create<AppState>()((set) => {
 	Excel.run({ delayForCellEdit: true }, async (context) => {
 		context.runtime.set({ enableEvents: true });
 		context.workbook.onSelectionChanged.add(async (e) => {
-			const selectedRange = context.workbook.getSelectedRange().load({ address: true })!;
-			await context.sync();
-			console.log("Active range changed");
-			set({ selectedRange });
+			const activeSelection = await getActiveSelection();
+			set({
+				activeSelectionType: activeSelection.type,
+				activeSelection: activeSelection.activeSelection,
+			});
 		});
 		context.workbook.worksheets.onChanged.add(async (e) => {
-			const worksheets = context.workbook.worksheets.load({ $all: true });
+			const worksheets = context.workbook.worksheets.load({ $all: true, charts: { $all: true } });
 			await context.sync();
-			set({ worksheets: worksheets.items });
+			const charts = worksheets.items.flatMap((worksheet) => worksheet.charts.items);
+			set({ worksheets: worksheets.items, charts });
 		});
 	});
 
@@ -91,7 +100,9 @@ const useAppState = create<AppState>()((set) => {
 		chat: createChat(),
 
 		worksheets: initialWorkbookState.worksheets,
-		selectedRange: initialWorkbookState.activeRange,
+		charts: initialWorkbookState.charts,
+		activeSelectionType: initialWorkbookState.activeSelectionType,
+		activeSelection: initialWorkbookState.activeSelection,
 	};
 });
 

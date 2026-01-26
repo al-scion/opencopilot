@@ -1,12 +1,14 @@
 import type { workbookStateSchema } from "@packages/shared";
 import type { z } from "zod";
+import { getActiveSelection } from "@/lib/excel/utils";
 
 export const getWorkbookState = async (): Promise<z.infer<typeof workbookStateSchema>> => {
 	return await Excel.run({ delayForCellEdit: true }, async (context) => {
 		const workbook = context.workbook.load({ name: true });
 		const worksheets = context.workbook.worksheets.load({ name: true, position: true });
-		const selectedRange = context.workbook.getSelectedRange().load({ address: true });
+		const activeWorksheet = context.workbook.worksheets.getActiveWorksheet().load({ name: true });
 		await context.sync();
+		const activeSelection = await getActiveSelection();
 
 		const worksheetsWithUsedRange = worksheets.items.map((worksheet) => ({
 			name: worksheet.name,
@@ -17,12 +19,17 @@ export const getWorkbookState = async (): Promise<z.infer<typeof workbookStateSc
 
 		return {
 			workbookName: workbook.name,
+			activeWorksheet: activeWorksheet.name,
 			worksheets: worksheetsWithUsedRange.map((worksheet) => ({
 				name: worksheet.name,
 				position: worksheet.position,
+				isEmpty: worksheet.usedRange.isNullObject === true,
 				usedRange: worksheet.usedRange.isNullObject ? null : worksheet.usedRange.address,
 			})),
-			selectedRange: selectedRange.address,
+			activeSelection: {
+				type: activeSelection.type,
+				data: activeSelection.activeSelection.toJSON(),
+			},
 		};
 	});
 };

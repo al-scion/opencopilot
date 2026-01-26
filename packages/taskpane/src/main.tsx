@@ -20,6 +20,7 @@ if (
 	Office.context?.platform === Office.PlatformType.PC ||
 	(Office.context?.platform === Office.PlatformType.OfficeOnline && !window.location.pathname.startsWith("/auth"))
 ) {
+	console.log("initing workbook");
 	await initWorkbook();
 }
 
@@ -31,7 +32,8 @@ function App() {
 	return <RouterProvider context={{ auth }} router={router} />;
 }
 
-type AuthKitProps = React.ComponentProps<typeof AuthKitProvider>;
+// type AuthKitProps = Omit<React.ComponentProps<typeof AuthKitProvider>, "children" | "clientId">;
+// const authKitProps: AuthKitProps = {};
 
 createRoot(document.getElementById("root")!).render(
 	<StrictMode>

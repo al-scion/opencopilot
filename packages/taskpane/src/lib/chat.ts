@@ -1,5 +1,5 @@
 import { Chat } from "@ai-sdk/react";
-import type { UIMessageType } from "@packages/shared";
+import { getOfficeMetadata, type UIMessageType } from "@packages/shared";
 import { DefaultChatTransport, lastAssistantMessageIsCompleteWithToolCalls } from "ai";
 import { getAccessToken } from "@/lib/auth";
 import { getWorkbookState } from "@/lib/excel/workbook-state";
@@ -16,6 +16,7 @@ export const createChat = ({ id = crypto.randomUUID(), messages = [] }: { id?: s
 		body: async () => ({
 			agentConfig: useAgentConfig.getState(),
 			workbookState: await getWorkbookState(),
+			officeMetadata: getOfficeMetadata(),
 		}),
 		credentials: "include",
 	});
@@ -371,7 +372,38 @@ export const createChat = ({ id = crypto.randomUUID(), messages = [] }: { id?: s
 						const worksheet = context.workbook.worksheets.getItem(input.worksheet);
 						const range = worksheet.getRange(input.address);
 						const chart = worksheet.charts.add(input.chartType, range);
+						chart.set({
+							title: input.title,
+							legend: input.legend,
+						});
+						const image = chart.getImage();
+						await context.sync();
+						const base64String = image.value;
+
+						chat.addToolOutput({
+							tool: toolName,
+							toolCallId,
+							output: { base64String },
+						});
 					});
+					return;
+				}
+
+				if (toolName === "getScreenshot") {
+					await Excel.run({ delayForCellEdit: true }, async (context) => {
+						const worksheet = context.workbook.worksheets.getItem(input.worksheet);
+						const range = input.address ? worksheet.getRange(input.address) : worksheet.getUsedRangeOrNullObject(true);
+						const data = range.getImage();
+						await context.sync();
+						const base64String = data.value;
+						// const dataUrl = `data:image/png;base64,${base64String}`;
+						chat.addToolOutput({
+							tool: toolName,
+							toolCallId,
+							output: { base64String },
+						});
+					});
+
 					return;
 				}
 			} catch (error) {

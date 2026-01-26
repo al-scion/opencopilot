@@ -19,22 +19,31 @@ import { Hono } from "hono";
 import type { Variables } from "../index";
 
 export const chatRouter = new Hono<{ Bindings: Env; Variables: Variables }>().post("/", async (c) => {
-	const { id, messages, agentConfig, workbookState } = chatRequestSchema.parse(await c.req.json());
-	const modelMessages = await convertToModelMessages(messages);
+	const { id, messages, agentConfig, workbookState, officeMetadata } = chatRequestSchema.parse(await c.req.json());
+
 	const lastMessage = messages.at(-1)!;
 	const isToolCallResponse = lastMessage.metadata?.finishReason === "tool-calls";
 
 	const provider = languageModelRegistry[agentConfig.model].provider;
 	const providerOptions = { [provider]: languageModelRegistry[agentConfig.model].options };
+	const tools = toolRegistry({ agentConfig });
+	const modelMessages = await convertToModelMessages(messages, { tools });
+
+	c.var.convex.mutation(api.chat.functions.saveChat, {
+		chatId: id,
+		message: lastMessage,
+		namespace: officeMetadata.id,
+	});
+
 	const stream = createUIMessageStream<UIMessageType>({
 		execute: async ({ writer }) => {
 			const response = streamText({
 				model: modelRegistry.languageModel(agentConfig.model),
-				providerOptions,
 				messages: modelMessages,
 				system: getSystemPrompt({ workbookState, agentConfig }),
-				tools: toolRegistry({ agentConfig }),
-				// activeTools: toolResolver({ agentConfig }),
+				providerOptions,
+				tools,
+				// activeTools: ["getScreenshot"],
 				onError: (error) => console.error(error),
 				experimental_transform: [smoothStream()],
 			});
@@ -44,8 +53,8 @@ export const chatRouter = new Hono<{ Bindings: Env; Variables: Variables }>().po
 					originalMessages: messages,
 					sendSources: true,
 					generateMessageId: () => (isToolCallResponse ? lastMessage.id : crypto.randomUUID()),
-					onFinish: ({ responseMessage }) => {
-						c.var.convex.mutation(api.chat.functions.saveMessage, { chatId: id, message: responseMessage });
+					onFinish: async ({ responseMessage }) => {
+						await c.var.convex.mutation(api.chat.functions.saveMessage, { chatId: id, message: responseMessage });
 					},
 					messageMetadata: ({ part }) => {
 						if (part.type === "start-step") {
@@ -65,5 +74,6 @@ export const chatRouter = new Hono<{ Bindings: Env; Variables: Variables }>().po
 			);
 		},
 	});
+
 	return createUIMessageStreamResponse({ stream });
 });

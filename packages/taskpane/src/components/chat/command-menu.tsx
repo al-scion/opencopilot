@@ -31,7 +31,7 @@ export function CommandMenu({
 	inputRef: React.Ref<HTMLInputElement>;
 	editor: Editor;
 }) {
-	const { selectedRange, worksheets } = useAppState();
+	const { charts, worksheets, activeSelection } = useAppState();
 	const insertMention = ({ id, label, editor, range }: { id: string; label: string; editor: Editor; range: Range }) => {
 		editor
 			.chain()
@@ -47,18 +47,12 @@ export function CommandMenu({
 		{
 			// label: "Workbook",
 			items: [
-				{
-					value: selectedRange.address,
-					label: selectedRange.address,
-					shortcut: "Selection",
-					onClick: () =>
-						insertMention({
-							id: selectedRange.address,
-							label: selectedRange.address,
-							editor,
-							range: mentionState!.range!,
-						}),
-				},
+				...charts.map((chart) => ({
+					value: chart.id,
+					label: chart.name,
+					shortcut: "Chart",
+					onClick: () => insertMention({ id: chart.id, label: chart.name, editor, range: mentionState!.range! }),
+				})),
 				...worksheets.map((worksheet) => ({
 					value: worksheet.name,
 					label: worksheet.name,
@@ -76,7 +70,6 @@ export function CommandMenu({
 				"absolute bottom-[calc(100%+4px)] left-1/2 h-fit w-[calc(100%-4px)] -translate-x-1/2 rounded-lg border p-1",
 				mentionState?.active ? "block" : "hidden"
 				// "origin-bottom transition-all duration-50 ease-in-out",
-
 				// mentionState?.query == null ? "pointer-events-none scale-90 opacity-0" : "scale-100 opacity-100"
 			)}
 			items={commandGroupData}

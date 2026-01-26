@@ -14,6 +14,27 @@ const readWorksheet = tool({
 	}),
 });
 
+const getScreenshot = tool({
+	description: "Get screenshot of a worksheet or specific range",
+	inputSchema: z.object({
+		worksheet: z.string(),
+		address: z.string().optional(),
+	}),
+	outputSchema: z.object({
+		base64String: z.string(),
+	}),
+	toModelOutput: ({ output }) => ({
+		type: "content",
+		value: [
+			{
+				type: "image-data",
+				mediaType: "image/png",
+				data: output.base64String,
+			},
+		],
+	}),
+});
+
 const editRange = tool({
 	description: "Edit a range in a worksheet",
 	inputSchema: z.object({
@@ -201,8 +222,29 @@ const createChart = tool({
 		worksheet: z.string(),
 		address: z.string(),
 		chartType: z.enum(EXCEL_CHART_TYPES),
+		title: z
+			.object({
+				text: z.string().optional(),
+				visible: z.boolean().optional(),
+			})
+			.optional(),
+		legend: z.object({
+			visible: z.boolean().optional(),
+		}),
 	}),
-	outputSchema: z.object({}),
+	outputSchema: z.object({
+		base64String: z.string(),
+	}),
+	toModelOutput: ({ output }) => ({
+		type: "content",
+		value: [
+			{
+				type: "image-data",
+				mediaType: "image/png",
+				data: output.base64String,
+			},
+		],
+	}),
 });
 
 export const excelTools = {
@@ -220,4 +262,5 @@ export const excelTools = {
 	searchWorkbook,
 	traceFormulaPrecedents,
 	traceFormulaDependents,
+	getScreenshot,
 };

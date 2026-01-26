@@ -23,7 +23,15 @@ export const initWorkbook = async () => {
 		});
 
 		if (import.meta.env.DEV === true) {
-			await Excel.run(async (context) => {});
+			await Excel.run(async (context) => {
+				const worksheets = context.workbook.worksheets.load({ charts: { $all: true } });
+				await context.sync();
+				const charts = worksheets.items.flatMap((worksheet) => worksheet.charts.items.map((chart) => chart.toJSON()));
+
+				console.log("range", charts);
+				// console.log("shape", shape.toJSON());
+				// console.log("chart", chart.toJSON());
+			});
 		}
 	});
 };
