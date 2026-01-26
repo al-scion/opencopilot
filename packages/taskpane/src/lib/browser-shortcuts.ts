@@ -126,7 +126,15 @@ export const useShortcut = ({ name, action }: UseShortcutParams) => {
 	const { operatingSystem } = useAppState();
 	const shortcut = browserShortcuts.find((shortcut) => shortcut.name === name)!;
 	const key = shortcut.key[operatingSystem];
-	return useHotkeys(key, action, shortcut.options);
+
+	useHotkeys(
+		key,
+		(event, key) => {
+			event.stopPropagation();
+			action(event, key);
+		},
+		shortcut.options
+	);
 };
 
 export const getShortcutString = (name: ShortcutName) => {

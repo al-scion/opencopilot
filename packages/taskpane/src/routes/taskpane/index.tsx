@@ -1,7 +1,9 @@
+import { useChat } from "@ai-sdk/react";
 import { Tabs, TabsList, TabsTrigger } from "@packages/ui/components/ui/tabs";
 import { createFileRoute } from "@tanstack/react-router";
 import { PlusIcon } from "lucide-react";
 import { ChatHistory } from "@/components/chat/chat-history";
+import { ChatInput } from "@/components/chat/chat-input";
 import { ChatMessages } from "@/components/chat/chat-messages";
 import { SettingsMenu } from "@/components/settings-menu";
 import { TooltipButton } from "@/components/tooltip-button";
@@ -16,6 +18,7 @@ export const Route = createFileRoute("/taskpane/")({
 function RouteComponent() {
 	const { chat } = useAppState();
 	const newChat = () => useAppState.setState({ chat: createChat() });
+	const chatHelpers = useChat({ chat });
 	useShortcut({ name: "newChat", action: newChat });
 	useShortcut({ name: "stopChat", action: stop });
 
@@ -42,7 +45,8 @@ function RouteComponent() {
 					<SettingsMenu />
 				</div>
 			</div>
-			<ChatMessages chat={chat} key={chat.id} />
+			<ChatMessages chat={chatHelpers} />
+			<ChatInput chat={chatHelpers} />
 		</>
 	);
 }

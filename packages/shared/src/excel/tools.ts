@@ -1,32 +1,30 @@
-import { toolDefinition } from "@tanstack/ai";
+import { tool } from "ai";
 import { z } from "zod";
+import { EXCEL_CHART_TYPES } from "./constants";
 
-const readWorksheetDef = toolDefinition({
-	name: "readWorksheet",
+const readWorksheet = tool({
 	description: "Read a range in a worksheet. Leave the address blank to read the entire worksheet",
 	inputSchema: z.object({
 		worksheet: z.string(),
 		address: z.string().optional(),
 	}),
 	outputSchema: z.object({
-		formulas: z.string(),
-		text: z.string(),
+		formulas: z.array(z.array(z.any())),
+		text: z.array(z.array(z.string())),
 	}),
 });
 
-const editRangeDef = toolDefinition({
-	name: "editRange",
+const editRange = tool({
 	description: "Edit a range in a worksheet",
 	inputSchema: z.object({
 		worksheet: z.string(),
 		address: z.string().describe("Range in A1 notation, for example 'A1', 'A1:A10'"),
 		values: z.array(z.array(z.string())),
 	}),
-	outputSchema: z.object({ result: z.string() }),
+	outputSchema: z.object({ result: z.array(z.array(z.string())) }),
 });
 
-const copyPasteDef = toolDefinition({
-	name: "copyPaste",
+const copyPaste = tool({
 	description: "Copy and paste a range",
 	inputSchema: z.object({
 		source: z.object({
@@ -40,12 +38,11 @@ const copyPasteDef = toolDefinition({
 	}),
 	outputSchema: z.object({
 		address: z.string(),
-		values: z.string(),
+		values: z.array(z.array(z.string())),
 	}),
 });
 
-const clearRangeDef = toolDefinition({
-	name: "clearRange",
+const clearRange = tool({
 	description: "Clear a range in a worksheet",
 	inputSchema: z.object({
 		worksheet: z.string(),
@@ -54,8 +51,7 @@ const clearRangeDef = toolDefinition({
 	outputSchema: z.object({ success: z.boolean() }),
 });
 
-const writeCommentDef = toolDefinition({
-	name: "writeComment",
+const writeComment = tool({
 	description: "Write comment or reply to a thread",
 	inputSchema: z.object({
 		worksheet: z.string(),
@@ -76,8 +72,7 @@ const writeCommentDef = toolDefinition({
 	}),
 });
 
-const readCommentsDef = toolDefinition({
-	name: "readComments",
+const readComments = tool({
 	description: "Read all comments or from a specific worksheet",
 	inputSchema: z.object({
 		worksheet: z.string().optional(),
@@ -100,8 +95,7 @@ const readCommentsDef = toolDefinition({
 	}),
 });
 
-const editWorksheetDef = toolDefinition({
-	name: "editWorksheet",
+const editWorksheet = tool({
 	description: "Edit the configuration of a worksheet",
 	inputSchema: z.object({
 		name: z.string(),
@@ -114,10 +108,8 @@ const editWorksheetDef = toolDefinition({
 	outputSchema: z.object({ success: z.boolean() }),
 });
 
-const createWorksheetDef = toolDefinition({
-	name: "createWorksheet",
+const createWorksheet = tool({
 	description: "Edit or create a worksheet",
-	needsApproval: false,
 	inputSchema: z.object({
 		name: z.string(),
 		copyFrom: z.string().optional(),
@@ -128,18 +120,14 @@ const createWorksheetDef = toolDefinition({
 		visibility: z.enum(["Visible", "Hidden"]).optional(),
 	}),
 });
-
-const deleteWorksheetDef = toolDefinition({
-	name: "deleteWorksheet",
+const deleteWorksheet = tool({
 	description: "Delete a worksheet",
-	needsApproval: true,
 	inputSchema: z.object({
 		worksheet: z.string(),
 	}),
 });
 
-const editWorksheetLayoutDef = toolDefinition({
-	name: "editWorksheetLayout",
+const editWorksheetLayout = tool({
 	description: "Insert or delete rows/columns",
 	inputSchema: z.object({
 		worksheet: z.string(),
@@ -149,8 +137,7 @@ const editWorksheetLayoutDef = toolDefinition({
 	}),
 });
 
-const searchWorkbookDef = toolDefinition({
-	name: "searchWorkbook",
+const searchWorkbook = tool({
 	description: "Search the workbook",
 	inputSchema: z.object({
 		query: z.string(),
@@ -168,10 +155,8 @@ const searchWorkbookDef = toolDefinition({
 	}),
 });
 
-const traceFormulaPrecedentsDef = toolDefinition({
-	name: "traceFormulaPrecedents",
+const traceFormulaPrecedents = tool({
 	description: "Trace the precedents for a formula in a cell",
-	needsApproval: false,
 	inputSchema: z.object({
 		worksheet: z.string(),
 		address: z.string(),
@@ -190,10 +175,8 @@ const traceFormulaPrecedentsDef = toolDefinition({
 	}),
 });
 
-const traceFormulaDependentsDef = toolDefinition({
-	name: "traceFormulaDependents",
+const traceFormulaDependents = tool({
 	description: "Trace the dependents for a formula in a cell",
-	needsApproval: false,
 	inputSchema: z.object({
 		worksheet: z.string(),
 		address: z.string(),
@@ -212,18 +195,29 @@ const traceFormulaDependentsDef = toolDefinition({
 	}),
 });
 
-export {
-	editRangeDef,
-	clearRangeDef,
-	writeCommentDef,
-	readCommentsDef,
-	editWorksheetDef,
-	searchWorkbookDef,
-	traceFormulaPrecedentsDef,
-	traceFormulaDependentsDef,
-	readWorksheetDef,
-	copyPasteDef,
-	editWorksheetLayoutDef,
-	createWorksheetDef,
-	deleteWorksheetDef,
+const createChart = tool({
+	description: "Create a chart",
+	inputSchema: z.object({
+		worksheet: z.string(),
+		address: z.string(),
+		chartType: z.enum(EXCEL_CHART_TYPES),
+	}),
+	outputSchema: z.object({}),
+});
+
+export const excelTools = {
+	createChart,
+	readWorksheet,
+	editRange,
+	copyPaste,
+	clearRange,
+	writeComment,
+	readComments,
+	editWorksheet,
+	createWorksheet,
+	deleteWorksheet,
+	editWorksheetLayout,
+	searchWorkbook,
+	traceFormulaPrecedents,
+	traceFormulaDependents,
 };

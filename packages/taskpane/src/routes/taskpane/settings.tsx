@@ -122,6 +122,19 @@ function RouteComponent() {
 						</CardContent>
 					</Card>
 				</TabsPanel>
+				<TabsPanel value="styles">
+					<Card>
+						<CardContent>
+							<CardContentItem className="px-3">
+								<div className="flex flex-col">
+									<span className="">Auto format</span>
+									<span className="font-light text-muted-foreground text-xs">Launch automatically on startup</span>
+								</div>
+								<Switch checked={loadOnStartup} className="ml-auto" onCheckedChange={handleLoadBehaviourChange} />
+							</CardContentItem>
+						</CardContent>
+					</Card>
+				</TabsPanel>
 			</Tabs>
 		</div>
 	);

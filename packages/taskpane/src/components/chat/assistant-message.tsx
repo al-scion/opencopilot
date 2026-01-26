@@ -1,7 +1,8 @@
+import type { UIMessageType } from "@packages/shared";
+import { selectWorksheet } from "@packages/shared";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@packages/ui/components/ui/accordion";
 import { cn } from "@packages/ui/lib/utils";
 import { ChevronRight } from "lucide-react";
-import type { UIMessage } from "@/lib/chat";
 import { MarkdownText } from "./markdown-text";
 
 function ToolMessage(props: React.ComponentProps<typeof AccordionItem>) {
@@ -20,10 +21,7 @@ function ToolMessageTrigger({
 }: React.ComponentProps<typeof AccordionTrigger>) {
 	return (
 		<AccordionTrigger
-			className={cn(
-				"flex max-w-full flex-row items-center justify-start gap-1 p-0 font-medium text-muted-foreground",
-				className
-			)}
+			className={cn("flex max-w-full flex-row items-center justify-start gap-1 p-0 text-muted-foreground", className)}
 			showIcon={false}
 			{...props}
 		>
@@ -44,13 +42,17 @@ function ToolMessageContent({ className, children, ...props }: React.ComponentPr
 	);
 }
 
-export function AssistantMessage({ message }: { message: UIMessage }) {
+export function AssistantMessage({ message }: { message: UIMessageType }) {
 	return (
 		<div className="flex flex-col gap-1 px-0.5 py-2 text-sm" key={message.id}>
 			{message.parts.map((part, i) => {
 				const key = `${message.id}-${i}`;
 
-				if (part.type === "thinking") {
+				if (part.type === "step-start") {
+					return null;
+				}
+
+				if (part.type === "reasoning") {
 					return (
 						<ToolMessage key={key}>
 							<ToolMessageTrigger>
@@ -59,7 +61,7 @@ export function AssistantMessage({ message }: { message: UIMessage }) {
 							</ToolMessageTrigger>
 							<ToolMessageContent>
 								<MarkdownText className="text-xs" mode="static">
-									{part.content}
+									{part.text}
 								</MarkdownText>
 							</ToolMessageContent>
 						</ToolMessage>
@@ -69,47 +71,22 @@ export function AssistantMessage({ message }: { message: UIMessage }) {
 				if (part.type === "text") {
 					return (
 						<MarkdownText className="px-0.5" key={key}>
-							{part.content}
+							{part.text}
 						</MarkdownText>
 					);
 				}
 
-				if (part.type === "tool-call") {
-					if (part.name === "readWorksheet" && part.state === "input-complete") {
-						const input = JSON.parse(part.arguments) as (typeof part)["input"];
-						return <span className="text-muted-foreground text-xs">Read {input?.worksheet}</span>;
-					}
-
-					if (part.name === "editRange" && part.state === "input-complete") {
-						return (
-							<ToolMessage>
-								<ToolMessageTrigger>
-									<span>Edited {part.input?.worksheet}</span>
-								</ToolMessageTrigger>
-							</ToolMessage>
-						);
-					}
-
-					// const result = message.parts.find((item) => item.type === "tool-result" && item.toolCallId === part.id);
-					// const toolResu
-					return JSON.stringify(part, null, 2);
+				if (part.type === "tool-readWorksheet") {
+					return (
+						<ToolMessage key={key}>
+							<ToolMessageTrigger>
+								<span>Read</span>
+								<span className="text-muted-foreground/75">{part.input?.worksheet}</span>
+							</ToolMessageTrigger>
+							{/* <ToolMessageContent>{JSON.stringify(part.input, null, 2)}</ToolMessageContent> */}
+						</ToolMessage>
+					);
 				}
-
-				if (part.type === "tool-result") {
-					return JSON.stringify(part, null, 2);
-				}
-
-				// if (part.type === "tool-readWorksheet") {
-				// 	return (
-				// 		<ToolMessage key={key}>
-				// 			<ToolMessageTrigger>
-				// 				<Search className="size-3.5" />
-				// 				Read {part.input?.worksheet}
-				// 			</ToolMessageTrigger>
-				// 			<ToolMessageContent>{JSON.stringify(part.input, null, 2)}</ToolMessageContent>
-				// 		</ToolMessage>
-				// 	);
-				// }
 
 				// if (part.type === "tool-editRange") {
 				// 	return (

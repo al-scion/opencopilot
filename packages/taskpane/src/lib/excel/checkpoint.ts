@@ -49,7 +49,7 @@ export const saveFileToStorage = async (key: string) => {
 };
 
 const getBase64StringFromStorage = async (key: string): Promise<string> => {
-	const response = await server.storage.files[":key"].$get({ param: { key } });
+	const response = await server.storage.files[":key"].$get({ param: { key }, query: {} });
 	const arrayBuffer = await response.arrayBuffer();
 
 	// Hide the taskpane by setting visibility to 0

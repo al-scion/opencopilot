@@ -26,7 +26,6 @@ const app = new Hono<{ Bindings: Env; Variables: Variables }>()
 	// .use(jwk({ jwks_uri: WORKOS_JWKS_URI, alg: ["RS256"] }))
 	.use(async (c, next) => {
 		const ipAddress = c.req.header("x-real-ip") || c.req.header("cf-connecting-ip") || "";
-
 		const auth = c.req.header("Authorization")?.split(" ")[1];
 		c.set("convex", new ConvexHttpClient(c.env.CONVEX_URL, { auth }));
 		await next();

@@ -25,8 +25,7 @@ import { useAppState, useOfficeMetadata } from "@/lib/state";
 import { getRelativeTime } from "@/lib/utils";
 
 export function ChatHistory() {
-	// const queryClient = useQueryClient();
-	const { chatHistoryOpen, editor, chat } = useAppState();
+	const { chatHistoryOpen, editor } = useAppState();
 	const { id } = useOfficeMetadata();
 
 	const { data: chats } = useGetChats(id);
@@ -53,7 +52,7 @@ export function ChatHistory() {
 
 	const handleSelectChat = async (chatId: string) => {
 		const messages = await getMessages(chatId);
-		const chat = createChat({ id: chatId, initialMessages: messages });
+		const chat = createChat({ id: chatId, messages });
 		useAppState.setState({ chat });
 		handleOpenChange(false);
 	};
@@ -87,7 +86,7 @@ export function ChatHistory() {
 				>
 					<CommandInput placeholder="Search chat history" />
 					<CommandEmpty>No chats found</CommandEmpty>
-					<CommandList>
+					<CommandList className="pb-9">
 						{(group: CommandGroupData, index) => (
 							<CommandGroup items={group.items} key={index}>
 								{group.label && <CommandGroupLabel>{group.label}</CommandGroupLabel>}

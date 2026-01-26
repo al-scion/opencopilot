@@ -1,14 +1,13 @@
-import type { Tool } from "@tanstack/ai";
 import type { z } from "zod";
-import * as excelTools from "../excel/tools";
+import { excelTools } from "../excel/tools";
 import type { agentConfigSchema } from "./schema";
 
-export const toolRegistry = ({ agentConfig }: { agentConfig: z.infer<typeof agentConfigSchema> }): Tool[] => {
-	const excelToolsAsArray = Object.values(excelTools);
-
-	return [...excelToolsAsArray];
+export const toolRegistry = ({ agentConfig }: { agentConfig: z.infer<typeof agentConfigSchema> }) => {
+	return { ...excelTools };
 };
 
-export const toolResolver = ({ agentConfig }: { agentConfig: z.infer<typeof agentConfigSchema> }): Tool[] => {
+type ToolOptions = keyof ReturnType<typeof toolRegistry>;
+
+export const toolResolver = ({ agentConfig }: { agentConfig: z.infer<typeof agentConfigSchema> }): ToolOptions[] => {
 	return [];
 };

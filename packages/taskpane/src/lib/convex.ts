@@ -1,6 +1,6 @@
-import { ConvexQueryClient, convexQuery, useConvexMutation } from "@convex-dev/react-query";
+import { ConvexQueryClient, convexQuery } from "@convex-dev/react-query";
 import { api } from "@packages/convex";
-import { QueryClient, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { QueryClient, useQuery } from "@tanstack/react-query";
 import { ConvexReactClient } from "convex/react";
 
 export const convexReactClient = new ConvexReactClient(import.meta.env.VITE_CONVEX_URL);
@@ -33,10 +33,4 @@ export const getMessages = async (chatId: string) => {
 	});
 	const messages = data.map((message) => message.message);
 	return messages;
-};
-
-export const useSaveChat = () => {
-	return useMutation({
-		mutationFn: useConvexMutation(api.chat.functions.saveChat),
-	});
 };

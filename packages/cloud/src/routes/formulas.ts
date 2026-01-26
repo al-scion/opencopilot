@@ -1,11 +1,5 @@
-import {
-	imageModelRegistry,
-	imageModelSchema,
-	languageModelRegistry,
-	languageModelSchema,
-} from "@packages/shared/server";
-import { chat, generateImage } from "@tanstack/ai";
-// import { generateImage, generateText } from "ai";
+import { imageModelSchema, languageModelSchema, modelRegistry } from "@packages/shared/server";
+import { generateImage, generateText } from "ai";
 import { Hono } from "hono";
 import { describeRoute, validator } from "hono-openapi";
 import { z } from "zod";
@@ -24,12 +18,11 @@ export const formulasRouter = new Hono<{ Bindings: Env; Variables: Variables }>(
 		),
 		async (c) => {
 			const { prompt, model } = c.req.valid("json");
-			const text = await chat({
-				adapter: languageModelRegistry[model].adapter(),
-				stream: false,
-				messages: [{ role: "user", content: prompt }],
+			const response = await generateText({
+				model: modelRegistry.languageModel(model),
+				prompt,
 			});
-			return c.json(text);
+			return c.json({ text: response.text });
 		}
 	)
 
@@ -40,19 +33,20 @@ export const formulasRouter = new Hono<{ Bindings: Env; Variables: Variables }>(
 		async (c) => {
 			const { prompt, model } = c.req.valid("json");
 
-			const result = await generateImage({
-				adapter: imageModelRegistry[model].adapter(),
+			const response = await generateText({
+				model: modelRegistry.languageModel(model),
 				prompt,
 			});
 			const fileKey = crypto.randomUUID();
-			const image = result.images[0]!.b64Json!;
+			const { uint8Array, mediaType, base64 } = response.files[0]!;
 
-			await c.env.STORAGE.put(fileKey, image, {
+			await c.env.STORAGE.put(fileKey, uint8Array, {
+				httpMetadata: { contentType: mediaType },
 				customMetadata: { prompt },
 			});
 			const origin = new URL(c.req.url).origin;
 			const fileUrl = `${origin}/storage/files/${fileKey}`;
-			const downloadUrl = `${origin}/storage/files/${fileKey}/download`;
+			const downloadUrl = `${fileUrl}?download=true`;
 			return c.json({ fileUrl, downloadUrl });
 		}
 	);

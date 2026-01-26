@@ -1,3 +1,4 @@
+export * from "./agent/message";
 export * from "./agent/model-registry";
 export * from "./agent/permissions";
 export * from "./agent/prompt";

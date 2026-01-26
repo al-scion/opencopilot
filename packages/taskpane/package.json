@@ -38,9 +38,6 @@
     "@packages/convex": "workspace:*",
     "@packages/shared": "workspace:*",
     "@packages/ui": "workspace:*",
-    "@tanstack/ai": "catalog:",
-    "@tanstack/ai-client": "catalog:",
-    "@tanstack/ai-react": "catalog:",
     "@tanstack/react-query": "catalog:",
     "@tanstack/react-router": "catalog:",
     "@tiptap/extension-document": "^3.17.1",
@@ -63,6 +60,8 @@
     "streamdown": "^2.1.0",
     "use-stick-to-bottom": "^1.1.2",
     "zod": "catalog:",
-    "zustand": "catalog:"
+    "zustand": "catalog:",
+    "ai": "catalog:",
+    "@ai-sdk/react": "catalog:"
   }
 }

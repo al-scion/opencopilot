@@ -75,7 +75,7 @@ export const generateText = async (prompt: string, model: string | null, signal:
 	);
 
 	const data = await response.json();
-	const card = getCellValueCard({ basicValue: data });
+	const card = getCellValueCard({ basicValue: data.text });
 	return [[card]];
 };
 

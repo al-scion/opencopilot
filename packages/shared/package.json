@@ -22,10 +22,10 @@
     "@typescript/native-preview": "catalog:"
   },
   "dependencies": {
-    "@tanstack/ai": "catalog:",
-    "@tanstack/ai-anthropic": "catalog:",
-    "@tanstack/ai-gemini": "catalog:",
-    "@tanstack/ai-openai": "catalog:",
+    "ai": "catalog:",
+    "@ai-sdk/openai": "catalog:",
+    "@ai-sdk/anthropic": "catalog:",
+    "@ai-sdk/google": "catalog:",
     "zod": "catalog:"
   }
 }

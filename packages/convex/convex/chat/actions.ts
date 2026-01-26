@@ -1,6 +1,6 @@
+import { google } from "@ai-sdk/google";
 import { generateTitlePrompt } from "@packages/shared/server";
-import { chat, uiMessageToModelMessages } from "@tanstack/ai";
-import { geminiText } from "@tanstack/ai-gemini";
+import { convertToModelMessages, generateText } from "ai";
 import { v } from "convex/values";
 import { api } from "../_generated/api";
 import { action } from "../_generated/server";
@@ -11,17 +11,16 @@ export const generateTitle = action({
 		message: v.any(),
 	},
 	handler: async (ctx, args) => {
-		const modelMessages = uiMessageToModelMessages(args.message);
-		const title = await chat({
-			adapter: geminiText("gemini-2.5-flash"),
-			messages: modelMessages as any,
-			systemPrompts: [generateTitlePrompt],
-			stream: false,
+		const modelMessages = await convertToModelMessages(args.message);
+		const result = await generateText({
+			model: google("gemini-2.5-flash"),
+			messages: modelMessages,
+			system: generateTitlePrompt,
 		});
 
 		await ctx.runMutation(api.chat.functions.updateChatTitle, {
 			chatId: args.chatId,
-			title,
+			title: result.text,
 		});
 	},
 });

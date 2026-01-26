@@ -23,30 +23,25 @@ export const storageRouter = new Hono<{ Bindings: Env; Variables: Variables }>()
 			});
 			const origin = new URL(c.req.url).origin;
 			const fileUrl = `${origin}/storage/files/${fileKey}`;
-			const downloadUrl = `${origin}/storage/files/${fileKey}/download`;
+			const downloadUrl = `${fileUrl}?download=true`;
 			return c.json({ fileUrl, downloadUrl });
 		}
 	)
 
-	.get("/files/:key", describeRoute({}), async (c) => {
-		const key = c.req.param("key");
-		const file = await c.env.STORAGE.get(key);
-		if (!file) {
-			return c.notFound();
+	.get(
+		"/files/:key",
+		describeRoute({}),
+		validator("query", z.object({ download: z.boolean().optional() })),
+		async (c) => {
+			const key = c.req.param("key");
+			const { download } = c.req.valid("query");
+			const file = await c.env.STORAGE.get(key)!;
+			if (!file) {
+				return c.notFound();
+			}
+			return c.body(file.body, 200, {
+				"Content-Type": file.httpMetadata?.contentType ?? "",
+				...(download && { "Content-Disposition": `attachment; filename="${file.customMetadata?.name || "download"}"` }),
+			});
 		}
-		return c.body(file.body, 200, { "content-type": file.httpMetadata?.contentType ?? "" });
-	})
-
-	.get("/files/:key/download", describeRoute({}), async (c) => {
-		const key = c.req.param("key");
-		const file = await c.env.STORAGE.get(key);
-		if (!file) {
-			return c.notFound();
-		}
-		const filename = file.customMetadata?.name || "download";
-		const headers = {
-			"content-type": file.httpMetadata?.contentType ?? "",
-			"content-disposition": `attachment; filename="${filename}"`,
-		};
-		return c.body(file.body, 200, headers);
-	});
+	);

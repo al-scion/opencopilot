@@ -1,5 +1,6 @@
 import { z } from "zod";
 import { workbookStateSchema } from "../excel/schema";
+import type { UIMessageType } from "./message";
 import { imageModelRegistry, languageModelRegistry } from "./model-registry";
 import { permissionsConfig } from "./permissions";
 
@@ -13,8 +14,8 @@ export const agentConfigSchema = z.object({
 });
 
 export const chatRequestSchema = z.object({
-	data: z.object({ conversationId: z.string() }),
-	messages: z.array(z.any()),
+	id: z.string(),
+	messages: z.array(z.custom<UIMessageType>()),
 	workbookState: workbookStateSchema,
 	agentConfig: agentConfigSchema,
 });

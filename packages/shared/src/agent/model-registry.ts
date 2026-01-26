@@ -1,52 +1,73 @@
-import { type AnthropicChatModelProviderOptionsByName, anthropicText } from "@tanstack/ai-anthropic";
+import { type AnthropicProviderOptions, anthropic } from "@ai-sdk/anthropic";
 import {
-	type GeminiChatModelProviderOptionsByName,
-	type GeminiImageModelProviderOptionsByName,
-	geminiImage,
-	geminiText,
-} from "@tanstack/ai-gemini";
-import { type OpenAIChatModelProviderOptionsByName, openaiText } from "@tanstack/ai-openai";
+	type GoogleGenerativeAIImageProviderOptions,
+	type GoogleGenerativeAIProviderOptions,
+	google,
+} from "@ai-sdk/google";
+import { type OpenAIResponsesProviderOptions, openai } from "@ai-sdk/openai";
+import { createProviderRegistry } from "ai";
+
+export const modelRegistry = createProviderRegistry(
+	{
+		anthropic,
+		openai,
+		google,
+	},
+	{
+		separator: "/",
+	}
+);
 
 export const languageModelRegistry = {
-	"anthropic/claude-opus-4-5": {
-		name: "Claude Opus 4.5",
-		provider: "anthropic",
-		adapter: () => anthropicText("claude-opus-4-5"),
-		options: {} as AnthropicChatModelProviderOptionsByName["claude-opus-4-5"],
-	},
-	"anthropic/claude-sonnet-4-5": {
-		name: "Claude Sonnet 4.5",
-		provider: "anthropic",
-		adapter: () => anthropicText("claude-sonnet-4-5"),
-		options: {
-			// thinking: { type: "enabled", budget_tokens: 2000 },
-		} as AnthropicChatModelProviderOptionsByName["claude-sonnet-4-5"],
+	"google/gemini-3-pro-preview": {
+		name: "Gemini 3 Pro",
+		provider: "google",
+		options: {} as GoogleGenerativeAIProviderOptions,
 	},
 	"openai/gpt-5.2": {
 		name: "GPT 5.2",
 		provider: "openai",
-		adapter: () => openaiText("gpt-5.2"),
-		options: {} as OpenAIChatModelProviderOptionsByName["gpt-5.2"],
+		options: {} as OpenAIResponsesProviderOptions,
 	},
-	"gemini/gemini-3-pro-preview": {
-		name: "Gemini 3 Pro",
-		provider: "gemini",
-		adapter: () => geminiText("gemini-3-pro-preview"),
-		options: {} as GeminiChatModelProviderOptionsByName["gemini-3-pro-preview"],
+	"anthropic/claude-sonnet-4-5": {
+		name: "Claude Sonnet 4.5",
+		provider: "anthropic",
+		options: {} as AnthropicProviderOptions,
+	},
+	"anthropic/claude-opus-4-5": {
+		name: "Claude Opus 4.5",
+		provider: "anthropic",
+		options: {} as AnthropicProviderOptions,
 	},
 } as const;
 
 export const imageModelRegistry = {
-	"gemini/gemini-3-pro-image-preview": {
-		name: "Gemini 3 Pro",
-		adapter: () => geminiImage("gemini-3-pro-image-preview"),
-		options: {} as GeminiImageModelProviderOptionsByName["gemini-3-pro-image-preview"],
+	"google/gemini-3-pro-image-preview": {
+		name: "Gemini 3 Pro Image",
+		provider: "google",
+		options: {},
 	},
-};
+	"google/gemini-2.5-flash-image-preview": {
+		name: "Gemini 2.5 Flash Image",
+		provider: "google",
+		options: {},
+	},
+} as const;
 
 export const providerRegistry = {
-	anthropic: { iconUrl: "/assets/anthropic.svg", apiKeyPrefix: "sk-", name: "Anthropic" },
-	openai: { iconUrl: "/assets/openai.svg", apiKeyPrefix: "sk-ant-", name: "OpenAI" },
-	gemini: { iconUrl: "/assets/gemini.png", apiKeyPrefix: "AIzaSy", name: "Gemini" },
-	xai: { iconUrl: "/assets/xai.svg", apiKeyPrefix: "xai-", name: "xAI" },
+	google: {
+		iconUrl: "/assets/gemini.png",
+		apiKeyPrefix: "AIzaSy",
+		name: "Gemini",
+	},
+	anthropic: {
+		name: "Anthropic",
+		iconUrl: "/assets/anthropic.svg",
+		apiKeyPrefix: "sk-",
+	},
+	openai: {
+		name: "OpenAI",
+		iconUrl: "/assets/openai.svg",
+		apiKeyPrefix: "sk-ant-",
+	},
 } as const;

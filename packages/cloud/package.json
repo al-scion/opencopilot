@@ -23,9 +23,10 @@
   },
   "dependencies": {
     "@packages/shared": "workspace:*",
+    "@packages/convex": "workspace:*",
     "@hono/standard-validator": "catalog:",
     "@scalar/hono-api-reference": "catalog:",
-    "@tanstack/ai": "catalog:",
+    "ai": "catalog:",
     "convex": "catalog:",
     "hono": "catalog:",
     "hono-openapi": "catalog:",
