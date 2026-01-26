@@ -16,8 +16,11 @@ export const Route = createFileRoute("/taskpane/")({
 });
 
 function RouteComponent() {
-	const { chat } = useAppState();
-	const newChat = () => useAppState.setState({ chat: createChat() });
+	const { chat, editor } = useAppState();
+	const newChat = () => {
+		useAppState.setState({ chat: createChat() });
+		editor.chain().clearContent().focus("end").run();
+	};
 	const chatHelpers = useChat({ chat });
 	useShortcut({ name: "newChat", action: newChat });
 	useShortcut({ name: "stopChat", action: stop });

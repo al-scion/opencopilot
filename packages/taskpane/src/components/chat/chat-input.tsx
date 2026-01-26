@@ -28,38 +28,6 @@ export function ChatInput({ chat }: { chat: UseChatHelpers<UIMessageType> }) {
 	const commandInputRef = useRef<HTMLInputElement>(null);
 	const fileInputRef = useRef<HTMLInputElement>(null);
 
-	const handleSendMessage = () => {
-		if (editorState.isEmpty) {
-			return;
-		}
-		const checkpointId = crypto.randomUUID();
-		saveFileToStorage(checkpointId);
-		chat.sendMessage({
-			metadata: { tiptap: editor.getJSON(), checkpointId },
-			files: uploadedFiles,
-			text: editor.getText(),
-		});
-		setFiles([]);
-		editor.commands.clearContent();
-	};
-
-	const handleFileInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-		const files = Array.from(event.target.files ?? []);
-		files.forEach(async (file) => {
-			if (!ALLOWED_MIME_TYPES.includes(file.type)) {
-				toastManager.add({ type: "error", title: "File type not supported", timeout: 500 });
-				return;
-			}
-			if (file.size > MAX_FILE_SIZE) {
-				toastManager.add({ type: "error", title: "Maximum file size exceeded", timeout: 500 });
-				return;
-			}
-			const dataUrl = await fileToDataUrl(file);
-			setFiles((prev) => [...prev, { type: "file", mediaType: file.type, filename: file.name, url: dataUrl }]);
-		});
-		event.target.value = "";
-	};
-
 	const editor = useEditor(
 		{
 			extensions: [
@@ -140,7 +108,7 @@ export function ChatInput({ chat }: { chat: UseChatHelpers<UIMessageType> }) {
 				useAppState.setState({ editor });
 			},
 		},
-		[chat.id] // Insert dep array here
+		[] // Insert dep array here
 	);
 
 	const editorState = useEditorState({
@@ -152,6 +120,38 @@ export function ChatInput({ chat }: { chat: UseChatHelpers<UIMessageType> }) {
 			mention: MentionPluginKey.getState(editor.state),
 		}),
 	});
+
+	const handleFileInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+		const files = Array.from(event.target.files ?? []);
+		files.forEach(async (file) => {
+			if (!ALLOWED_MIME_TYPES.includes(file.type)) {
+				toastManager.add({ type: "error", title: "File type not supported", timeout: 500 });
+				return;
+			}
+			if (file.size > MAX_FILE_SIZE) {
+				toastManager.add({ type: "error", title: "Maximum file size exceeded", timeout: 500 });
+				return;
+			}
+			const dataUrl = await fileToDataUrl(file);
+			setFiles((prev) => [...prev, { type: "file", mediaType: file.type, filename: file.name, url: dataUrl }]);
+		});
+		event.target.value = "";
+	};
+
+	const handleSendMessage = () => {
+		if (editorState.isEmpty) {
+			return;
+		}
+		const checkpointId = crypto.randomUUID();
+		saveFileToStorage(checkpointId);
+		chat.sendMessage({
+			metadata: { tiptap: editor.getJSON(), checkpointId },
+			files: uploadedFiles,
+			text: editor.getText(),
+		});
+		setFiles([]);
+		editor.commands.clearContent();
+	};
 
 	useShortcut({ name: "stopChat", action: chat.stop });
 
