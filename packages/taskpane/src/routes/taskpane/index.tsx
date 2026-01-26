@@ -29,7 +29,7 @@ function RouteComponent() {
 		<>
 			<div className={"flex flex-row items-center p-2 pr-2.5"}>
 				<Tabs defaultValue={"chat"}>
-					<TabsList>
+					<TabsList className="ring-[0.5px] ring-border" indicatorClassName="ring-[0.5px] ring-border">
 						<TabsTrigger value="chat">Chat</TabsTrigger>
 						<TabsTrigger value="review">Review</TabsTrigger>
 					</TabsList>

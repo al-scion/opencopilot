@@ -17,9 +17,11 @@ function TabsList({
 	variant = "default",
 	className,
 	children,
+	indicatorClassName,
 	...props
 }: TabsPrimitive.List.Props & {
 	variant?: TabsVariant;
+	indicatorClassName?: string;
 }) {
 	return (
 		<TabsPrimitive.List
@@ -40,7 +42,8 @@ function TabsList({
 					"absolute bottom-0 left-0 h-(--active-tab-height) w-(--active-tab-width) translate-x-(--active-tab-left) -translate-y-(--active-tab-bottom) transition-[width,translate] duration-200 ease-in-out",
 					variant === "underline"
 						? "z-10 bg-primary data-[orientation=horizontal]:h-0.5 data-[orientation=vertical]:w-0.5 data-[orientation=vertical]:-translate-x-px data-[orientation=horizontal]:translate-y-px"
-						: "-z-1 rounded-md border bg-background shadow-none dark:bg-input"
+						: "-z-1 rounded-md bg-background shadow-none dark:bg-input",
+					indicatorClassName
 				)}
 				data-slot="tab-indicator"
 			/>

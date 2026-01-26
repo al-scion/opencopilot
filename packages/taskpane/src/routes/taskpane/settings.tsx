@@ -61,7 +61,7 @@ function RouteComponent() {
 			</Select> */}
 
 			<Tabs defaultValue={options[0]!.value}>
-				<TabsList variant="default">
+				<TabsList className="ring-[0.5px] ring-border" indicatorClassName="ring-[0.5px] ring-border">
 					{options.map(({ value, label }) => (
 						<TabsTrigger key={value} value={value}>
 							{label}
