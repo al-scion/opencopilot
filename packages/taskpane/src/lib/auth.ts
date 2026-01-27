@@ -18,4 +18,14 @@ export const signInWithDialog = () => {
 	);
 };
 
-export const getAccessToken = () => sessionStorage.getItem(WORKOS_ACCESS_TOKEN_KEY) ?? "";
+export const getAccessToken = () => {
+	const refreshToken = localStorage.getItem(WORKOS_REFRESH_TOKEN_KEY);
+	const accessToken = sessionStorage.getItem(WORKOS_ACCESS_TOKEN_KEY);
+	if (accessToken && refreshToken) {
+		return accessToken;
+	}
+	if (accessToken && !refreshToken) {
+		sessionStorage.removeItem(WORKOS_ACCESS_TOKEN_KEY);
+	}
+	return "";
+};

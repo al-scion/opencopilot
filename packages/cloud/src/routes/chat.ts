@@ -48,28 +48,28 @@ export const chatRouter = new Hono<{ Bindings: Env; Variables: Variables }>().po
 				system: getSystemPrompt({ workbookState, agentConfig }),
 				providerOptions,
 				tools,
-				experimental_repairToolCall: async (props) => {
-					if (NoSuchToolError.isInstance(props.error)) {
-						return null; // do not attempt to fix invalid tool names
-					}
-					console.log("repair tool call triggered");
+				// experimental_repairToolCall: async (props) => {
+				// 	if (NoSuchToolError.isInstance(props.error)) {
+				// 		return null; // do not attempt to fix invalid tool names
+				// 	}
+				// 	console.log("repair tool call triggered");
 
-					const response = await generateText({
-						model: modelRegistry.languageModel("anthropic/claude-haiku-4-5"),
-						output: Output.json({}),
-						prompt: `
-						The model tried to call the tool ${props.toolCall.toolName} with the following input: ${props.toolCall.input}.
-						The tool accepts the following schema ${props.inputSchema(props.toolCall)}
-						Please fix the input as a valid JSON object
-						`,
-					});
-					return {
-						type: "tool-call",
-						toolCallId: props.toolCall.toolCallId,
-						toolName: props.toolCall.toolName,
-						input: JSON.stringify(response.output),
-					};
-				},
+				// 	const response = await generateText({
+				// 		model: modelRegistry.languageModel("anthropic/claude-haiku-4-5"),
+				// 		output: Output.json({}),
+				// 		prompt: `
+				// 		The model tried to call the tool ${props.toolCall.toolName} with the following input: ${props.toolCall.input}.
+				// 		The tool accepts the following schema ${props.inputSchema(props.toolCall)}
+				// 		Please fix the input as a valid JSON object
+				// 		`,
+				// 	});
+				// 	return {
+				// 		type: "tool-call",
+				// 		toolCallId: props.toolCall.toolCallId,
+				// 		toolName: props.toolCall.toolName,
+				// 		input: JSON.stringify(response.output),
+				// 	};
+				// },
 				onError: (error) => console.error(error),
 				experimental_transform: [smoothStream()],
 			});

@@ -13,14 +13,15 @@ function AccordionItem({ className, ...props }: AccordionPrimitive.Item.Props) {
 function AccordionTrigger({
 	className,
 	children,
-	showIcon = true,
+	showIcon,
+	iconClassName,
 	...props
-}: AccordionPrimitive.Trigger.Props & { showIcon?: boolean }) {
+}: AccordionPrimitive.Trigger.Props & { showIcon?: boolean; iconClassName?: string }) {
 	return (
 		<AccordionPrimitive.Header className="flex">
 			<AccordionPrimitive.Trigger
 				className={cn(
-					"flex flex-1 cursor-pointer items-center justify-between gap-4 py-2 text-left font-normal text-sm outline-none transition-all focus-visible:ring-[3px] focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-64 [&[data-panel-open]>.accordion-chevron]:rotate-180",
+					"flex flex-1 cursor-pointer items-center gap-2 py-2 text-left font-normal text-sm outline-none transition-all focus-visible:ring-[3px] focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-64",
 					"group/accordion-trigger [&_svg]:shrink-0",
 					className
 				)}
@@ -28,11 +29,23 @@ function AccordionTrigger({
 				{...props}
 			>
 				{children}
-				{showIcon && (
-					<ChevronDownIcon className="accordion-chevron pointer-events-none ml-auto size-3.5 shrink-0 self-center opacity-80 transition-transform duration-200 ease-in-out" />
-				)}
+				{showIcon && <AccordionChevron className={cn("ml-auto", iconClassName)} />}
 			</AccordionPrimitive.Trigger>
 		</AccordionPrimitive.Header>
+	);
+}
+
+function AccordionChevron({ className, ...props }: React.ComponentProps<typeof ChevronDownIcon>) {
+	return (
+		<ChevronDownIcon
+			className={cn(
+				"accordion-chevron pointer-events-none size-3.5 shrink-0 self-center text-muted-foreground",
+				"transition-transform duration-200 ease-in-out",
+				"group-data-panel-open/accordion-trigger:rotate-180",
+				className
+			)}
+			{...props}
+		/>
 	);
 }
 
@@ -48,4 +61,11 @@ function AccordionPanel({ className, children, ...props }: AccordionPrimitive.Pa
 	);
 }
 
-export { Accordion, AccordionItem, AccordionTrigger, AccordionPanel, AccordionPanel as AccordionContent };
+export {
+	Accordion,
+	AccordionItem,
+	AccordionTrigger,
+	AccordionPanel,
+	AccordionPanel as AccordionContent,
+	AccordionChevron,
+};

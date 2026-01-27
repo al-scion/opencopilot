@@ -27,6 +27,14 @@ export const languageModelRegistry = {
 			thinkingConfig: { includeThoughts: true, thinkingLevel: "low" },
 		} as GoogleGenerativeAIProviderOptions,
 	},
+	"google/gemini-3-flash-preview": {
+		name: "Gemini 3 Flash",
+		provider: "google",
+		contextWindow: 1_048_576,
+		options: {
+			thinkingConfig: { includeThoughts: true, thinkingLevel: "medium" },
+		} as GoogleGenerativeAIProviderOptions,
+	},
 	"openai/gpt-5.2": {
 		name: "GPT 5.2",
 		provider: "openai",

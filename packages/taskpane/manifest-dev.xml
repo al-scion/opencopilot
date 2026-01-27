@@ -20,7 +20,7 @@
   <AppDomains>
     <AppDomain>https://localhost:3000</AppDomain>
     <AppDomain>https://storage.usefabric.xyz</AppDomain>
-    <AppDomain>https://plentiful-gust-36.authkit.app</AppDomain>
+    <AppDomain>https://dazzling-flame-54-staging.authkit.app</AppDomain>
     <AppDomain>https://api.workos.com</AppDomain>
     <AppDomain>https://accounts.google.com</AppDomain>
   </AppDomains>

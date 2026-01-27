@@ -214,15 +214,13 @@ export const createChat = ({ id = crypto.randomUUID(), messages = [] }: { id?: s
 							: context.workbook.worksheets.add(input.name);
 						worksheet.set({
 							name: input.name,
-							tabColor: input.color,
 							position: input.position,
-							showGridlines: input.showGridlines,
 							visibility: input.visibility,
 						});
 						chat.addToolOutput({
 							tool: toolName,
 							toolCallId,
-							output: undefined as never,
+							output: { success: true },
 						});
 					});
 					return;
@@ -245,16 +243,16 @@ export const createChat = ({ id = crypto.randomUUID(), messages = [] }: { id?: s
 						const worksheet = context.workbook.worksheets.getItem(input.worksheet);
 						switch (input.operation) {
 							case "insertRow":
-								worksheet.getRangeByIndexes(input.startIndex, 0, input.count, 0).getEntireRow().insert("Down");
+								worksheet.getRangeByIndexes(input.startIndex, 0, input.count, 1).getEntireRow().insert("Down");
 								break;
 							case "deleteRow":
-								worksheet.getRangeByIndexes(input.startIndex, 0, input.count, 0).getEntireRow().delete("Up");
+								worksheet.getRangeByIndexes(input.startIndex, 0, input.count, 1).getEntireRow().delete("Up");
 								break;
 							case "insertColumn":
-								worksheet.getRangeByIndexes(0, input.startIndex, 0, input.count).getEntireColumn().insert("Right");
+								worksheet.getRangeByIndexes(0, input.startIndex, 1, input.count).getEntireColumn().insert("Right");
 								break;
 							case "deleteColumn":
-								worksheet.getRangeByIndexes(0, input.startIndex, 0, input.count).getEntireColumn().delete("Left");
+								worksheet.getRangeByIndexes(0, input.startIndex, 1, input.count).getEntireColumn().delete("Left");
 								break;
 							default:
 								throw new Error(`Invalid operation: ${input.operation}`);
@@ -262,7 +260,7 @@ export const createChat = ({ id = crypto.randomUUID(), messages = [] }: { id?: s
 						chat.addToolOutput({
 							tool: toolName,
 							toolCallId,
-							output: undefined as never,
+							output: { success: true },
 						});
 					});
 					return;
@@ -339,29 +337,23 @@ export const createChat = ({ id = crypto.randomUUID(), messages = [] }: { id?: s
 					await Excel.run({ delayForCellEdit: true }, async (context) => {
 						const worksheets = context.workbook.worksheets.load();
 						await context.sync();
-						const worksheetsToSearch = input.worksheet
-							? [context.workbook.worksheets.getItem(input.worksheet)]
-							: worksheets.items;
-
-						const results = worksheetsToSearch.map((worksheet) => worksheet.findAll(input.query, {}).areas.load());
-						await context.sync();
-						const resultsRange = results.flatMap((range) =>
-							range.items.map((range) => range.load({ address: true, formulas: true, text: true }))
+						const results = worksheets.items.map((worksheet) =>
+							worksheet.findAllOrNullObject(input.query, {}).areas.load({ address: true, formulas: true, text: true })
 						);
 						await context.sync();
-
-						const resultsItemData = resultsRange.map((range) => ({
-							address: range.address,
-							formula: range.formulas[0]![0]!,
-							text: range.text[0]![0]!,
-						}));
+						const validResults = results.filter((result) => result.isNullObject === false);
+						const items = validResults.flatMap((result) => result.items);
 
 						chat.addToolOutput({
 							tool: toolName,
 							toolCallId,
 							output: {
-								count: resultsRange.length,
-								items: resultsItemData,
+								count: items.length,
+								items: items.map((item) => ({
+									address: item.address,
+									formula: item.formulas[0]![0]!,
+									text: item.text[0]![0]!,
+								})),
 							},
 						});
 					});
@@ -413,6 +405,49 @@ export const createChat = ({ id = crypto.randomUUID(), messages = [] }: { id?: s
 						});
 					});
 
+					return;
+				}
+
+				if (toolName === "evaluateFormula") {
+					await Excel.run({ delayForCellEdit: true }, async (context) => {
+						const range = context.workbook.worksheets
+							.getItem(input.worksheet)
+							.getRange(input.address)
+							.load({ rowIndex: true, columnIndex: true, columnCount: true, rowCount: true });
+						await context.sync();
+						context.application.suspendScreenUpdatingUntilNextSync();
+						const worksheet = context.workbook.worksheets.getItem(input.worksheet).copy();
+						const targetRange = worksheet.getRangeByIndexes(
+							range.rowIndex,
+							range.columnIndex,
+							range.rowCount,
+							range.columnCount
+						);
+						targetRange.set({ formulas: input.formulas });
+						worksheet.calculate(true);
+						targetRange.load({ text: true });
+						worksheet.delete();
+						await context.sync();
+						chat.addToolOutput({
+							tool: toolName,
+							toolCallId,
+							output: { result: targetRange.text },
+						});
+					});
+					return;
+				}
+
+				if (toolName === "setBackgroundColour") {
+					await Excel.run({ delayForCellEdit: true, mergeUndoGroup: true }, async (context) => {
+						const range = context.workbook.worksheets.getItem(input.worksheet).getRange(input.address);
+						range.set({ format: { fill: { color: input.colour } } });
+						await context.sync();
+						chat.addToolOutput({
+							tool: toolName,
+							toolCallId,
+							output: { success: true },
+						});
+					});
 					return;
 				}
 			} catch (error) {

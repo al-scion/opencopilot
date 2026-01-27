@@ -60,7 +60,10 @@
       },
       "a11y": {
         "noSvgWithoutTitle": "off",
-        "useAltText": "off"
+        "useAltText": "off",
+        "noNoninteractiveElementInteractions": "off",
+        "noStaticElementInteractions": "off",
+        "useKeyWithClickEvents": "off"
       },
       "complexity": {
         "noForEach": "off",

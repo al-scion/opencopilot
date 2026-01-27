@@ -33,7 +33,7 @@ export function ModelMenu() {
 			<DropdownMenuTrigger
 				render={(props, state) => (
 					<TooltipButton
-						className={cn("rounded-full", state.open && "bg-muted")}
+						className={cn(state.open && "bg-muted")}
 						shortcutKeys={getShortcutString("toggleModel")}
 						size="icon"
 						tooltip={selectedModel.name}

@@ -11,7 +11,7 @@ export const generateTitle = action({
 		message: v.any(),
 	},
 	handler: async (ctx, args) => {
-		const modelMessages = await convertToModelMessages(args.message);
+		const modelMessages = await convertToModelMessages([args.message]);
 		const result = await generateText({
 			model: google("gemini-2.5-flash"),
 			messages: modelMessages,

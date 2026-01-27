@@ -46,6 +46,26 @@ const editRange = tool({
 	outputSchema: z.object({ result: z.array(z.array(z.string())) }),
 });
 
+const setBackgroundColour = tool({
+	description: "Set the background colour of a range",
+	inputSchema: z.object({
+		worksheet: z.string(),
+		address: z.string(),
+		colour: z.string(),
+	}),
+	outputSchema: z.object({ success: z.boolean() }),
+});
+
+const evaluateFormula = tool({
+	description: "Run formulas in a sandboxed environment",
+	inputSchema: z.object({
+		worksheet: z.string(),
+		address: z.string(),
+		formulas: z.array(z.array(z.string())),
+	}),
+	outputSchema: z.object({ result: z.array(z.array(z.string())) }),
+});
+
 const copyPaste = tool({
 	description: "Copy and paste a range",
 	inputSchema: z.object({
@@ -131,17 +151,16 @@ const editWorksheet = tool({
 });
 
 const createWorksheet = tool({
-	description: "Edit or create a worksheet",
+	description: "Create a worksheet",
 	inputSchema: z.object({
 		name: z.string(),
 		copyFrom: z.string().optional(),
-		color: z.string().optional().describe("Hex code #RRGGBB"),
 		position: z.number().optional(),
-		rename: z.string().optional(),
-		showGridlines: z.boolean().optional(),
 		visibility: z.enum(["Visible", "Hidden"]).optional(),
 	}),
+	outputSchema: z.object({ success: z.boolean() }),
 });
+
 const deleteWorksheet = tool({
 	description: "Delete a worksheet",
 	inputSchema: z.object({
@@ -157,13 +176,13 @@ const editWorksheetLayout = tool({
 		startIndex: z.number(),
 		count: z.number(),
 	}),
+	outputSchema: z.object({ success: z.boolean() }),
 });
 
 const searchWorkbook = tool({
 	description: "Search the workbook",
 	inputSchema: z.object({
 		query: z.string(),
-		worksheet: z.string().optional(),
 	}),
 	outputSchema: z.object({
 		count: z.number(),
@@ -264,4 +283,6 @@ export const excelTools = {
 	traceFormulaPrecedents,
 	traceFormulaDependents,
 	getScreenshot,
+	evaluateFormula,
+	setBackgroundColour,
 };

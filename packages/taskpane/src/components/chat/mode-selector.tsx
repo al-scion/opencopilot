@@ -9,14 +9,7 @@ import {
 	DropdownMenuTrigger,
 } from "@packages/ui/components/ui/dropdown-menu";
 import { cn } from "@packages/ui/lib/utils";
-import {
-	Check,
-	CircleCheckBigIcon,
-	CircleCheckIcon,
-	FastForwardIcon,
-	type LucideIcon,
-	MessageCircleMoreIcon,
-} from "lucide-react";
+import { Check, CircleCheckBigIcon, FastForwardIcon, type LucideIcon, MessageCircleMoreIcon } from "lucide-react";
 import { TooltipButton } from "@/components/tooltip-button";
 import { getShortcutString, useShortcut } from "@/lib/browser-shortcuts";
 import { useAgentConfig, useAppState } from "@/lib/state";
@@ -49,7 +42,7 @@ export function ModeSelector() {
 			<DropdownMenuTrigger
 				render={(props, state) => (
 					<TooltipButton
-						className={cn("rounded-full", state.open && "bg-muted")}
+						className={cn(state.open && "bg-muted")}
 						shortcutKeys={getShortcutString("togglePermission")}
 						size="icon"
 						// tooltip={selectedPermission.label}

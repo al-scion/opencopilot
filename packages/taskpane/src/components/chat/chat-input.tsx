@@ -13,7 +13,7 @@ import { Text } from "@tiptap/extension-text";
 import { Placeholder } from "@tiptap/extensions";
 import { EditorContent, useEditor, useEditorState } from "@tiptap/react";
 import type { FileUIPart } from "ai";
-import { ArrowUp, PlusIcon } from "lucide-react";
+import { ArrowUp, PlusIcon, SquareIcon } from "lucide-react";
 import { useRef, useState } from "react";
 import { CommandMenu, MentionPluginKey } from "@/components/chat/command-menu";
 import { ModeSelector } from "@/components/chat/mode-selector";
@@ -32,6 +32,7 @@ export function ChatInput({ chat }: { chat: UseChatHelpers<UIMessageType> }) {
 	const fileInputRef = useRef<HTMLInputElement>(null);
 	const contextWindow = languageModelRegistry[model].contextWindow;
 	const usage = chat.messages.findLast((m) => m.metadata?.usage?.totalTokens)?.metadata?.usage?.totalTokens ?? 0;
+	const isLoading = chat.status === "streaming" || chat.status === "submitted";
 
 	const editor = useEditor(
 		{
@@ -180,7 +181,7 @@ export function ChatInput({ chat }: { chat: UseChatHelpers<UIMessageType> }) {
 					<div className="flex w-full flex-row">
 						<div className="flex flex-row items-center gap-1">
 							<TooltipButton
-								className="rounded-full bg-muted"
+								className="bg-muted"
 								onClick={() => fileInputRef.current?.click()}
 								size="icon"
 								tooltip="Upload files"
@@ -210,13 +211,19 @@ export function ChatInput({ chat }: { chat: UseChatHelpers<UIMessageType> }) {
 								<ProgressRing size={16} strokeWidth={2} value={(usage / contextWindow) * 100} />
 							</TooltipButton>
 							<TooltipButton
-								className={cn("rounded-full", editorState.isEmpty && "bg-foreground/50 hover:bg-foreground/50")}
+								className={cn("rounded-sm", editorState.isEmpty && "bg-foreground/50 hover:bg-foreground/50")}
 								onClick={handleSendMessage}
 								shortcutKeys={"⏎"}
 								size="icon"
 								tooltip="Send"
 							>
-								<ArrowUp />
+								{isLoading ? (
+									<svg className="size-3" fill="currentColor" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+										<rect height="16" rx="3" width="16" />
+									</svg>
+								) : (
+									<ArrowUp />
+								)}
 							</TooltipButton>
 						</div>
 					</div>

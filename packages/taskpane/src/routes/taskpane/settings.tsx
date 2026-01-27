@@ -1,4 +1,4 @@
-import { providerRegistry } from "@packages/shared";
+import { languageModelRegistry, providerRegistry } from "@packages/shared";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@packages/ui/components/ui/accordion";
 import { Card, CardContent, CardContentItem, CardHeader } from "@packages/ui/components/ui/card";
 import { Input } from "@packages/ui/components/ui/input";
@@ -27,6 +27,8 @@ const options = [
 
 function RouteComponent() {
 	const router = useRouter();
+	const availableModels = Object.keys(languageModelRegistry) as (keyof typeof languageModelRegistry)[];
+	const availableProviders = Object.keys(providerRegistry) as (keyof typeof providerRegistry)[];
 
 	const [loadOnStartup, setLoadOnStartup] = useState<boolean>(Route.useLoaderData().loadOnStartup);
 	const handleLoadBehaviourChange = (checked: boolean) => {
@@ -68,8 +70,9 @@ function RouteComponent() {
 						</TabsTrigger>
 					))}
 				</TabsList>
-				<TabsPanel value="general">
+				<TabsPanel className="mt-1 flex flex-col gap-3" value="general">
 					<Card>
+						<CardHeader className="px-3 py-1.5">Preferences</CardHeader>
 						<CardContent>
 							<CardContentItem className="px-3">
 								<div className="flex flex-col">
@@ -80,8 +83,40 @@ function RouteComponent() {
 							</CardContentItem>
 						</CardContent>
 					</Card>
+					<Card>
+						<CardHeader className="px-3 py-1.5">Billing</CardHeader>
+						<CardContent>
+							<CardContentItem className="px-3">
+								<div className="flex flex-col">
+									<span>Plan</span>
+									<span className="font-light text-muted-foreground text-xs">Launch automatically on startup</span>
+								</div>
+							</CardContentItem>
+							<CardContentItem className="px-3">
+								<div className="flex flex-col">
+									<span>Invoices</span>
+									<span className="font-light text-muted-foreground text-xs">Launch automatically on startup</span>
+								</div>
+							</CardContentItem>
+						</CardContent>
+					</Card>
 				</TabsPanel>
-				<TabsPanel value="models">
+				<TabsPanel className="mt-1 flex flex-col gap-3" value="models">
+					<Card>
+						<CardHeader className="px-3 py-1.5">Models</CardHeader>
+						<CardContent>
+							{availableModels.map((model) => {
+								const languageModel = languageModelRegistry[model];
+								const provider = providerRegistry[languageModel.provider];
+								return (
+									<CardContentItem className="px-3 py-2" key={model}>
+										<span>{languageModel.name}</span>
+										<Switch className="ml-auto" />
+									</CardContentItem>
+								);
+							})}
+						</CardContent>
+					</Card>
 					<Card>
 						<CardHeader className="px-3 py-1.5">Providers</CardHeader>
 						<CardContent>
@@ -89,7 +124,7 @@ function RouteComponent() {
 								<CardContentItem className="p-0" key={provider.name}>
 									<Accordion className="w-full">
 										<AccordionItem>
-											<AccordionTrigger className="gap-3 px-3 py-2 hover:bg-muted">
+											<AccordionTrigger className="gap-3 px-3 py-2 hover:bg-muted" showIcon={true}>
 												<div
 													aria-label={provider.name}
 													className="h-4 w-4 bg-muted-foreground"
@@ -122,7 +157,7 @@ function RouteComponent() {
 						</CardContent>
 					</Card>
 				</TabsPanel>
-				<TabsPanel value="styles">
+				<TabsPanel className="mt-1 flex flex-col gap-3" value="styles">
 					<Card>
 						<CardContent>
 							<CardContentItem className="px-3">

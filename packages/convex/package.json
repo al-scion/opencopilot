@@ -6,10 +6,10 @@
   "types": "./convex/_generated/api.d.ts",
   "scripts": {
     "dev": "convex dev",
-    "deploy": "convex deploy",
+    "deploy": "bun run env:prod && convex deploy",
     "checktypes": "tsgo --noEmit",
-    "setenv": "bun scripts/set-env.ts",
-    "setenv:prod": "bun scripts/set-env.ts --prod"
+    "env": "bun scripts/set-env.ts",
+    "env:prod": "bun scripts/set-env.ts --prod"
   },
   "devDependencies": {
     "@types/bun": "catalog:",
