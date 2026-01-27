@@ -7,9 +7,11 @@
   "scripts": {
     "dev": "convex dev",
     "deploy": "bun run env:prod && convex deploy",
-    "checktypes": "tsgo --noEmit",
-    "env": "bun scripts/set-env.ts",
-    "env:prod": "bun scripts/set-env.ts --prod"
+    "typecheck": "tsgo --noEmit",
+    "codegen": "bun convex codegen",
+    "env": "bun scripts/env.ts",
+    "env:prod": "bun scripts/env.ts --prod",
+    "convex": "convex"
   },
   "devDependencies": {
     "@types/bun": "catalog:",
@@ -17,15 +19,15 @@
     "@typescript/native-preview": "catalog:"
   },
   "dependencies": {
-    "@convex-dev/crons": "^0.2.0",
-    "@convex-dev/r2": "^0.8.1",
-    "@convex-dev/workflow": "^0.3.3",
     "@packages/shared": "workspace:*",
     "@ai-sdk/google": "catalog:",
     "ai": "catalog:",
     "convex": "catalog:",
-    "convex-helpers": "^0.1.111",
     "hono": "catalog:",
-    "zod": "catalog:"
+    "zod": "catalog:",
+    "@convex-dev/crons": "^0.2.0",
+    "@convex-dev/r2": "^0.8.1",
+    "@convex-dev/workflow": "^0.3.3",
+    "convex-helpers": "^0.1.111"
   }
 }
