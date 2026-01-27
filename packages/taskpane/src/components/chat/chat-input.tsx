@@ -12,12 +12,13 @@ import { Paragraph } from "@tiptap/extension-paragraph";
 import { Text } from "@tiptap/extension-text";
 import { Placeholder } from "@tiptap/extensions";
 import { EditorContent, useEditor, useEditorState } from "@tiptap/react";
+import { exitSuggestion } from "@tiptap/suggestion";
 import type { FileUIPart } from "ai";
 import { ArrowUp, PlusIcon, SquareIcon } from "lucide-react";
 import { useRef, useState } from "react";
-import { CommandMenu, MentionPluginKey } from "@/components/chat/command-menu";
-import { ModeSelector } from "@/components/chat/mode-selector";
+import { CommandMenu, CommandPluginKey, MentionMenu, MentionPluginKey } from "@/components/chat/command-menu";
 import { ModelMenu } from "@/components/chat/model-menu";
+import { PermissionMenu } from "@/components/chat/permission-menu";
 import { TooltipButton } from "@/components/tooltip-button";
 import { useShortcut } from "@/lib/browser-shortcuts";
 import { ALLOWED_MIME_TYPES, MAX_FILE_SIZE } from "@/lib/constants";
@@ -27,9 +28,13 @@ import { fileToDataUrl } from "@/lib/utils";
 
 export function ChatInput({ chat }: { chat: UseChatHelpers<UIMessageType> }) {
 	const { model } = useAgentConfig();
+
 	const [uploadedFiles, setFiles] = useState<FileUIPart[]>([]);
-	const commandInputRef = useRef<HTMLInputElement>(null);
 	const fileInputRef = useRef<HTMLInputElement>(null);
+
+	const commandInputRef = useRef<HTMLInputElement>(null);
+	const mentionInputRef = useRef<HTMLInputElement>(null);
+
 	const contextWindow = languageModelRegistry[model].contextWindow;
 	const usage = chat.messages.findLast((m) => m.metadata?.usage?.totalTokens)?.metadata?.usage?.totalTokens ?? 0;
 	const isLoading = chat.status === "streaming" || chat.status === "submitted";
@@ -67,6 +72,44 @@ export function ChatInput({ chat }: { chat: UseChatHelpers<UIMessageType> }) {
 											bubbles: true,
 											cancelable: true,
 										});
+										mentionInputRef.current?.dispatchEvent(newEvent);
+										return true;
+									}
+									if (event.key === "Enter" || event.key === "Tab") {
+										event.preventDefault();
+										event.stopPropagation();
+										const newEvent = new KeyboardEvent(event.type, {
+											key: "Enter",
+											code: "Enter",
+											bubbles: true,
+											cancelable: true,
+										});
+										mentionInputRef.current?.dispatchEvent(newEvent);
+										return true;
+									}
+									if (event.key === "Escape") {
+										exitSuggestion(view, MentionPluginKey);
+										return true;
+									}
+									return false;
+								},
+							}),
+						},
+						{
+							char: "/",
+							allowSpaces: false,
+							pluginKey: CommandPluginKey,
+							render: () => ({
+								onKeyDown: ({ event, range, view }) => {
+									if (event.key === "ArrowDown" || event.key === "ArrowUp") {
+										event.preventDefault();
+										event.stopPropagation();
+										const newEvent = new KeyboardEvent(event.type, {
+											key: event.key,
+											code: event.code,
+											bubbles: true,
+											cancelable: true,
+										});
 										commandInputRef.current?.dispatchEvent(newEvent);
 										return true;
 									}
@@ -82,6 +125,10 @@ export function ChatInput({ chat }: { chat: UseChatHelpers<UIMessageType> }) {
 										commandInputRef.current?.dispatchEvent(newEvent);
 										return true;
 									}
+									if (event.key === "Escape") {
+										exitSuggestion(view, CommandPluginKey);
+										return true;
+									}
 									return false;
 								},
 							}),
@@ -92,7 +139,12 @@ export function ChatInput({ chat }: { chat: UseChatHelpers<UIMessageType> }) {
 			autofocus: true,
 			editorProps: {
 				handleKeyDown: (view, event) => {
-					if (event.key === "Enter" && event.shiftKey === false && editorState.mention?.active === false) {
+					if (
+						event.key === "Enter" &&
+						event.shiftKey === false &&
+						editorState.mention?.active === false &&
+						editorState.command?.active === false
+					) {
 						handleSendMessage();
 						return true;
 					}
@@ -124,6 +176,7 @@ export function ChatInput({ chat }: { chat: UseChatHelpers<UIMessageType> }) {
 			isFocused: editor.isFocused,
 			selection: editor.state.selection,
 			mention: MentionPluginKey.getState(editor.state),
+			command: CommandPluginKey.getState(editor.state),
 		}),
 	});
 
@@ -198,12 +251,12 @@ export function ChatInput({ chat }: { chat: UseChatHelpers<UIMessageType> }) {
 								<PlusIcon />
 							</TooltipButton>
 							<ModelMenu />
-							<ModeSelector />
+							<PermissionMenu />
 						</div>
 						<div className="ml-auto flex flex-row items-center gap-1">
 							<TooltipButton
 								className={cn("cursor-default hover:bg-transparent", usage === 0 && "hidden")}
-								shortcutKeys="tokens used"
+								shortcutKeys="tokens"
 								size="icon"
 								tooltip={usage.toLocaleString()}
 								variant="ghost"
@@ -229,7 +282,8 @@ export function ChatInput({ chat }: { chat: UseChatHelpers<UIMessageType> }) {
 					</div>
 				</CardContentItem>
 			</CardContent>
-			<CommandMenu editor={editor} inputRef={commandInputRef} mentionState={editorState.mention} />
+			<CommandMenu editor={editor} inputRef={commandInputRef} state={editorState.command} />
+			<MentionMenu editor={editor} inputRef={mentionInputRef} state={editorState.mention} />
 		</Card>
 	);
 }

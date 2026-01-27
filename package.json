@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "turbo run dev",
-    "checktypes": "turbo run checktypes",
+    "typecheck": "turbo run typecheck",
     "knip": "knip",
     "lint": "biome check .",
     "lint:fix": "ultracite fix",

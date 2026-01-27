@@ -10,7 +10,7 @@
   },
   "scripts": {
     "dev": "wrangler dev",
-    "checktypes": "tsgo --noEmit",
+    "typecheck": "tsgo --noEmit",
     "deploy": "wrangler deploy",
     "secrets": "wrangler secret bulk .env.production && wrangler types --env-file=.env.production"
   },

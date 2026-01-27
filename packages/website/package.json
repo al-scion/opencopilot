@@ -6,7 +6,7 @@
     "build": "astro build",
     "astro": "astro",
     "deploy": "wrangler deploy",
-    "checktypes": "tsgo --noEmit"
+    "typecheck": "tsgo --noEmit"
   },
   "devDependencies": {
     "@types/bun": "catalog:",

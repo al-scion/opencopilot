@@ -1,6 +1,6 @@
 import { Button } from "@packages/ui/components/ui/button";
 import type { FileUIPart } from "ai";
-import { FileText, XIcon } from "lucide-react";
+import { XIcon } from "lucide-react";
 import { ALLOWED_MIME_TYPES } from "@/lib/constants";
 
 export function UploadedFile({ file, remove }: { file: FileUIPart; remove: () => void }) {

@@ -20,25 +20,35 @@ const iconMap: Record<keyof typeof permissionsConfig, LucideIcon> = {
 	read: MessageCircleMoreIcon,
 };
 
-export function ModeSelector() {
-	const { editor } = useAppState();
+export function PermissionMenu() {
+	const { editor, permissionMenuOpen } = useAppState();
 	const { permission } = useAgentConfig();
 	const availablePermissions = Object.keys(permissionsConfig) as (keyof typeof permissionsConfig)[];
 	const selectedPermission = permissionsConfig[permission];
 	const SelectedIcon = iconMap[permission];
 
+	const isReadOnly = Office.context.document.mode === Office.DocumentMode.ReadOnly;
 	const cyclePermission = (e: KeyboardEvent) => {
 		e.stopPropagation();
+		if (isReadOnly) {
+			return;
+		}
 		const currentIndex = availablePermissions.indexOf(permission);
 		const nextIndex = (currentIndex + 1) % availablePermissions.length;
-		useAgentConfig.setState({ permission: availablePermissions[nextIndex]! });
+		const nextPermission = availablePermissions[nextIndex]!;
+		useAgentConfig.setState({ permission: nextPermission });
 		editor.commands.focus();
+	};
+
+	const handleOpenChange = (open: boolean) => {
+		useAppState.setState({ permissionMenuOpen: open });
+		!open && editor.commands.focus();
 	};
 
 	useShortcut({ name: "togglePermission", action: cyclePermission });
 
 	return (
-		<DropdownMenu>
+		<DropdownMenu onOpenChange={handleOpenChange} open={permissionMenuOpen}>
 			<DropdownMenuTrigger
 				render={(props, state) => (
 					<TooltipButton
@@ -62,9 +72,11 @@ export function ModeSelector() {
 					{availablePermissions.map((key) => {
 						const PermissionIcon = iconMap[key];
 						const config = permissionsConfig[key];
+						const isDisabled = isReadOnly && config.writeRequired;
 						return (
 							<DropdownMenuItem
 								className="font-normal text-sm"
+								disabled={isDisabled}
 								key={key}
 								onClick={() => useAgentConfig.setState({ permission: key })}
 							>

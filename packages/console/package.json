@@ -6,8 +6,8 @@
   "type": "module",
   "scripts": {
     "dev": "bunx wrangler dev",
-    "checktypes": "tsgo --noEmit",
-    "deploy": "bun run checktypes && wrangler deploy",
+    "typecheck": "tsgo --noEmit",
+    "deploy": "bun run typecheck && wrangler deploy",
     "secrets": "wrangler secret bulk .env && wrangler types --env-file=.env"
   },
   "devDependencies": {

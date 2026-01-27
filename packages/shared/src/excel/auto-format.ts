@@ -81,23 +81,43 @@ export const autoFormat = async (event: Excel.WorksheetChangedEventArgs) => {
 	if (!isValid) {
 		return;
 	}
+	// event.
+	await Excel.run({ delayForCellEdit: true, mergeUndoGroup: true }, async (context) => {
+		// const range = context.workbook.worksheets.getItem(event.worksheetId).getRange(event.address);
+		const range = event.getRangeOrNullObject(context).load({ formulas: true, numberFormatCategories: true });
+		await context.sync();
+		if (range.isNullObject) {
+			return;
+		}
 
-	console.log("autoFormat", event);
-	const context = new Excel.RequestContext();
-	const range = event.getRange(context);
-	range.load({ formulas: true, numberFormatCategories: true });
-	await context.sync();
-
-	range.formulas.forEach((row, rowIndex) => {
-		row.forEach((formula, columnIndex) => {
-			const numberFormatCategory = range.numberFormatCategories[rowIndex]![columnIndex]!;
-
-			const category = categorizeFormula(formula);
-			const fontColor = FONT_COLORS[category];
-
-			range.getCell(rowIndex, columnIndex).set({ format: { font: { color: fontColor } } });
+		range.formulas.forEach((row, rowIndex) => {
+			row.forEach((formula, columnIndex) => {
+				// const numberFormatCategory = range.numberFormatCategories[rowIndex]![columnIndex]!;
+				const category = categorizeFormula(formula);
+				const fontColor = FONT_COLORS[category];
+				range.getCell(rowIndex, columnIndex).set({ format: { font: { color: fontColor } } });
+			});
 		});
 	});
+};
 
-	await context.sync();
+// This is currently in development
+// We are testing the performanc for using js functions only.
+const processChanges = async (event: Excel.WorksheetChangedEventArgs) => {
+	await Excel.run({ delayForCellEdit: true, mergeUndoGroup: true }, async (context) => {
+		const range = event.getRangeOrNullObject(context).load({ formulas: true, numberFormatCategories: true });
+		await context.sync();
+		if (range.isNullObject) {
+			return;
+		}
+		range
+			.getSpecialCellsOrNullObject(Excel.SpecialCellType.constants, "LogicalNumbers")
+			.set({ format: { font: { color: FONT_COLORS.input } } });
+		range
+			.getSpecialCellsOrNullObject(Excel.SpecialCellType.formulas, "NumbersText")
+			.set({ format: { font: { color: FONT_COLORS.input } } });
+
+		range.getSpecialCellsOrNullObject(Excel.SpecialCellType.formulas, "Errors");
+		// range.dependents
+	});
 };

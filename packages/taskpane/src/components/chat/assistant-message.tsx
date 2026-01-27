@@ -7,7 +7,18 @@ import {
 	AccordionTrigger,
 } from "@packages/ui/components/ui/accordion";
 import { cn } from "@packages/ui/lib/utils";
-import { TableIcon } from "lucide-react";
+import {
+	BaselineIcon,
+	CameraIcon,
+	CircleXIcon,
+	ClipboardCheckIcon,
+	MessageCirclePlusIcon,
+	PaintBucketIcon,
+	RemoveFormattingIcon,
+	SlidersHorizontalIcon,
+	TableIcon,
+	TypeOutlineIcon,
+} from "lucide-react";
 import { StickToBottom } from "use-stick-to-bottom";
 import { focusWorksheet } from "@/lib/excel/navigate";
 import { MarkdownText } from "./markdown-text";
@@ -77,13 +88,83 @@ export function AssistantMessage({ message }: { message: UIMessageType }) {
 					);
 				}
 
+				if (part.type === "tool-searchWorkbook") {
+					return (
+						<div className="group/item flex cursor-pointer flex-row items-center gap-1 px-0.5" key={key}>
+							<span className="text-muted-foreground text-xs">Searched</span>
+							<span className="text-muted-foreground/75 text-xs">{part.input?.query}</span>
+						</div>
+					);
+				}
+
+				if (part.type === "tool-readComments") {
+					return (
+						<div className="group/item flex cursor-pointer flex-row items-center gap-1 px-0.5" key={key}>
+							<span className="text-muted-foreground text-xs">Read comments</span>
+							{/* <span className="text-muted-foreground/75 text-xs">{part.input?.query}</span> */}
+						</div>
+					);
+				}
+
+				if (part.type === "tool-evaluateFormula") {
+					return (
+						<div className="group/item flex cursor-pointer flex-row items-center gap-1 px-0.5" key={key}>
+							<span className="text-muted-foreground text-xs">Checked formula</span>
+							<span className="text-muted-foreground/75 text-xs">{part.input?.formulas?.join(", ")}</span>
+						</div>
+					);
+				}
+
+				if (part.type === "tool-traceFormulaPrecedents") {
+					return (
+						<div className="group/item flex cursor-pointer flex-row items-center gap-1 px-0.5" key={key}>
+							<span className="text-muted-foreground text-xs">Traced formula</span>
+							<span className="text-muted-foreground/75 text-xs">
+								{part.input?.worksheet}!{part.input?.address}
+							</span>
+						</div>
+					);
+				}
+
 				if (part.type === "tool-editRange") {
 					return (
-						<Accordion>
+						<Accordion key={key} onClick={() => {}}>
 							<AccordionItem className="mx-0.5 rounded-md border bg-muted">
-								<AccordionTrigger className="px-2 py-1.5">
+								<AccordionTrigger className="p-2">
 									<TableIcon className="size-3.5 self-center text-muted-foreground" />
-									<span className="font-normal text-muted-foreground text-xs">Edited {part.input?.worksheet}</span>
+									<span className="font-normal text-muted-foreground text-xs">
+										Edited {part.input?.worksheet}!{part.input?.address}
+									</span>
+								</AccordionTrigger>
+							</AccordionItem>
+						</Accordion>
+					);
+				}
+
+				if (part.type === "tool-clearRange") {
+					return (
+						<Accordion key={key}>
+							<AccordionItem className="mx-0.5 rounded-md border bg-muted">
+								<AccordionTrigger className="p-2">
+									<CircleXIcon className="size-3.5 self-center text-muted-foreground" />
+									<span className="font-normal text-muted-foreground text-xs">
+										Cleared {part.input?.worksheet}!{part.input?.address}
+									</span>
+								</AccordionTrigger>
+							</AccordionItem>
+						</Accordion>
+					);
+				}
+
+				if (part.type === "tool-copyPaste") {
+					return (
+						<Accordion key={key}>
+							<AccordionItem className="mx-0.5 rounded-md border bg-muted">
+								<AccordionTrigger className="p-2">
+									<ClipboardCheckIcon className="size-3.5 self-center text-muted-foreground" />
+									<span className="font-normal text-muted-foreground text-xs">
+										Copied {part.input?.source?.address}
+									</span>
 								</AccordionTrigger>
 							</AccordionItem>
 						</Accordion>
@@ -92,12 +173,92 @@ export function AssistantMessage({ message }: { message: UIMessageType }) {
 
 				if (part.type === "tool-createWorksheet") {
 					return (
-						<Accordion>
+						<Accordion key={key}>
 							<AccordionItem className="mx-0.5 rounded-md border bg-muted">
-								<AccordionTrigger className="px-2 py-1.5">
+								<AccordionTrigger className="p-2">
 									<TableIcon className="size-3.5 self-center text-muted-foreground" />
 									<span className="text-muted-foreground text-xs">Created worksheet</span>
 									<span className="-ml-1 text-muted-foreground/75 text-xs">{part.input?.name}</span>
+								</AccordionTrigger>
+							</AccordionItem>
+						</Accordion>
+					);
+				}
+
+				if (part.type === "tool-editWorksheet") {
+					const changes = Object.entries(part.input || {})
+						.map(([key]) => key)
+						.join(", ");
+					return (
+						<Accordion key={key}>
+							<AccordionItem className="mx-0.5 rounded-md border bg-muted">
+								<AccordionTrigger className="p-2">
+									<SlidersHorizontalIcon className="size-3.5 self-center text-muted-foreground" />
+									<span className="text-muted-foreground text-xs">Changed worksheet</span>
+									<span className="-ml-1 text-muted-foreground/75 text-xs">{changes}</span>
+								</AccordionTrigger>
+							</AccordionItem>
+						</Accordion>
+					);
+				}
+
+				if (part.type === "tool-getScreenshot" && part.state === "output-available") {
+					const dataUrl = `data:image/png;base64,${part.output.base64String}`;
+					return (
+						<Accordion key={key}>
+							<AccordionItem className="mx-0.5 rounded-md border bg-muted">
+								<AccordionTrigger className="p-1 pl-2">
+									<CameraIcon className="size-3.5 self-center text-muted-foreground" />
+									<span className="text-muted-foreground text-xs">Screenshot</span>
+									<img alt="Screenshot" className="ml-auto size-6 rounded border object-cover" src={dataUrl} />
+								</AccordionTrigger>
+							</AccordionItem>
+						</Accordion>
+					);
+				}
+
+				if (part.type === "tool-setBackgroundColour") {
+					return (
+						<Accordion key={key}>
+							<AccordionItem className="mx-0.5 rounded-md border bg-muted">
+								<AccordionTrigger className="p-2">
+									<PaintBucketIcon className="size-3.5 self-center text-muted-foreground" />
+									<span className="text-muted-foreground text-xs">Formatted</span>
+									<span className="-ml-1 text-muted-foreground/75 text-xs">
+										{part.input?.worksheet}!{part.input?.address}
+									</span>
+								</AccordionTrigger>
+							</AccordionItem>
+						</Accordion>
+					);
+				}
+
+				if (part.type === "tool-writeComment") {
+					return (
+						<Accordion key={key}>
+							<AccordionItem className="mx-0.5 rounded-md border bg-muted">
+								<AccordionTrigger className="p-2">
+									<MessageCirclePlusIcon className="size-3.5 self-center text-muted-foreground" />
+									<span className="text-muted-foreground text-xs">Inserted comment</span>
+									<span className="-ml-1 text-muted-foreground/75 text-xs">
+										{part.input?.worksheet}!{part.input?.address}
+									</span>
+								</AccordionTrigger>
+							</AccordionItem>
+						</Accordion>
+					);
+				}
+
+				if (part.type === "tool-createChart") {
+					return (
+						<Accordion key={key}>
+							<AccordionItem className="mx-0.5 rounded-md border bg-muted">
+								<AccordionTrigger className="p-2">
+									<MessageCirclePlusIcon className="size-3.5 self-center text-muted-foreground" />
+									<span className="text-muted-foreground text-xs">Inserted comment</span>
+									<span className="-ml-1 text-muted-foreground/75 text-xs">
+										{part.input?.worksheet}!{part.input?.address}
+									</span>
 								</AccordionTrigger>
 							</AccordionItem>
 						</Accordion>

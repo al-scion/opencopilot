@@ -5,6 +5,7 @@ import { getAccessToken } from "@/lib/auth";
 import { getWorkbookState } from "@/lib/excel/workbook-state";
 import { server } from "@/lib/server";
 import { useAgentConfig } from "@/lib/state";
+import { tryCatch } from "./utils";
 
 export const createChat = ({ id = crypto.randomUUID(), messages = [] }: { id?: string; messages?: any[] } = {}) => {
 	const serverUrl = server.chat.$url().href;
@@ -34,7 +35,7 @@ export const createChat = ({ id = crypto.randomUUID(), messages = [] }: { id?: s
 			}
 
 			try {
-				console.log("Executing client tool call");
+				console.log("Executing client tool call", toolCall);
 				const { toolName, input, toolCallId } = toolCall;
 				if (toolName === "readWorksheet") {
 					await Excel.run({ delayForCellEdit: true }, async (context) => {
@@ -227,7 +228,7 @@ export const createChat = ({ id = crypto.randomUUID(), messages = [] }: { id?: s
 				}
 
 				if (toolName === "deleteWorksheet") {
-					await Excel.run({ delayForCellEdit: true, mergeUndoGroup: true }, async (context) => {
+					await Excel.run({ delayForCellEdit: true }, async (context) => {
 						context.workbook.worksheets.getItem(input.worksheet).delete();
 						chat.addToolOutput({
 							tool: toolName,
@@ -273,14 +274,33 @@ export const createChat = ({ id = crypto.randomUUID(), messages = [] }: { id?: s
 							.getRange(input.address)
 							.load({ formulas: true, text: true });
 
-						const precedents = range.getDirectPrecedents().areas.load();
-						await context.sync();
-						const areas = precedents.items.map((area) => area.areas.load());
-						await context.sync();
-						const results = areas.flatMap((area) =>
-							area.items.map((range) => range.load({ address: true, text: true, formulas: true }))
+						const { data } = await tryCatch(async () => {
+							const result = range
+								.getDirectPrecedents()
+								.areas.load({ select: "items/areas/address, items/areas/text, items/areas/formulas" });
+							await context.sync();
+							return result;
+						});
+						if (data === null) {
+							chat.addToolOutput({
+								tool: toolName,
+								toolCallId,
+								output: {
+									targetFormula: range.formulas[0]![0]!,
+									targetValue: range.text[0]![0]!,
+									count: 0,
+									items: [],
+								},
+							});
+							return;
+						}
+						const items = data.items.flatMap((area) =>
+							area.areas.items.map((range) => ({
+								address: range.address,
+								values: range.text,
+								formulas: range.formulas,
+							}))
 						);
-						await context.sync();
 
 						chat.addToolOutput({
 							tool: toolName,
@@ -288,12 +308,8 @@ export const createChat = ({ id = crypto.randomUUID(), messages = [] }: { id?: s
 							output: {
 								targetFormula: range.formulas[0]![0]!,
 								targetValue: range.text[0]![0]!,
-								count: results.length,
-								items: results.map((range) => ({
-									address: range.address,
-									values: range.text,
-									formulas: range.formulas,
-								})),
+								count: items.length,
+								items,
 							},
 						});
 					});
@@ -306,14 +322,34 @@ export const createChat = ({ id = crypto.randomUUID(), messages = [] }: { id?: s
 							.getItem(input.worksheet)
 							.getRange(input.address)
 							.load({ formulas: true, text: true });
-						const dependents = range.getDirectDependents().areas.load();
-						await context.sync();
-						const areas = dependents.items.map((area) => area.areas.load());
-						await context.sync();
-						const results = areas.flatMap((area) =>
-							area.items.map((range) => range.load({ address: true, text: true, formulas: true }))
+
+						const { data } = await tryCatch(async () => {
+							const result = range
+								.getDirectDependents()
+								.areas.load({ select: "items/areas/address, items/areas/text, items/areas/formulas" });
+							await context.sync();
+							return result;
+						});
+						if (data === null) {
+							chat.addToolOutput({
+								tool: toolName,
+								toolCallId,
+								output: {
+									targetFormula: range.formulas[0]![0]!,
+									targetValue: range.text[0]![0]!,
+									count: 0,
+									items: [],
+								},
+							});
+							return;
+						}
+						const items = data.items.flatMap((area) =>
+							area.areas.items.map((range) => ({
+								address: range.address,
+								values: range.text,
+								formulas: range.formulas,
+							}))
 						);
-						await context.sync();
 
 						chat.addToolOutput({
 							tool: toolName,
@@ -321,12 +357,8 @@ export const createChat = ({ id = crypto.randomUUID(), messages = [] }: { id?: s
 							output: {
 								targetFormula: range.formulas[0]![0]!,
 								targetValue: range.text[0]![0]!,
-								count: results.length,
-								items: results.map((range) => ({
-									address: range.address,
-									values: range.text,
-									formulas: range.formulas,
-								})),
+								count: items.length,
+								items,
 							},
 						});
 					});
@@ -446,6 +478,36 @@ export const createChat = ({ id = crypto.randomUUID(), messages = [] }: { id?: s
 							tool: toolName,
 							toolCallId,
 							output: { success: true },
+						});
+					});
+					return;
+				}
+
+				if (toolName === "readChart") {
+					await Excel.run({ delayForCellEdit: true }, async (context) => {
+						const worksheets = context.workbook.worksheets.load({ charts: { $all: true } });
+						const allCharts = worksheets.items.flatMap((worksheet) => worksheet.charts.items);
+						const chart = allCharts.find((chart) => chart.id === input.chartId);
+						if (chart === undefined) {
+							chat.addToolOutput({
+								tool: toolName,
+								toolCallId,
+								state: "output-error",
+								errorText: `The chart with ID ${input.chartId} does not exist. Available charts: ${allCharts.map((chart) => chart.id).join(", ")}`,
+							});
+							return;
+						}
+						const image = chart.getImage();
+						await context.sync();
+						chat.addToolOutput({
+							tool: toolName,
+							toolCallId,
+							output: {
+								base64String: image.value,
+								metadata: {
+									title: chart.title.text,
+								},
+							},
 						});
 					});
 					return;

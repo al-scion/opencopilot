@@ -113,6 +113,19 @@ export const browserShortcuts = [
 			preventDefault: true,
 		},
 	},
+	{
+		name: "uploadFile",
+		label: "Upload file",
+		key: {
+			mac: "meta+shift+u",
+			windows: "ctrl+shift+u",
+		},
+		options: {
+			enableOnContentEditable: true,
+			enableOnFormTags: true,
+			preventDefault: true,
+		},
+	},
 ] as const satisfies BrowserShortcut[];
 
 type ShortcutName = (typeof browserShortcuts)[number]["name"];
@@ -163,7 +176,7 @@ export const getShortcutString = (name: ShortcutName) => {
 		.replace("TAB", "Tab")
 		.replace("BRACKETLEFT", "[")
 		.replace("BRACKETRIGHT", "]")
-		.replace("+", "");
+		.replaceAll("+", "");
 
 	// Mac specific key map
 	const macKeyString = keyString

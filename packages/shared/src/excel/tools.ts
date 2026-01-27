@@ -94,7 +94,7 @@ const clearRange = tool({
 });
 
 const writeComment = tool({
-	description: "Write comment or reply to a thread",
+	description: "Write comment or reply to a thread. The address must be a single cell.",
 	inputSchema: z.object({
 		worksheet: z.string(),
 		address: z.string(),
@@ -267,6 +267,33 @@ const createChart = tool({
 	}),
 });
 
+const readChart = tool({
+	description: "Read a chart",
+	inputSchema: z.object({
+		chartId: z.string(),
+	}),
+	outputSchema: z.object({
+		base64String: z.string(),
+		metadata: z.object({
+			title: z.string(),
+		}),
+	}),
+	toModelOutput: ({ output }) => ({
+		type: "content",
+		value: [
+			{
+				type: "image-data",
+				mediaType: "image/png",
+				data: output.base64String,
+			},
+			{
+				type: "text",
+				text: JSON.stringify(output.metadata),
+			},
+		],
+	}),
+});
+
 export const excelTools = {
 	createChart,
 	readWorksheet,
@@ -285,4 +312,5 @@ export const excelTools = {
 	getScreenshot,
 	evaluateFormula,
 	setBackgroundColour,
+	readChart,
 };

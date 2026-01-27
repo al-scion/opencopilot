@@ -26,7 +26,7 @@ export const chatRouter = new Hono<{ Bindings: Env; Variables: Variables }>().po
 	const { id, messages, agentConfig, workbookState, officeMetadata } = chatRequestSchema.parse(await c.req.json());
 
 	const lastMessage = messages.at(-1)!;
-	const isToolCallResponse = lastMessage.metadata?.finishReason === "tool-calls";
+	// const isToolCallResponse = lastMessage.metadata?.finishReason === "tool-calls";
 
 	const provider = languageModelRegistry[agentConfig.model].provider;
 	const providerOptions = { [provider]: languageModelRegistry[agentConfig.model].options };
@@ -48,6 +48,7 @@ export const chatRouter = new Hono<{ Bindings: Env; Variables: Variables }>().po
 				system: getSystemPrompt({ workbookState, agentConfig }),
 				providerOptions,
 				tools,
+
 				// experimental_repairToolCall: async (props) => {
 				// 	if (NoSuchToolError.isInstance(props.error)) {
 				// 		return null; // do not attempt to fix invalid tool names
@@ -71,14 +72,17 @@ export const chatRouter = new Hono<{ Bindings: Env; Variables: Variables }>().po
 				// 	};
 				// },
 				onError: (error) => console.error(error),
-				experimental_transform: [smoothStream()],
+				// experimental_transform: [smoothStream()],
 			});
+
+			// writer.write({})
 
 			writer.merge(
 				response.toUIMessageStream({
 					originalMessages: messages,
 					sendSources: true,
-					generateMessageId: () => (isToolCallResponse ? lastMessage.id : crypto.randomUUID()),
+					generateMessageId: () => crypto.randomUUID(),
+					// generateMessageId: () => (isToolCallResponse ? lastMessage.id : crypto.randomUUID()),
 					onFinish: async ({ responseMessage }) => {
 						await c.var.convex.mutation(api.chat.functions.saveMessage, { chatId: id, message: responseMessage });
 					},

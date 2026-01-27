@@ -11,6 +11,7 @@ import { EditorContent, useEditor } from "@tiptap/react";
 import { Loader2, Undo2 } from "lucide-react";
 import { TooltipButton } from "@/components/tooltip-button";
 import { restoreCheckpoint } from "@/lib/excel/checkpoint";
+import { UploadedFile } from "./uploaded-file";
 
 export function UserMessage({ message }: { message: UIMessageType }) {
 	const { mutate: undoChanges, isPending } = useMutation({

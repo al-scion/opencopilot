@@ -9,10 +9,8 @@ export const getWorkbookState = async (): Promise<z.infer<typeof workbookStateSc
 		const activeWorksheet = context.workbook.worksheets.getActiveWorksheet().load({ name: true });
 		await context.sync();
 		const activeSelection = await getActiveSelection();
-
 		const worksheetsWithUsedRange = worksheets.items.map((worksheet) => ({
-			name: worksheet.name,
-			position: worksheet.position,
+			worksheet,
 			usedRange: worksheet.getUsedRangeOrNullObject(true).load({ address: true }),
 		}));
 		await context.sync();
@@ -20,16 +18,13 @@ export const getWorkbookState = async (): Promise<z.infer<typeof workbookStateSc
 		return {
 			workbookName: workbook.name,
 			activeWorksheet: activeWorksheet.name,
-			worksheets: worksheetsWithUsedRange.map((worksheet) => ({
+			activeRange: activeSelection.activeRange,
+			worksheets: worksheetsWithUsedRange.map(({ worksheet, usedRange }) => ({
 				name: worksheet.name,
 				position: worksheet.position,
-				isEmpty: worksheet.usedRange.isNullObject === true,
-				usedRange: worksheet.usedRange.isNullObject ? null : worksheet.usedRange.address,
+				isEmpty: usedRange.isNullObject === true,
+				usedRange: usedRange.isNullObject ? null : usedRange.address,
 			})),
-			activeSelection: {
-				type: activeSelection.type,
-				data: activeSelection.activeSelection.toJSON(),
-			},
 		};
 	});
 };

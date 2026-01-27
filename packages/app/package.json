@@ -11,7 +11,7 @@
     "build": "vite build",
     "serve": "vite preview",
     "start": "vite",
-    "checktypes": "tsgo --noEmit",
+    "typecheck": "tsgo --noEmit",
     "deploy": "wrangler deploy"
   },
   "devDependencies": {
