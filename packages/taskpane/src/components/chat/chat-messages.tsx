@@ -8,8 +8,12 @@ import { UserMessage } from "./user-message";
 export function ChatMessages({ chat }: { chat: UseChatHelpers<UIMessageType> }) {
 	const { messages, error } = chat;
 	return (
-		<StickToBottom className="relative flex-1 overflow-y-auto" initial="instant" resize="instant">
-			<StickToBottom.Content className="p-1.5 pt-0">
+		<StickToBottom
+			className="mask-y-from-[calc(100%-8px)] mask-y-to-[calc(100%-2px)] relative flex-1 overflow-y-auto"
+			initial="instant"
+			resize="instant"
+		>
+			<StickToBottom.Content className="p-1.5 pt-2 pb-6">
 				{messages.map((message) => {
 					if (message.role === "user") {
 						return <UserMessage key={message.id} message={message} />;

@@ -7,7 +7,13 @@ import { server } from "@/lib/server";
 import { useAgentConfig } from "@/lib/state";
 import { tryCatch } from "./utils";
 
-export const createChat = ({ id = crypto.randomUUID(), messages = [] }: { id?: string; messages?: any[] } = {}) => {
+export const createChat = ({
+	id = crypto.randomUUID(),
+	messages = [],
+}: {
+	id?: string;
+	messages?: UIMessageType[];
+} = {}) => {
 	const serverUrl = server.chat.$url().href;
 	const transport = new DefaultChatTransport({
 		api: serverUrl,
@@ -35,9 +41,10 @@ export const createChat = ({ id = crypto.randomUUID(), messages = [] }: { id?: s
 			}
 
 			try {
-				console.log("Executing client tool call", toolCall);
-				const { toolName, input, toolCallId } = toolCall;
-				if (toolName === "readWorksheet") {
+				// console.log("Executing client tool call", toolCall);
+
+				const { toolName: tool, input, toolCallId } = toolCall;
+				if (tool === "readWorksheet") {
 					await Excel.run({ delayForCellEdit: true }, async (context) => {
 						const worksheet = context.workbook.worksheets.getItem(input.worksheet);
 						const range = input.address ? worksheet.getRange(input.address) : worksheet.getUsedRange(true);
@@ -45,7 +52,7 @@ export const createChat = ({ id = crypto.randomUUID(), messages = [] }: { id?: s
 						await context.sync();
 
 						chat.addToolOutput({
-							tool: toolName,
+							tool,
 							toolCallId,
 							output: {
 								formulas: range.formulas,
@@ -56,7 +63,7 @@ export const createChat = ({ id = crypto.randomUUID(), messages = [] }: { id?: s
 					return;
 				}
 
-				if (toolName === "copyPaste") {
+				if (tool === "copyPaste") {
 					await Excel.run({ delayForCellEdit: true, mergeUndoGroup: true }, async (context) => {
 						const source = context.workbook.worksheets.getItem(input.source.worksheet).getRange(input.source.address);
 						const target = context.workbook.worksheets
@@ -66,7 +73,7 @@ export const createChat = ({ id = crypto.randomUUID(), messages = [] }: { id?: s
 						target.load({ address: true, text: true });
 						await context.sync();
 						chat.addToolOutput({
-							tool: toolName,
+							tool,
 							toolCallId,
 							output: {
 								address: target.address,
@@ -77,11 +84,11 @@ export const createChat = ({ id = crypto.randomUUID(), messages = [] }: { id?: s
 					return;
 				}
 
-				if (toolName === "clearRange") {
+				if (tool === "clearRange") {
 					await Excel.run({ delayForCellEdit: true, mergeUndoGroup: true }, async (context) => {
 						context.workbook.worksheets.getItem(input.worksheet).getRange(input.address).clear("All");
 						chat.addToolOutput({
-							tool: toolName,
+							tool,
 							toolCallId,
 							output: {
 								success: true,
@@ -91,7 +98,7 @@ export const createChat = ({ id = crypto.randomUUID(), messages = [] }: { id?: s
 					return;
 				}
 
-				if (toolName === "writeComment") {
+				if (tool === "writeComment") {
 					await Excel.run({ delayForCellEdit: true, mergeUndoGroup: true }, async (context) => {
 						const worksheet = context.workbook.worksheets.getItem(input.worksheet);
 						const range = worksheet.getRange(input.address).load({ address: true });
@@ -112,7 +119,7 @@ export const createChat = ({ id = crypto.randomUUID(), messages = [] }: { id?: s
 						await context.sync();
 
 						chat.addToolOutput({
-							tool: toolName,
+							tool,
 							toolCallId,
 							output: {
 								address: range.address,
@@ -135,14 +142,14 @@ export const createChat = ({ id = crypto.randomUUID(), messages = [] }: { id?: s
 					return;
 				}
 
-				if (toolName === "editRange") {
+				if (tool === "editRange") {
 					await Excel.run({ delayForCellEdit: true, mergeUndoGroup: true }, async (context) => {
 						const range = context.workbook.worksheets.getItem(input.worksheet).getRange(input.address);
 						range.set({ values: input.values });
 						range.load({ text: true });
 						await context.sync();
 						chat.addToolOutput({
-							tool: toolName,
+							tool,
 							toolCallId,
 							output: { result: range.text },
 						});
@@ -150,7 +157,7 @@ export const createChat = ({ id = crypto.randomUUID(), messages = [] }: { id?: s
 					return;
 				}
 
-				if (toolName === "readComments") {
+				if (tool === "readComments") {
 					await Excel.run({ delayForCellEdit: true }, async (context) => {
 						const comments = input.worksheet
 							? context.workbook.worksheets.getItem(input.worksheet).comments.load({ expand: "replies" })
@@ -163,7 +170,7 @@ export const createChat = ({ id = crypto.randomUUID(), messages = [] }: { id?: s
 						await context.sync();
 
 						chat.addToolOutput({
-							tool: toolName,
+							tool,
 							toolCallId,
 							output: {
 								count: commentsWithLocation.length,
@@ -189,7 +196,7 @@ export const createChat = ({ id = crypto.randomUUID(), messages = [] }: { id?: s
 					return;
 				}
 
-				if (toolName === "editWorksheet") {
+				if (tool === "editWorksheet") {
 					await Excel.run({ delayForCellEdit: true, mergeUndoGroup: true }, async (context) => {
 						const worksheet = context.workbook.worksheets.getItem(input.name);
 						worksheet.set({
@@ -200,7 +207,7 @@ export const createChat = ({ id = crypto.randomUUID(), messages = [] }: { id?: s
 							visibility: input.visibility,
 						});
 						chat.addToolOutput({
-							tool: toolName,
+							tool,
 							toolCallId,
 							output: { success: true },
 						});
@@ -208,7 +215,7 @@ export const createChat = ({ id = crypto.randomUUID(), messages = [] }: { id?: s
 					return;
 				}
 
-				if (toolName === "createWorksheet") {
+				if (tool === "createWorksheet") {
 					await Excel.run({ delayForCellEdit: true, mergeUndoGroup: true }, async (context) => {
 						const worksheet = input.copyFrom
 							? context.workbook.worksheets.getItem(input.copyFrom).copy()
@@ -219,7 +226,7 @@ export const createChat = ({ id = crypto.randomUUID(), messages = [] }: { id?: s
 							visibility: input.visibility,
 						});
 						chat.addToolOutput({
-							tool: toolName,
+							tool,
 							toolCallId,
 							output: { success: true },
 						});
@@ -227,11 +234,11 @@ export const createChat = ({ id = crypto.randomUUID(), messages = [] }: { id?: s
 					return;
 				}
 
-				if (toolName === "deleteWorksheet") {
+				if (tool === "deleteWorksheet") {
 					await Excel.run({ delayForCellEdit: true }, async (context) => {
 						context.workbook.worksheets.getItem(input.worksheet).delete();
 						chat.addToolOutput({
-							tool: toolName,
+							tool,
 							toolCallId,
 							output: undefined as never,
 						});
@@ -239,7 +246,7 @@ export const createChat = ({ id = crypto.randomUUID(), messages = [] }: { id?: s
 					return;
 				}
 
-				if (toolName === "editWorksheetLayout") {
+				if (tool === "editWorksheetLayout") {
 					await Excel.run({ delayForCellEdit: true, mergeUndoGroup: true }, async (context) => {
 						const worksheet = context.workbook.worksheets.getItem(input.worksheet);
 						switch (input.operation) {
@@ -259,7 +266,7 @@ export const createChat = ({ id = crypto.randomUUID(), messages = [] }: { id?: s
 								throw new Error(`Invalid operation: ${input.operation}`);
 						}
 						chat.addToolOutput({
-							tool: toolName,
+							tool,
 							toolCallId,
 							output: { success: true },
 						});
@@ -267,7 +274,7 @@ export const createChat = ({ id = crypto.randomUUID(), messages = [] }: { id?: s
 					return;
 				}
 
-				if (toolName === "traceFormulaPrecedents") {
+				if (tool === "traceFormulaPrecedents") {
 					await Excel.run({ delayForCellEdit: true }, async (context) => {
 						const range = context.workbook.worksheets
 							.getItem(input.worksheet)
@@ -283,7 +290,7 @@ export const createChat = ({ id = crypto.randomUUID(), messages = [] }: { id?: s
 						});
 						if (data === null) {
 							chat.addToolOutput({
-								tool: toolName,
+								tool,
 								toolCallId,
 								output: {
 									targetFormula: range.formulas[0]![0]!,
@@ -303,7 +310,7 @@ export const createChat = ({ id = crypto.randomUUID(), messages = [] }: { id?: s
 						);
 
 						chat.addToolOutput({
-							tool: toolName,
+							tool,
 							toolCallId,
 							output: {
 								targetFormula: range.formulas[0]![0]!,
@@ -316,7 +323,7 @@ export const createChat = ({ id = crypto.randomUUID(), messages = [] }: { id?: s
 					return;
 				}
 
-				if (toolName === "traceFormulaDependents") {
+				if (tool === "traceFormulaDependents") {
 					await Excel.run({ delayForCellEdit: true }, async (context) => {
 						const range = context.workbook.worksheets
 							.getItem(input.worksheet)
@@ -332,7 +339,7 @@ export const createChat = ({ id = crypto.randomUUID(), messages = [] }: { id?: s
 						});
 						if (data === null) {
 							chat.addToolOutput({
-								tool: toolName,
+								tool,
 								toolCallId,
 								output: {
 									targetFormula: range.formulas[0]![0]!,
@@ -352,7 +359,7 @@ export const createChat = ({ id = crypto.randomUUID(), messages = [] }: { id?: s
 						);
 
 						chat.addToolOutput({
-							tool: toolName,
+							tool,
 							toolCallId,
 							output: {
 								targetFormula: range.formulas[0]![0]!,
@@ -365,7 +372,7 @@ export const createChat = ({ id = crypto.randomUUID(), messages = [] }: { id?: s
 					return;
 				}
 
-				if (toolName === "searchWorkbook") {
+				if (tool === "searchWorkbook") {
 					await Excel.run({ delayForCellEdit: true }, async (context) => {
 						const worksheets = context.workbook.worksheets.load();
 						await context.sync();
@@ -377,7 +384,7 @@ export const createChat = ({ id = crypto.randomUUID(), messages = [] }: { id?: s
 						const items = validResults.flatMap((result) => result.items);
 
 						chat.addToolOutput({
-							tool: toolName,
+							tool,
 							toolCallId,
 							output: {
 								count: items.length,
@@ -392,7 +399,7 @@ export const createChat = ({ id = crypto.randomUUID(), messages = [] }: { id?: s
 					return;
 				}
 
-				if (toolName === "createChart") {
+				if (tool === "createChart") {
 					await Excel.run({ delayForCellEdit: true, mergeUndoGroup: true }, async (context) => {
 						const worksheet = context.workbook.worksheets.getItem(input.worksheet);
 						const range = worksheet.getRange(input.address);
@@ -406,7 +413,7 @@ export const createChat = ({ id = crypto.randomUUID(), messages = [] }: { id?: s
 						const base64String = image.value;
 
 						chat.addToolOutput({
-							tool: toolName,
+							tool,
 							toolCallId,
 							output: { base64String },
 						});
@@ -414,7 +421,7 @@ export const createChat = ({ id = crypto.randomUUID(), messages = [] }: { id?: s
 					return;
 				}
 
-				if (toolName === "getScreenshot") {
+				if (tool === "getScreenshot") {
 					await Excel.run({ delayForCellEdit: true }, async (context) => {
 						const worksheet = context.workbook.worksheets.getItem(input.worksheet);
 						const range = input.address ? worksheet.getRange(input.address) : worksheet.getUsedRangeOrNullObject(true);
@@ -422,7 +429,7 @@ export const createChat = ({ id = crypto.randomUUID(), messages = [] }: { id?: s
 						await context.sync();
 						if (range.isNullObject === true) {
 							chat.addToolOutput({
-								tool: toolName,
+								tool,
 								toolCallId,
 								state: "output-error",
 								errorText: "The worksheet is empty",
@@ -431,7 +438,7 @@ export const createChat = ({ id = crypto.randomUUID(), messages = [] }: { id?: s
 						}
 
 						chat.addToolOutput({
-							tool: toolName,
+							tool,
 							toolCallId,
 							output: { base64String: data.value },
 						});
@@ -440,7 +447,7 @@ export const createChat = ({ id = crypto.randomUUID(), messages = [] }: { id?: s
 					return;
 				}
 
-				if (toolName === "evaluateFormula") {
+				if (tool === "evaluateFormula") {
 					await Excel.run({ delayForCellEdit: true }, async (context) => {
 						const range = context.workbook.worksheets
 							.getItem(input.worksheet)
@@ -461,7 +468,7 @@ export const createChat = ({ id = crypto.randomUUID(), messages = [] }: { id?: s
 						worksheet.delete();
 						await context.sync();
 						chat.addToolOutput({
-							tool: toolName,
+							tool,
 							toolCallId,
 							output: { result: targetRange.text },
 						});
@@ -469,13 +476,13 @@ export const createChat = ({ id = crypto.randomUUID(), messages = [] }: { id?: s
 					return;
 				}
 
-				if (toolName === "setBackgroundColour") {
+				if (tool === "setBackgroundColour") {
 					await Excel.run({ delayForCellEdit: true, mergeUndoGroup: true }, async (context) => {
 						const range = context.workbook.worksheets.getItem(input.worksheet).getRange(input.address);
 						range.set({ format: { fill: { color: input.colour } } });
 						await context.sync();
 						chat.addToolOutput({
-							tool: toolName,
+							tool,
 							toolCallId,
 							output: { success: true },
 						});
@@ -483,14 +490,14 @@ export const createChat = ({ id = crypto.randomUUID(), messages = [] }: { id?: s
 					return;
 				}
 
-				if (toolName === "readChart") {
+				if (tool === "readChart") {
 					await Excel.run({ delayForCellEdit: true }, async (context) => {
 						const worksheets = context.workbook.worksheets.load({ charts: { $all: true } });
 						const allCharts = worksheets.items.flatMap((worksheet) => worksheet.charts.items);
 						const chart = allCharts.find((chart) => chart.id === input.chartId);
 						if (chart === undefined) {
 							chat.addToolOutput({
-								tool: toolName,
+								tool,
 								toolCallId,
 								state: "output-error",
 								errorText: `The chart with ID ${input.chartId} does not exist. Available charts: ${allCharts.map((chart) => chart.id).join(", ")}`,
@@ -500,7 +507,7 @@ export const createChat = ({ id = crypto.randomUUID(), messages = [] }: { id?: s
 						const image = chart.getImage();
 						await context.sync();
 						chat.addToolOutput({
-							tool: toolName,
+							tool,
 							toolCallId,
 							output: {
 								base64String: image.value,

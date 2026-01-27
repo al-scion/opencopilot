@@ -48,7 +48,6 @@ export const chatRouter = new Hono<{ Bindings: Env; Variables: Variables }>().po
 				system: getSystemPrompt({ workbookState, agentConfig }),
 				providerOptions,
 				tools,
-
 				// experimental_repairToolCall: async (props) => {
 				// 	if (NoSuchToolError.isInstance(props.error)) {
 				// 		return null; // do not attempt to fix invalid tool names
@@ -72,41 +71,37 @@ export const chatRouter = new Hono<{ Bindings: Env; Variables: Variables }>().po
 				// 	};
 				// },
 				onError: (error) => console.error(error),
-				// experimental_transform: [smoothStream()],
+				experimental_transform: [smoothStream()],
 			});
 
-			// writer.write({})
-
+			const startTime = Date.now();
 			writer.merge(
 				response.toUIMessageStream({
 					originalMessages: messages,
 					sendSources: true,
 					generateMessageId: () => crypto.randomUUID(),
-					// generateMessageId: () => (isToolCallResponse ? lastMessage.id : crypto.randomUUID()),
 					onFinish: async ({ responseMessage }) => {
 						await c.var.convex.mutation(api.chat.functions.saveMessage, { chatId: id, message: responseMessage });
 					},
-
 					messageMetadata: ({ part }) => {
+						if (part.type === "start") {
+							return { model: agentConfig.model };
+						}
 						if (part.type === "start-step") {
-							return { startTime: Date.now() };
+							return { startTime };
+						}
+						if (part.type === "tool-input-start") {
+							return { toolMetadata: { [part.id]: { startTime } } };
 						}
 						if (part.type === "finish-step") {
 							return { endTime: Date.now() };
 						}
-						if (part.type === "reasoning-start") {
-							console.log(part);
-							return {};
-						}
-						if (part.type === "reasoning-end") {
-							console.log(part);
-							return {};
-						}
 						if (part.type === "finish") {
 							return { finishReason: part.finishReason, usage: part.totalUsage };
 						}
-						if (part.type === "start") {
-							return;
+						if (part.type === "tool-input-end") {
+							console.log(part);
+							return {};
 						}
 					},
 				})

@@ -2,7 +2,7 @@ import { useChat } from "@ai-sdk/react";
 import { Tabs, TabsList, TabsTrigger } from "@packages/ui/components/ui/tabs";
 import { createFileRoute } from "@tanstack/react-router";
 import { PlusIcon } from "lucide-react";
-import { ChatHistory } from "@/components/chat/chat-history";
+import { ChatHistoryPopover } from "@/components/chat/chat-history";
 import { ChatInput } from "@/components/chat/chat-input";
 import { ChatMessages } from "@/components/chat/chat-messages";
 import { SettingsMenu } from "@/components/settings-menu";
@@ -27,7 +27,7 @@ function RouteComponent() {
 
 	return (
 		<>
-			<div className={"flex flex-row items-center p-2 pr-2.5"}>
+			<div className={"flex flex-row items-center p-2 pr-2.5 pb-0"}>
 				<Tabs defaultValue={"chat"}>
 					<TabsList className="ring-[0.5px] ring-border" indicatorClassName="ring-[0.5px] ring-border">
 						<TabsTrigger value="chat">Chat</TabsTrigger>
@@ -44,7 +44,7 @@ function RouteComponent() {
 					>
 						<PlusIcon />
 					</TooltipButton>
-					<ChatHistory />
+					<ChatHistoryPopover />
 					<SettingsMenu />
 				</div>
 			</div>

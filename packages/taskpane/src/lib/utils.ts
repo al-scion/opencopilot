@@ -31,7 +31,7 @@ export function getRelativeTime(date: Date | number | string) {
 		return "just now";
 	}
 
-	return `${value}${unit} ago`;
+	return `${value}${unit}`;
 }
 
 export function tryCatch<T, E = Error>(fn: () => T) {

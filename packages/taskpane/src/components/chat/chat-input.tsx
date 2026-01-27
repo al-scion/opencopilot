@@ -14,7 +14,7 @@ import { Placeholder } from "@tiptap/extensions";
 import { EditorContent, useEditor, useEditorState } from "@tiptap/react";
 import { exitSuggestion } from "@tiptap/suggestion";
 import type { FileUIPart } from "ai";
-import { ArrowUp, PlusIcon, SquareIcon } from "lucide-react";
+import { ArrowUp, PlusIcon, SquareIcon, SquareSlashIcon } from "lucide-react";
 import { useRef, useState } from "react";
 import { CommandMenu, CommandPluginKey, MentionMenu, MentionPluginKey } from "@/components/chat/command-menu";
 import { ModelMenu } from "@/components/chat/model-menu";
@@ -54,7 +54,14 @@ export function ChatInput({ chat }: { chat: UseChatHelpers<UIMessageType> }) {
 						return "⌘J to focus input";
 					},
 				}),
-				Mention.configure({
+				Mention.extend({
+					addAttributes() {
+						return {
+							...this.parent?.(),
+							metadata: undefined,
+						};
+					},
+				}).configure({
 					deleteTriggerWithBackspace: true,
 					suggestions: [
 						{

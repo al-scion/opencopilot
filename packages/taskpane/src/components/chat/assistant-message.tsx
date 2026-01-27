@@ -24,10 +24,13 @@ import { focusWorksheet } from "@/lib/excel/navigate";
 import { MarkdownText } from "./markdown-text";
 
 export function AssistantMessage({ message }: { message: UIMessageType }) {
+	const toolMetadata = message.metadata?.toolMetadata;
 	return (
 		<div className="flex flex-col gap-1 px-0.5 py-2 text-sm" key={message.id}>
+			{/* {JSON.stringify(toolMetadata, null, 2)} */}
 			{message.parts.map((part, i) => {
 				const key = `${message.id}-${i}`;
+				// const dataParts = part.type === ""
 
 				if (part.type === "step-start") {
 					return null;
@@ -53,7 +56,7 @@ export function AssistantMessage({ message }: { message: UIMessageType }) {
 										)}
 									/>
 								</AccordionTrigger>
-								<AccordionContent className="no-scrollbar max-h-36 overflow-y-auto">
+								<AccordionContent className="no-scrollbar mask-y-from-95% max-h-36 overflow-y-auto">
 									<StickToBottom>
 										<StickToBottom.Content>
 											<MarkdownText className="text-xs" mode={part.state === "streaming" ? "streaming" : "static"}>

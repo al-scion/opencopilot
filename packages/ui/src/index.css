@@ -209,15 +209,20 @@
 		@apply pointer-events-none text-muted-foreground absolute left-0 top-0 font-light truncate max-w-full;
 	}
 
-	/* .mention, */
-	.suggestion,
-	[data-type="mention"] {
+	/* While in suggestion mode */
+	.suggestion {
 		@apply bg-muted ring-muted ring-2 rounded-xs;
 	}
-
 	.suggestion.is-empty::after {
 		content: "Filter…";
 		@apply pointer-events-none text-muted-foreground mr-1;
+	}
+
+	[data-type="mention"] {
+		@apply bg-primary-50 text-primary-500 ring-2 ring-primary-50 outline-[0.5px] outline-offset-[1.5px] outline-primary-200 rounded-xs mx-0.5;
+	}
+	[data-type="mention"][metadata="skill"] {
+		@apply bg-green-50 ring-green-50 text-green-600 outline-green-300;
 	}
 
 	.ProseMirror-separator {

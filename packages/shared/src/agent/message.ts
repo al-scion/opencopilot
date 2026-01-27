@@ -11,10 +11,19 @@ const metadataSchema = z
 		usage: z.custom<LanguageModelUsage>().optional(),
 		tiptap: z.any().optional(),
 		checkpointId: z.string().optional(),
+		toolMetadata: z
+			.record(
+				z.string(),
+				z.object({
+					startTime: z.number(),
+				})
+			)
+			.optional(),
 	})
 	.catchall(z.unknown());
 
 const dataPartSchema = z.object({});
+
 type ToolType = InferUITools<typeof excelTools>;
 
 type Metadata = z.infer<typeof metadataSchema>;
