@@ -68,6 +68,7 @@ export function ChatInput({ chat }: { chat: UseChatHelpers<UIMessageType> }) {
 							char: "@",
 							allowSpaces: false,
 							pluginKey: MentionPluginKey,
+							decorationClass: "suggestion mention",
 							render: () => ({
 								onKeyDown: ({ event, range, view }) => {
 									if (event.key === "ArrowDown" || event.key === "ArrowUp") {
@@ -106,6 +107,7 @@ export function ChatInput({ chat }: { chat: UseChatHelpers<UIMessageType> }) {
 							char: "/",
 							allowSpaces: false,
 							pluginKey: CommandPluginKey,
+							decorationClass: "suggestion command",
 							render: () => ({
 								onKeyDown: ({ event, range, view }) => {
 									if (event.key === "ArrowDown" || event.key === "ArrowUp") {
@@ -223,6 +225,14 @@ export function ChatInput({ chat }: { chat: UseChatHelpers<UIMessageType> }) {
 
 	return (
 		<Card className="relative m-1.5 mt-0 rounded-2xl">
+			<input
+				accept={ALLOWED_MIME_TYPES.join(",")}
+				className="hidden"
+				multiple
+				onChange={handleFileInputChange}
+				ref={fileInputRef}
+				type="file"
+			/>
 			<CardContent className="rounded-xl p-0">
 				{/* <CardContentItem className={cn("px-2 py-1", isLoading === false && "hidden")}>
 						<span className="font-light text-muted-foreground text-xs">Generating...</span>
@@ -242,19 +252,11 @@ export function ChatInput({ chat }: { chat: UseChatHelpers<UIMessageType> }) {
 						<div className="flex flex-row items-center gap-1">
 							<TooltipButton
 								className="bg-muted"
-								onClick={() => fileInputRef.current?.click()}
+								onClick={() => editor.chain().insertContent("/").focus().run()}
 								size="icon"
 								tooltip="Upload files"
 								variant="ghost"
 							>
-								<input
-									accept={ALLOWED_MIME_TYPES.join(",")}
-									className="hidden"
-									multiple
-									onChange={handleFileInputChange}
-									ref={fileInputRef}
-									type="file"
-								/>
 								<PlusIcon />
 							</TooltipButton>
 							<ModelMenu />
@@ -289,7 +291,12 @@ export function ChatInput({ chat }: { chat: UseChatHelpers<UIMessageType> }) {
 					</div>
 				</CardContentItem>
 			</CardContent>
-			<CommandMenu editor={editor} inputRef={commandInputRef} state={editorState.command} />
+			<CommandMenu
+				editor={editor}
+				inputRef={commandInputRef}
+				onAttachFile={() => fileInputRef.current?.click()}
+				state={editorState.command}
+			/>
 			<MentionMenu editor={editor} inputRef={mentionInputRef} state={editorState.mention} />
 		</Card>
 	);

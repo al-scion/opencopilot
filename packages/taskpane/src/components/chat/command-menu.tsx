@@ -9,7 +9,7 @@ import { cn } from "@packages/ui/lib/utils";
 import { Mention, type MentionNodeAttrs } from "@tiptap/extension-mention";
 import { PluginKey } from "@tiptap/pm/state";
 import { type Editor, NodeViewWrapper, type Range, ReactNodeViewRenderer } from "@tiptap/react";
-import { BoxIcon, PaperclipIcon, ShieldCheckIcon, UploadIcon } from "lucide-react";
+import { BoxIcon, CircleArrowRightIcon, PaperclipIcon, ShieldCheckIcon, UploadIcon } from "lucide-react";
 import { getShortcutString } from "@/lib/browser-shortcuts";
 import { useAppState } from "@/lib/state";
 
@@ -57,10 +57,12 @@ export function CommandMenu({
 	state,
 	inputRef,
 	editor,
+	onAttachFile,
 }: {
 	state: MentionPluginState | undefined;
 	inputRef: React.Ref<HTMLInputElement>;
 	editor: Editor;
+	onAttachFile: () => void;
 }) {
 	const { permissionMenuOpen } = useAppState();
 
@@ -73,7 +75,10 @@ export function CommandMenu({
 					label: "Attach file",
 					value: "attachFile",
 					icon: <PaperclipIcon />,
-					onClick: () => {},
+					onClick: () => {
+						closeMenu();
+						onAttachFile();
+					},
 					shortcut: getShortcutString("uploadFile"),
 				},
 			],
@@ -104,11 +109,11 @@ export function CommandMenu({
 			],
 		},
 		{
-			label: "Skills",
 			items: [
 				{
-					label: "Test skill",
+					label: "Test",
 					value: "testSkill",
+					icon: <CircleArrowRightIcon />,
 					onClick: () => {
 						editor
 							.chain()

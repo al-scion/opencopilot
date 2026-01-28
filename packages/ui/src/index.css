@@ -214,7 +214,7 @@
 		@apply bg-muted ring-muted ring-2 rounded-xs;
 	}
 	.suggestion.is-empty::after {
-		content: "Filter…";
+		content: "Search...";
 		@apply pointer-events-none text-muted-foreground mr-1;
 	}
 

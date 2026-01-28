@@ -11,7 +11,7 @@
   },
   "overrides": [
     {
-      "includes": ["**/*.astro"],
+      "includes": ["**/*.astro", "**/$.tsx"],
       "linter": {
         "rules": {
           "style": { "useFilenamingConvention": "off" }

@@ -2,6 +2,7 @@ import { RouterProvider } from "@tanstack/react-router";
 import { AuthKitProvider, useAuth } from "@workos-inc/authkit-react";
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
+import { env } from "./env";
 import { WORKOS_ACCESS_TOKEN_KEY } from "./lib/constants";
 import { convexQueryClient, convexReactClient, queryClient } from "./lib/convex";
 import { initWorkbook } from "./lib/excel/_init";
@@ -38,7 +39,7 @@ function App() {
 createRoot(document.getElementById("root")!).render(
 	<StrictMode>
 		<AuthKitProvider
-			clientId={import.meta.env.VITE_WORKOS_CLIENT_ID}
+			clientId={env.VITE_WORKOS_CLIENT_ID}
 			onRedirectCallback={(response) => sessionStorage.setItem(WORKOS_ACCESS_TOKEN_KEY, response.accessToken)}
 			onRefresh={(response) => sessionStorage.setItem(WORKOS_ACCESS_TOKEN_KEY, response.accessToken)}
 			onRefreshFailure={() => sessionStorage.removeItem(WORKOS_ACCESS_TOKEN_KEY)}

@@ -36,6 +36,7 @@
     "@workos-inc/authkit-react": "^0.16.0",
     "lucide-react": "catalog:",
     "react": "catalog:",
-    "react-dom": "catalog:"
+    "react-dom": "catalog:",
+    "zod": "catalog:"
   }
 }

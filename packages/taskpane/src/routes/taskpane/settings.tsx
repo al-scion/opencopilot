@@ -2,7 +2,6 @@ import { languageModelRegistry, providerRegistry } from "@packages/shared";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@packages/ui/components/ui/accordion";
 import { Card, CardContent, CardContentItem, CardHeader } from "@packages/ui/components/ui/card";
 import { Input } from "@packages/ui/components/ui/input";
-// import { Select, SelectItem, SelectPopup, SelectTrigger, SelectValue } from "@packages/ui/components/ui/select";
 import { Switch } from "@packages/ui/components/ui/switch";
 import { Tabs, TabsList, TabsPanel, TabsTrigger } from "@packages/ui/components/ui/tabs";
 import { createFileRoute, useRouter } from "@tanstack/react-router";
@@ -48,19 +47,6 @@ function RouteComponent() {
 				</TooltipButton>
 				<h1 className="font-normal text-md">Settings</h1>
 			</div>
-
-			{/* <Select defaultValue={options[0].value} items={options}>
-				<SelectTrigger className="rounded-md" size="sm">
-					<SelectValue className="text-sm" />
-				</SelectTrigger>
-				<SelectPopup alignItemWithTrigger={false}>
-					{options.map(({ value, label }) => (
-						<SelectItem key={value} value={value}>
-							<span className="font-normal text-sm">{label}</span>
-						</SelectItem>
-					))}
-				</SelectPopup>
-			</Select> */}
 
 			<Tabs defaultValue={options[0]!.value}>
 				<TabsList className="ring-[0.5px] ring-border" indicatorClassName="ring-[0.5px] ring-border">
