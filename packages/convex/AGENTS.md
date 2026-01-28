@@ -10,6 +10,16 @@ Then there are functional folders for each feature, which is each contain their 
 
 Workflows can only make use of internal functions on Convex.
 
+## Code Generation
+
+After making changes to the convex, you must run codegen to update the `_generated` types:
+
+```sh
+bun run codegen
+```
+
+This ensures TypeScript types are up-to-date and the code will typecheck correctly. The generated code in `convex/_generated` should be committed to the repo.
+
 <DOCUMENTATION>
 ---
 

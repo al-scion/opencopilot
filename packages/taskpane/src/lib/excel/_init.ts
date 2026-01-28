@@ -2,6 +2,7 @@ import { autoFormat, registerNamedRange } from "@packages/shared";
 import { useAppState } from "@/lib/state";
 import { generateImage, generateText, memoize } from "./formula";
 import { toggleTaskpane } from "./shortcuts";
+import { checkErrorCells, executeCheck } from "./utils";
 
 export const initWorkbook = async () => {
 	await Office.onReady(async ({ host, platform }) => {
@@ -19,11 +20,20 @@ export const initWorkbook = async () => {
 		await registerNamedRange();
 
 		await Excel.run({ delayForCellEdit: true }, async (context) => {
+			context.workbook.worksheets.onChanged.remove(autoFormat);
 			context.workbook.worksheets.onChanged.add(autoFormat);
+			// handler.
+			// context.workbook.worksheets.onCalculated.add(async (e) => console.log(e));
 		});
 
 		if (import.meta.env.DEV === true) {
-			await Excel.run(async (context) => {});
+			await Excel.run({ delayForCellEdit: true }, async (context) => {
+				const startTime = performance.now();
+				await checkErrorCells();
+				// await executeCheck();
+				const endTime = performance.now();
+				console.log(`executeCheck took ${(endTime - startTime).toFixed(2)}ms`);
+			});
 		}
 	});
 };

@@ -3,13 +3,14 @@ import { cloudflare } from "@cloudflare/vite-plugin";
 import tailwindcss from "@tailwindcss/vite";
 import { tanstackRouter } from "@tanstack/router-plugin/vite";
 import react from "@vitejs/plugin-react";
-import { sideloadAddIn, unregisterAddIn } from "office-addin-dev-settings";
+import { sideloadAddIn } from "office-addin-dev-settings";
 import { defineConfig, type Plugin } from "vite";
 import mkcert from "vite-plugin-mkcert";
 import tsConfigPaths from "vite-tsconfig-paths";
 
 const officePlugin = (): Plugin => ({
 	name: "officePlugin",
+	apply: "serve",
 	configureServer: async (server) => {
 		const root = server.config.root;
 		const manifestPath = path.join(root, "manifest-dev.xml");

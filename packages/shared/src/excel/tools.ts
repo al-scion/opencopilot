@@ -14,12 +14,54 @@ const readWorksheet = tool({
 	}),
 });
 
+const getScreenshot = tool({
+	description: "Get screenshot of a worksheet or specific range",
+	inputSchema: z.object({
+		worksheet: z.string(),
+		address: z.string().optional(),
+	}),
+	outputSchema: z.object({
+		base64String: z.string(),
+	}),
+	toModelOutput: ({ output }) => ({
+		type: "content",
+		value: [
+			{
+				type: "image-data",
+				mediaType: "image/png",
+				data: output.base64String,
+			},
+		],
+	}),
+});
+
 const editRange = tool({
 	description: "Edit a range in a worksheet",
+	strict: true,
 	inputSchema: z.object({
 		worksheet: z.string(),
 		address: z.string().describe("Range in A1 notation, for example 'A1', 'A1:A10'"),
 		values: z.array(z.array(z.string())),
+	}),
+	outputSchema: z.object({ result: z.array(z.array(z.string())) }),
+});
+
+const setBackgroundColour = tool({
+	description: "Set the background colour of a range",
+	inputSchema: z.object({
+		worksheet: z.string(),
+		address: z.string(),
+		colour: z.string(),
+	}),
+	outputSchema: z.object({ success: z.boolean() }),
+});
+
+const evaluateFormula = tool({
+	description: "Run formulas in a sandboxed environment",
+	inputSchema: z.object({
+		worksheet: z.string(),
+		address: z.string(),
+		formulas: z.array(z.array(z.string())),
 	}),
 	outputSchema: z.object({ result: z.array(z.array(z.string())) }),
 });
@@ -52,7 +94,7 @@ const clearRange = tool({
 });
 
 const writeComment = tool({
-	description: "Write comment or reply to a thread",
+	description: "Write comment or reply to a thread. The address must be a single cell.",
 	inputSchema: z.object({
 		worksheet: z.string(),
 		address: z.string(),
@@ -109,17 +151,16 @@ const editWorksheet = tool({
 });
 
 const createWorksheet = tool({
-	description: "Edit or create a worksheet",
+	description: "Create a worksheet",
 	inputSchema: z.object({
 		name: z.string(),
 		copyFrom: z.string().optional(),
-		color: z.string().optional().describe("Hex code #RRGGBB"),
 		position: z.number().optional(),
-		rename: z.string().optional(),
-		showGridlines: z.boolean().optional(),
 		visibility: z.enum(["Visible", "Hidden"]).optional(),
 	}),
+	outputSchema: z.object({ success: z.boolean() }),
 });
+
 const deleteWorksheet = tool({
 	description: "Delete a worksheet",
 	inputSchema: z.object({
@@ -135,13 +176,13 @@ const editWorksheetLayout = tool({
 		startIndex: z.number(),
 		count: z.number(),
 	}),
+	outputSchema: z.object({ success: z.boolean() }),
 });
 
 const searchWorkbook = tool({
 	description: "Search the workbook",
 	inputSchema: z.object({
 		query: z.string(),
-		worksheet: z.string().optional(),
 	}),
 	outputSchema: z.object({
 		count: z.number(),
@@ -201,8 +242,56 @@ const createChart = tool({
 		worksheet: z.string(),
 		address: z.string(),
 		chartType: z.enum(EXCEL_CHART_TYPES),
+		title: z
+			.object({
+				text: z.string().optional(),
+				visible: z.boolean().optional(),
+			})
+			.optional(),
+		legend: z.object({
+			visible: z.boolean().optional(),
+		}),
 	}),
-	outputSchema: z.object({}),
+	outputSchema: z.object({
+		base64String: z.string(),
+	}),
+	toModelOutput: ({ output }) => ({
+		type: "content",
+		value: [
+			{
+				type: "image-data",
+				mediaType: "image/png",
+				data: output.base64String,
+			},
+		],
+	}),
+});
+
+const readChart = tool({
+	description: "Read a chart",
+	inputSchema: z.object({
+		chartId: z.string(),
+	}),
+	outputSchema: z.object({
+		base64String: z.string(),
+		metadata: z.object({
+			title: z.string(),
+		}),
+	}),
+	toModelOutput: ({ output }) => ({
+		type: "content",
+		value: [
+			{
+				type: "image-data",
+				mediaType: "image/png",
+				data: output.base64String,
+			},
+			{
+				type: "text",
+				text: JSON.stringify(output.metadata),
+			},
+		],
+	}),
 });
 
 export const excelTools = {
@@ -220,4 +309,8 @@ export const excelTools = {
 	searchWorkbook,
 	traceFormulaPrecedents,
 	traceFormulaDependents,
+	getScreenshot,
+	evaluateFormula,
+	setBackgroundColour,
+	readChart,
 };

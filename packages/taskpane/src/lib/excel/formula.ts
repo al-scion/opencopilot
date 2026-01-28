@@ -3,6 +3,7 @@ import {
 	getCellValueCard,
 	imageModelSchema,
 	inPreviewErrorCell,
+	languageModelRegistry,
 	languageModelSchema,
 } from "@packages/shared";
 import { server } from "../server";
@@ -63,7 +64,7 @@ export const memoize = <T extends (...args: any[]) => any>(fn: T): ((...args: Pa
 };
 
 export const generateText = async (prompt: string, model: string | null, signal: AbortSignal) => {
-	const modelId = languageModelSchema.parse(model);
+	const modelId = languageModelSchema.catch("anthropic/claude-opus-4-5").parse(model);
 	const response = await server.formulas.text.$post(
 		{
 			json: {
@@ -80,7 +81,7 @@ export const generateText = async (prompt: string, model: string | null, signal:
 };
 
 export const generateImage = async (prompt: string, model: string | null, signal: AbortSignal) => {
-	const modelId = imageModelSchema.parse(model);
+	const modelId = imageModelSchema.catch("google/gemini-3-pro-image-preview").parse(model);
 	const response = await server.formulas.image.$post(
 		{
 			json: {

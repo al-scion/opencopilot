@@ -7,7 +7,7 @@
     "packages/ui": {
       "ignore": ["src/components/ui/**"]
     },
-    "packages/docs": {
+    "packages/web": {
       "ignore": ["content/**"]
     },
     "packages/convex": {

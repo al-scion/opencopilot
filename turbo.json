@@ -4,8 +4,8 @@
     "build": {
       "outputs": ["dist/**"]
     },
-    "checktypes": {
-      "dependsOn": ["^checktypes"]
+    "typecheck": {
+      "dependsOn": ["^typecheck"]
     },
     "dev": {
       "persistent": true,

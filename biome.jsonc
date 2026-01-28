@@ -11,7 +11,7 @@
   },
   "overrides": [
     {
-      "includes": ["**/*.astro"],
+      "includes": ["**/*.astro", "**/$.tsx"],
       "linter": {
         "rules": {
           "style": { "useFilenamingConvention": "off" }
@@ -40,7 +40,8 @@
       "correctness": {
         "noUnusedImports": "off",
         "noUnusedVariables": "off",
-        "noUnusedFunctionParameters": "off"
+        "noUnusedFunctionParameters": "off",
+        "useImageSize": "off"
       },
       "suspicious": {
         "useAwait": "off",
@@ -52,14 +53,18 @@
         "noExplicitAny": "off"
       },
       "nursery": {
-        // "useConsistentTypeDefinitions": "off",
         "noShadow": "off",
         "useConsistentArrowReturn": "off",
         "noUnusedExpressions": "off"
       },
       "a11y": {
         "noSvgWithoutTitle": "off",
-        "useAltText": "off"
+        "useAltText": "off",
+        "noNoninteractiveElementInteractions": "off",
+        "noStaticElementInteractions": "off",
+        "useKeyWithClickEvents": "off",
+        "useSemanticElements": "off",
+        "useAnchorContent": "off"
       },
       "complexity": {
         "noForEach": "off",

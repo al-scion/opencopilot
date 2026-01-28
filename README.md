@@ -139,7 +139,7 @@ See [AGENTS.md](./AGENTS.md) for detailed code standards.
 
 ```bash
 bun run dev        # Start all packages in dev mode
-bun run checktypes # Type check all packages
+bun run typecheck # Type check all packages
 bun run knip       # Check for unused dependencies
 bun run lint       # Check for linting issues
 bun run lint:fix   # Fix linting issues
@@ -152,7 +152,7 @@ Each package supports:
 ```bash
 bun run dev        # Start dev server
 bun run build      # Build for production
-bun run checktypes # Type check
+bun run typecheck # Type check
 bun run deploy     # Deploy to Cloudflare
 ```
 

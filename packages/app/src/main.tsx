@@ -4,10 +4,11 @@ import { RouterProvider } from "@tanstack/react-router";
 import { AuthKitProvider } from "@workos-inc/authkit-react";
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
+import { env } from "./env";
 import { createAppRouter } from "./router";
 
 const opencodeClient = createOpencodeClient({
-	baseUrl: import.meta.env.VITE_OPENCODE_LOCAL_URL,
+	baseUrl: env.VITE_OPENCODE_LOCAL_URL,
 });
 
 const router = createAppRouter({
@@ -18,7 +19,7 @@ const router = createAppRouter({
 
 createRoot(document.getElementById("root")!).render(
 	<StrictMode>
-		<AuthKitProvider clientId={import.meta.env.VITE_WORKOS_CLIENT_ID} redirectUri={undefined}>
+		<AuthKitProvider clientId={env.VITE_WORKOS_CLIENT_ID} redirectUri={undefined}>
 			<RouterProvider router={router} />
 		</AuthKitProvider>
 	</StrictMode>

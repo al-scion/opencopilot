@@ -1,5 +1,34 @@
+import { getOfficeMetadata } from "@packages/shared";
 import { unzipSync, zipSync } from "fflate";
 import { server } from "../server";
+
+const getSlice = async (file: Office.File, index: number) =>
+	new Promise<number[]>((resolve, reject) => {
+		file.getSliceAsync(index, (result) => {
+			if (result.status === Office.AsyncResultStatus.Failed) {
+				return reject(result.error);
+			}
+			const data = result.value.data as number[]; // @remarks — Files in the "compressed" format will return a byte array
+			resolve(data);
+		});
+	});
+
+const getWorkbookAsBuffer = () =>
+	new Promise<Uint8Array<ArrayBuffer>>((resolve, reject) => {
+		Office.context.document.getFileAsync(Office.FileType.Compressed, {}, async (result) => {
+			if (result.status === Office.AsyncResultStatus.Failed) {
+				return reject(result.error);
+			}
+			const file = result.value;
+			const slices = await Promise.all(Array.from({ length: file.sliceCount }, (_, i) => getSlice(file, i)));
+			file.closeAsync();
+			const flatSlices = slices.flat();
+			const buffer = new ArrayBuffer(flatSlices.length);
+			const data = new Uint8Array(buffer);
+			data.set(flatSlices);
+			resolve(data);
+		});
+	});
 
 const getWorkbookAsFile = async (): Promise<File> => {
 	const fileName = await Excel.run({ delayForCellEdit: true }, async (context) => {
@@ -7,40 +36,19 @@ const getWorkbookAsFile = async (): Promise<File> => {
 		await context.sync();
 		return workbook.name;
 	});
-	return await new Promise((resolve, reject) => {
-		Office.context.document.getFileAsync(Office.FileType.Compressed, {}, (result) => {
-			if (result.status === Office.AsyncResultStatus.Failed) {
-				reject(result.error);
-				return;
-			}
-			const file = result.value;
-			const slices: number[][] = [];
-			let count = 0;
+	const fileType = fileName.endsWith(".xlsm")
+		? "application/vnd.ms-excel.sheet.macroEnabled.12"
+		: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+	const fileBuffer = await getWorkbookAsBuffer();
 
-			for (let i = 0; i < file.sliceCount; i++) {
-				file.getSliceAsync(i, (sliceResult) => {
-					if (sliceResult.status === Office.AsyncResultStatus.Succeeded) {
-						slices[sliceResult.value.index] = sliceResult.value.data;
-						count++;
-						if (count === file.sliceCount) {
-							file.closeAsync();
-							const buffer = slices.flat();
-							resolve(
-								new File([new Uint8Array(buffer)], fileName, {
-									type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-								})
-							);
-						}
-					} else {
-						file.closeAsync();
-						reject(sliceResult.error);
-					}
-				});
-			}
-		});
-	});
+	return new File([fileBuffer], fileName, { type: fileType, lastModified: Date.now() });
 };
 
+export const getCheckpointId = () => {
+	const id = getOfficeMetadata().id;
+	const timeStamp = Date.now();
+	return `checkpoints/${id}/${timeStamp}`;
+};
 export const saveFileToStorage = async (key: string) => {
 	const file = await getWorkbookAsFile();
 	const response = await server.storage.upload.$post({ form: { file, key } });

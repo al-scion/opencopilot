@@ -11,7 +11,7 @@
     "./*": "./src/*"
   },
   "scripts": {
-    "checktypes": "tsgo --noEmit"
+    "typecheck": "tsgo --noEmit"
   },
   "devDependencies": {
     "@types/custom-functions-runtime": "catalog:",

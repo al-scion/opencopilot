@@ -2,11 +2,12 @@ import {
 	Command,
 	CommandDialog,
 	CommandDialogContent,
+	CommandEmpty,
 	type CommandGroupData,
 	CommandInput,
 	CommandListTemplate,
 } from "@packages/ui/components/ui/command";
-import { browserShortcuts, getShortcutString, useShortcut } from "@/lib/browser-shortcuts";
+import { browserShortcuts, getShortcutParts, getShortcutString, useShortcut } from "@/lib/browser-shortcuts";
 import { useAppState } from "@/lib/state";
 
 export function ShortcutMenu() {
@@ -22,7 +23,18 @@ export function ShortcutMenu() {
 			items: browserShortcuts.map((shortcut) => ({
 				value: shortcut.name,
 				label: shortcut.label,
-				shortcut: getShortcutString(shortcut.name),
+				shortcut: (
+					<div className="flex flex-row items-center gap-1">
+						{getShortcutParts(shortcut.name).map((key) => (
+							<kbd
+								className="inline-flex h-5 min-w-5 cursor-default select-none items-center justify-center rounded-xs border border-foreground/15 px-[3px] py-0 text-center font-medium font-sans text-sm text-xs leading-tight tracking-normal"
+								key={key}
+							>
+								{key}
+							</kbd>
+						))}
+					</div>
+				),
 			})),
 		},
 	];
@@ -32,6 +44,7 @@ export function ShortcutMenu() {
 			<CommandDialogContent>
 				<Command items={shortcutItems}>
 					<CommandInput placeholder={"Search shortcuts"} />
+					<CommandEmpty>No shortcuts found</CommandEmpty>
 					<CommandListTemplate
 						itemClassName="data-highlighted:bg-background cursor-auto"
 						itemShortcutClassName={"tracking-widest"}

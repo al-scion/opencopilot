@@ -44,14 +44,15 @@ function CommandInput({
 	className,
 	wrapperClassName,
 	autoFocus = true,
+	showIcon = true,
 	...props
-}: React.ComponentProps<typeof AutocompletePrimitive.Input> & { wrapperClassName?: string }) {
+}: React.ComponentProps<typeof AutocompletePrimitive.Input> & { wrapperClassName?: string; showIcon?: boolean }) {
 	return (
 		<div
 			className={cn("flex h-9 items-center gap-2 rounded-lg border-none bg-muted px-3", wrapperClassName)}
 			data-slot="command-input-wrapper"
 		>
-			<SearchIcon className="size-4 shrink-0 opacity-50" />
+			{showIcon && <SearchIcon className="size-4 shrink-0 opacity-50" />}
 			<AutocompletePrimitive.Input
 				autoFocus={autoFocus}
 				className={cn(
@@ -68,7 +69,7 @@ function CommandInput({
 function CommandList({ className, ...props }: React.ComponentProps<typeof AutocompletePrimitive.List>) {
 	return (
 		<AutocompletePrimitive.List
-			className={cn("no-scrollbar scroll-py-1 overflow-y-auto", className)}
+			className={cn("no-scrollbar overflow-y-auto empty:hidden", className)}
 			data-slot="command-list"
 			{...props}
 		/>

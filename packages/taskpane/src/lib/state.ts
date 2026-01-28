@@ -4,16 +4,29 @@ import type { Editor } from "@tiptap/react";
 import type { z } from "zod";
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
+import { getActiveSelection } from "@/lib/excel/utils";
 import { createChat } from "./chat";
 
 const useAgentConfig = create<z.infer<typeof agentConfigSchema>>()(
 	persist(
-		(set, get) => ({
-			model: "anthropic/claude-opus-4-5",
-			permission: "ask",
-		}),
+		(set, get) => {
+			const isReadOnly = Office.context.document.mode === Office.DocumentMode.ReadOnly;
+			return {
+				model: "anthropic/claude-opus-4-5",
+				permission: isReadOnly ? "read" : "ask",
+			};
+		},
 		{
 			name: "agent-config",
+			merge: (persistedState, current) => {
+				const persisted = persistedState as z.infer<typeof agentConfigSchema>;
+				const merged = { ...current, ...persisted };
+				const isReadOnly = Office.context.document.mode === Office.DocumentMode.ReadOnly;
+				return {
+					...merged,
+					permission: isReadOnly ? "read" : merged.permission,
+				};
+			},
 		}
 	)
 );
@@ -21,6 +34,7 @@ const useAgentConfig = create<z.infer<typeof agentConfigSchema>>()(
 type AppState = {
 	operatingSystem: "mac" | "windows";
 	modelMenuOpen: boolean;
+	permissionMenuOpen: boolean;
 	settingsMenuOpen: boolean;
 	shortcutMenuOpen: boolean;
 	chatHistoryOpen: boolean;
@@ -30,18 +44,11 @@ type AppState = {
 	chat: ReturnType<typeof createChat>;
 
 	worksheets: Excel.Worksheet[];
-	selectedRange: Excel.Range;
+	charts: Excel.Chart[];
+	activeRange: Excel.Interfaces.RangeData | null;
+	activeShape: Excel.Interfaces.ShapeData | null;
+	activeChart: Excel.Interfaces.ChartData | null;
 };
-
-const initialWorkbookState = await Excel.run({ delayForCellEdit: true }, async (context) => {
-	const activeRange = context.workbook.getSelectedRange().load({ address: true });
-	const worksheets = context.workbook.worksheets.load({ $all: true });
-	await context.sync();
-	return {
-		worksheets: worksheets.items,
-		activeRange,
-	};
-});
 
 const useAppState = create<AppState>()((set) => {
 	const updateTaskpaneFocus = () => {
@@ -67,21 +74,56 @@ const useAppState = create<AppState>()((set) => {
 	Excel.run({ delayForCellEdit: true }, async (context) => {
 		context.runtime.set({ enableEvents: true });
 		context.workbook.onSelectionChanged.add(async (e) => {
-			const selectedRange = context.workbook.getSelectedRange().load({ address: true })!;
-			await context.sync();
-			console.log("Active range changed");
-			set({ selectedRange });
+			const activeSelection = await getActiveSelection();
+			set({
+				activeChart: activeSelection.activeChart,
+				activeShape: activeSelection.activeShape,
+				activeRange: activeSelection.activeRange,
+			});
 		});
-		context.workbook.worksheets.onChanged.add(async (e) => {
+		context.workbook.worksheets.onAdded.add(async (e) => {
 			const worksheets = context.workbook.worksheets.load({ $all: true });
 			await context.sync();
 			set({ worksheets: worksheets.items });
+		});
+		context.workbook.worksheets.onDeleted.add(async (e) => {
+			const worksheets = context.workbook.worksheets.load({ $all: true });
+			await context.sync();
+			set({ worksheets: worksheets.items });
+		});
+		context.workbook.worksheets.onNameChanged.add(async (e) => {
+			const worksheets = context.workbook.worksheets.load({ $all: true });
+			await context.sync();
+			set({ worksheets: worksheets.items });
+		});
+		context.workbook.worksheets.onChanged.add(async (e) => {
+			const worksheets = context.workbook.worksheets.load({ $all: true, charts: { $all: true } });
+			await context.sync();
+			const charts = worksheets.items.flatMap((worksheet) => worksheet.charts.items);
+			set({ charts });
+		});
+	});
+
+	// Initialize workbook state asynchronously
+	Excel.run({ delayForCellEdit: true }, async (context) => {
+		const worksheets = context.workbook.worksheets.load({ $all: true, charts: { $all: true } });
+		await context.sync();
+		const charts = worksheets.items.flatMap((worksheet) => worksheet.charts.items);
+		const activeSelection = await getActiveSelection();
+
+		set({
+			worksheets: worksheets.items,
+			charts,
+			activeChart: activeSelection.activeChart,
+			activeShape: activeSelection.activeShape,
+			activeRange: activeSelection.activeRange,
 		});
 	});
 
 	return {
 		operatingSystem: navigator.userAgent.toLowerCase().includes("mac") ? "mac" : "windows",
 		modelMenuOpen: false,
+		permissionMenuOpen: false,
 		settingsMenuOpen: false,
 		shortcutMenuOpen: false,
 		chatHistoryOpen: false,
@@ -90,8 +132,11 @@ const useAppState = create<AppState>()((set) => {
 		editor: undefined!,
 		chat: createChat(),
 
-		worksheets: initialWorkbookState.worksheets,
-		selectedRange: initialWorkbookState.activeRange,
+		worksheets: [],
+		charts: [],
+		activeRange: null,
+		activeShape: null,
+		activeChart: null,
 	};
 });
 

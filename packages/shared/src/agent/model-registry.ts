@@ -22,22 +22,45 @@ export const languageModelRegistry = {
 	"google/gemini-3-pro-preview": {
 		name: "Gemini 3 Pro",
 		provider: "google",
-		options: {} as GoogleGenerativeAIProviderOptions,
+		contextWindow: 1_048_576,
+		options: {
+			thinkingConfig: { includeThoughts: true, thinkingLevel: "low" },
+		} as GoogleGenerativeAIProviderOptions,
+	},
+	"google/gemini-3-flash-preview": {
+		name: "Gemini 3 Flash",
+		provider: "google",
+		contextWindow: 1_048_576,
+		options: {
+			thinkingConfig: { includeThoughts: true, thinkingLevel: "medium" },
+		} as GoogleGenerativeAIProviderOptions,
 	},
 	"openai/gpt-5.2": {
 		name: "GPT 5.2",
 		provider: "openai",
-		options: {} as OpenAIResponsesProviderOptions,
+		contextWindow: 400_000,
+		options: {
+			reasoningEffort: "medium",
+			reasoningSummary: "detailed",
+		} as OpenAIResponsesProviderOptions,
 	},
 	"anthropic/claude-sonnet-4-5": {
 		name: "Claude Sonnet 4.5",
 		provider: "anthropic",
-		options: {} as AnthropicProviderOptions,
+		contextWindow: 1_000_000,
+		options: {
+			thinking: { type: "enabled", budgetTokens: 4000 },
+			sendReasoning: true,
+		} as AnthropicProviderOptions,
 	},
 	"anthropic/claude-opus-4-5": {
 		name: "Claude Opus 4.5",
 		provider: "anthropic",
-		options: {} as AnthropicProviderOptions,
+		contextWindow: 200_000,
+		options: {
+			effort: "medium",
+			sendReasoning: true,
+		} as AnthropicProviderOptions,
 	},
 } as const;
 

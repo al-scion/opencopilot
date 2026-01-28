@@ -64,8 +64,8 @@ export const browserShortcuts = [
 		name: "togglePermission",
 		label: "Set permission",
 		key: {
-			mac: "tab",
-			windows: "tab",
+			mac: "shift+tab",
+			windows: "shift+tab",
 		},
 		options: {
 			enableOnContentEditable: true,
@@ -113,6 +113,19 @@ export const browserShortcuts = [
 			preventDefault: true,
 		},
 	},
+	{
+		name: "uploadFile",
+		label: "Upload file",
+		key: {
+			mac: "meta+shift+u",
+			windows: "ctrl+shift+u",
+		},
+		options: {
+			enableOnContentEditable: true,
+			enableOnFormTags: true,
+			preventDefault: true,
+		},
+	},
 ] as const satisfies BrowserShortcut[];
 
 type ShortcutName = (typeof browserShortcuts)[number]["name"];
@@ -135,6 +148,66 @@ export const useShortcut = ({ name, action }: UseShortcutParams) => {
 		},
 		shortcut.options
 	);
+};
+
+export const getShortcutParts = (name: ShortcutName): string[] => {
+	const shortcut = browserShortcuts.find((s) => s.name === name)!;
+	const operatingSystem = useAppState.getState().operatingSystem;
+	const key = shortcut.key[operatingSystem];
+
+	const parts = key.split("+");
+
+	const macSymbols: Record<string, string> = {
+		meta: "⌘",
+		alt: "⌥",
+		shift: "⇧",
+		ctrl: "Ctrl",
+		control: "Ctrl",
+		backspace: "⌫",
+		enter: "⏎",
+		tab: "Tab",
+		slash: "/",
+		comma: ",",
+		period: ".",
+		equal: "=",
+		minus: "-",
+		semicolon: ";",
+		bracketleft: "[",
+		bracketright: "]",
+		up: "↑",
+		down: "↓",
+		left: "←",
+		right: "→",
+	};
+
+	const windowsSymbols: Record<string, string> = {
+		ctrl: "Ctrl",
+		control: "Ctrl",
+		alt: "Alt",
+		shift: "Shift",
+		backspace: "Backspace",
+		enter: "Enter",
+		tab: "Tab",
+		slash: "/",
+		comma: ",",
+		period: ".",
+		equal: "=",
+		minus: "-",
+		semicolon: ";",
+		bracketleft: "[",
+		bracketright: "]",
+		up: "↑",
+		down: "↓",
+		left: "←",
+		right: "→",
+	};
+
+	const symbols = operatingSystem === "mac" ? macSymbols : windowsSymbols;
+
+	return parts.map((part) => {
+		const lower = part.toLowerCase();
+		return symbols[lower] ?? part.toUpperCase();
+	});
 };
 
 export const getShortcutString = (name: ShortcutName) => {
@@ -163,7 +236,7 @@ export const getShortcutString = (name: ShortcutName) => {
 		.replace("TAB", "Tab")
 		.replace("BRACKETLEFT", "[")
 		.replace("BRACKETRIGHT", "]")
-		.replace("+", "");
+		.replaceAll("+", "");
 
 	// Mac specific key map
 	const macKeyString = keyString

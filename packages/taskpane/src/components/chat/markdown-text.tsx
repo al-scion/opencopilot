@@ -4,7 +4,7 @@ import { Streamdown, type StreamdownProps } from "streamdown";
 
 export function MarkdownText({ children, components, className, ...props }: StreamdownProps) {
 	return (
-		<Streamdown className={cn("px-0.5", className)} components={streamdownComponents} {...props}>
+		<Streamdown className={cn("", className)} components={streamdownComponents} {...props}>
 			{children}
 		</Streamdown>
 	);
