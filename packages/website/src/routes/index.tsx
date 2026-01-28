@@ -1,5 +1,7 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { createServerFn } from "@tanstack/react-start";
+import { Header } from "@/components/header";
+import { MainSection } from "@/components/main";
 import { APPSOURCE_URL, EXCEL_DOWNLOAD_REGEX, EXCEL_URL, EXCEL_WEB_REGEX, EXCEL_WEB_URL } from "../lib/constants";
 
 export const Route = createFileRoute("/")({
@@ -10,16 +12,17 @@ export const Route = createFileRoute("/")({
 		return { downloadUrl, webUrl };
 	},
 	headers: () => ({
-		// Cache at CDN for 1 hour, allow stale content for up to 1 day
 		"Cache-Control": "public, max-age=3600, s-maxage=3600, stale-while-revalidate=86400",
 	}),
 });
 
 const getDownloadUrl = createServerFn({
 	method: "GET",
-}).handler(async (c) => {
+}).handler(async () => {
 	const response = await fetch(EXCEL_URL, {
-		headers: { "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7)" },
+		headers: {
+			"User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7)",
+		},
 	});
 	const html = await response.text();
 	const match = html.match(EXCEL_DOWNLOAD_REGEX);
@@ -29,7 +32,7 @@ const getDownloadUrl = createServerFn({
 
 const getExcelWebUrl = createServerFn({
 	method: "GET",
-}).handler(async (c) => {
+}).handler(async () => {
 	const response = await fetch(EXCEL_WEB_URL);
 	const html = await response.text();
 	const match = html.match(EXCEL_WEB_REGEX);
@@ -38,6 +41,12 @@ const getExcelWebUrl = createServerFn({
 });
 
 function RouteComponent() {
-	const { downloadUrl } = Route.useLoaderData();
-	return <div>Hello "/" ! {downloadUrl} </div>;
+	const { downloadUrl, webUrl } = Route.useLoaderData();
+
+	return (
+		<>
+			<Header excelUrl={downloadUrl} />
+			{/* <MainSection /> */}
+		</>
+	);
 }

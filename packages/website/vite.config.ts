@@ -11,7 +11,7 @@ export default defineConfig({
 		cloudflare({ viteEnvironment: { name: "ssr" } }),
 		mdx(await import("./source.config")),
 		tailwindcss({ optimize: true }),
-		tsConfigPaths({ projects: ["./tsconfig.json"] }),
+		tsConfigPaths({ projects: ["./tsconfig.json", "../ui/tsconfig.json"] }),
 		tanstackStart({
 			prerender: { enabled: true, crawlLinks: true, autoStaticPathsDiscovery: true, autoSubfolderIndex: true },
 			pages: [{ path: "/docs" }, { path: "/api/search" }],

@@ -23,7 +23,13 @@ import { z } from "zod";
 import type { Variables } from "../index";
 
 export const chatRouter = new Hono<{ Bindings: Env; Variables: Variables }>().post("/", async (c) => {
-	const { id, messages, agentConfig, workbookState, officeMetadata } = chatRequestSchema.parse(await c.req.json());
+	const {
+		id: chatId,
+		messages,
+		agentConfig,
+		workbookState,
+		officeMetadata,
+	} = chatRequestSchema.parse(await c.req.json());
 
 	const lastMessage = messages.at(-1)!;
 	// const isToolCallResponse = lastMessage.metadata?.finishReason === "tool-calls";
@@ -35,7 +41,7 @@ export const chatRouter = new Hono<{ Bindings: Env; Variables: Variables }>().po
 	// console.log(modelMessages);
 
 	c.var.convex.mutation(api.chat.functions.saveChat, {
-		chatId: id,
+		chatId,
 		message: lastMessage,
 		namespace: officeMetadata.id,
 	});
@@ -81,7 +87,7 @@ export const chatRouter = new Hono<{ Bindings: Env; Variables: Variables }>().po
 					sendSources: true,
 					generateMessageId: () => crypto.randomUUID(),
 					onFinish: async ({ responseMessage }) => {
-						await c.var.convex.mutation(api.chat.functions.saveMessage, { chatId: id, message: responseMessage });
+						await c.var.convex.mutation(api.chat.functions.saveMessage, { chatId, message: responseMessage });
 					},
 					messageMetadata: ({ part }) => {
 						if (part.type === "start") {

@@ -16,8 +16,6 @@ export const Route = createFileRoute("/docs/$")({
 		await clientLoader.preload(data.path);
 		return data;
 	},
-	staleTime: Number.POSITIVE_INFINITY,
-	gcTime: Number.POSITIVE_INFINITY,
 });
 
 // Server loader

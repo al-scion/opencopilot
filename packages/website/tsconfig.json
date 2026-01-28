@@ -3,9 +3,9 @@
   "compilerOptions": {
     "types": ["vite/client"],
     "paths": {
-      "fumadocs-mdx:collections/*": ["./.source/*"]
+      "fumadocs-mdx:collections/*": ["./.source/*"],
+      "@/*": ["./src/*"],
+      "@packages/ui/*": ["../ui/src/*"]
     }
-  },
-  "include": ["**/*.ts", "**/*.tsx"],
-  "exclude": ["node_modules"]
+  }
 }

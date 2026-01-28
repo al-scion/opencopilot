@@ -150,6 +150,66 @@ export const useShortcut = ({ name, action }: UseShortcutParams) => {
 	);
 };
 
+export const getShortcutParts = (name: ShortcutName): string[] => {
+	const shortcut = browserShortcuts.find((s) => s.name === name)!;
+	const operatingSystem = useAppState.getState().operatingSystem;
+	const key = shortcut.key[operatingSystem];
+
+	const parts = key.split("+");
+
+	const macSymbols: Record<string, string> = {
+		meta: "⌘",
+		alt: "⌥",
+		shift: "⇧",
+		ctrl: "Ctrl",
+		control: "Ctrl",
+		backspace: "⌫",
+		enter: "⏎",
+		tab: "Tab",
+		slash: "/",
+		comma: ",",
+		period: ".",
+		equal: "=",
+		minus: "-",
+		semicolon: ";",
+		bracketleft: "[",
+		bracketright: "]",
+		up: "↑",
+		down: "↓",
+		left: "←",
+		right: "→",
+	};
+
+	const windowsSymbols: Record<string, string> = {
+		ctrl: "Ctrl",
+		control: "Ctrl",
+		alt: "Alt",
+		shift: "Shift",
+		backspace: "Backspace",
+		enter: "Enter",
+		tab: "Tab",
+		slash: "/",
+		comma: ",",
+		period: ".",
+		equal: "=",
+		minus: "-",
+		semicolon: ";",
+		bracketleft: "[",
+		bracketright: "]",
+		up: "↑",
+		down: "↓",
+		left: "←",
+		right: "→",
+	};
+
+	const symbols = operatingSystem === "mac" ? macSymbols : windowsSymbols;
+
+	return parts.map((part) => {
+		const lower = part.toLowerCase();
+		return symbols[lower] ?? part.toUpperCase();
+	});
+};
+
 export const getShortcutString = (name: ShortcutName) => {
 	const shortcut = browserShortcuts.find((shortcut) => shortcut.name === name)!;
 	const operatingSystem = useAppState.getState().operatingSystem;

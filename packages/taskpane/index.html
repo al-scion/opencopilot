@@ -4,6 +4,8 @@
 		<meta charset="UTF-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 		<title>App</title>
+		<link rel="preconnect" href="https://fonts.googleapis.com">
+		<link rel="preconnect" href="https://fonts.gstatic.com">
 
 		<script id="window.history.cache" type="text/javascript">
 		window._historyCache = { replaceState: window.history.replaceState, pushState: window.history.pushState };
@@ -14,8 +16,8 @@
 		window.history.pushState = window._historyCache.pushState;
 		</script>
 	</head>
-	<body class="antialised overscroll-none overflow-hidden">
-		<div id="root" class="root"></div>
+	<body class="overscroll-none overflow-hidden relative">
+		<div id="root" class="root isolate"></div>
 		<script type="module" src="/src/main.tsx"></script>
 	</body>
 </html>

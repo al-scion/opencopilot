@@ -53,7 +53,6 @@
         "noExplicitAny": "off"
       },
       "nursery": {
-        // "useConsistentTypeDefinitions": "off",
         "noShadow": "off",
         "useConsistentArrowReturn": "off",
         "noUnusedExpressions": "off"
@@ -63,7 +62,9 @@
         "useAltText": "off",
         "noNoninteractiveElementInteractions": "off",
         "noStaticElementInteractions": "off",
-        "useKeyWithClickEvents": "off"
+        "useKeyWithClickEvents": "off",
+        "useSemanticElements": "off",
+        "useAnchorContent": "off"
       },
       "complexity": {
         "noForEach": "off",

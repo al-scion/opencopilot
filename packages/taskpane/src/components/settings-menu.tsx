@@ -3,7 +3,6 @@ import {
 	DropdownMenuContent,
 	DropdownMenuGroup,
 	DropdownMenuItem,
-	DropdownMenuShortcut,
 	DropdownMenuTrigger,
 } from "@packages/ui/components/ui/dropdown-menu";
 import { cn } from "@packages/ui/lib/utils";
@@ -37,7 +36,10 @@ export function SettingsMenu() {
 	};
 
 	const handleShortcutMenuOpen = () => useAppState.setState({ shortcutMenuOpen: true });
-	const handleOpenChange = (open: boolean) => useAppState.setState({ settingsMenuOpen: open });
+	const handleOpenChange = (open: boolean) => {
+		useAppState.setState({ settingsMenuOpen: open });
+		!open && editor.commands.focus();
+	};
 	useShortcut({ name: "openSettings", action: () => handleOpenChange(!settingsMenuOpen) });
 
 	return (
@@ -80,7 +82,6 @@ export function SettingsMenu() {
 					<DropdownMenuItem onClick={handleShortcutMenuOpen}>
 						<Keyboard />
 						Shortcuts
-						<DropdownMenuShortcut>{getShortcutString("shortcutMenu")}</DropdownMenuShortcut>
 					</DropdownMenuItem>
 					{/* <DropdownMenuSeparator /> */}
 					<DropdownMenuItem onClick={handleAuth}>

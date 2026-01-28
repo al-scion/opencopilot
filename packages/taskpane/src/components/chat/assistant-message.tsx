@@ -41,20 +41,13 @@ export function AssistantMessage({ message }: { message: UIMessageType }) {
 						<Accordion defaultValue={part.state === "streaming" ? [key] : undefined} key={`${key}-${part.state}`}>
 							<AccordionItem className="mx-0.5" value={key}>
 								<AccordionTrigger className="gap-1 py-0">
-									<span
-										className={cn("text-muted-foreground text-xs", part.state === "streaming" && "animate-ellipsis")}
-									>
+									<span className={cn("text-muted-foreground text-xs")}>
 										{part.state === "streaming" ? "Thinking" : "Thought"}
 									</span>
 									<span className="text-muted-foreground/75 text-xs">
 										{part.state === "done" && `for ${Math.max(1, Math.ceil(part.text.length / 200))}s`}
 									</span>
-									<AccordionChevron
-										className={cn(
-											"size-3 -rotate-90 text-muted-foreground/75 opacity-0 group-hover/accordion-trigger:opacity-100 group-data-panel-open/accordion-trigger:rotate-0 group-data-panel-open/accordion-trigger:opacity-100",
-											part.state === "streaming" && "hidden"
-										)}
-									/>
+									<AccordionChevron className="size-3 -rotate-90 text-muted-foreground/75 opacity-0 group-hover/accordion-trigger:opacity-100 group-data-panel-open/accordion-trigger:rotate-0 group-data-panel-open/accordion-trigger:opacity-100" />
 								</AccordionTrigger>
 								<AccordionContent className="no-scrollbar mask-y-from-95% max-h-36 overflow-y-auto">
 									<StickToBottom>

@@ -69,7 +69,7 @@ function CommandInput({
 function CommandList({ className, ...props }: React.ComponentProps<typeof AutocompletePrimitive.List>) {
 	return (
 		<AutocompletePrimitive.List
-			className={cn("no-scrollbar overflow-y-auto", className)}
+			className={cn("no-scrollbar overflow-y-auto empty:hidden", className)}
 			data-slot="command-list"
 			{...props}
 		/>

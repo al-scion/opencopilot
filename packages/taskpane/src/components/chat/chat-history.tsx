@@ -70,17 +70,27 @@ export function ChatHistoryPopover() {
 			>
 				<History />
 			</PopoverTrigger>
-			<PopoverContent className="max-w-56 p-1">
+			<PopoverContent className="max-w-60 p-1">
 				<Command
 					items={commandGroupData}
 					// itemToStringValue={(item) => (item as CommandItemData).label}
-					onItemHighlighted={(item) => handleItemHighlighted((item as CommandItemData).value)}
+					onItemHighlighted={(item) => item && handleItemHighlighted((item as CommandItemData).value)}
 					onValueChange={(query) => console.log("command query", query)}
 				>
-					<CommandInput placeholder="Search chat history..." showIcon={false} />
+					<CommandInput
+						className=""
+						placeholder="Search chat history..."
+						showIcon={false}
+						wrapperClassName="h-8 px-2 rounded-sm"
+					/>
 					<CommandEmpty>No chats found</CommandEmpty>
 					<div className="mask-y-from-[calc(100%-4px)]">
-						<CommandListTemplate className="mt-2" groupClassName="py-0" itemShortcutClassName="font-light" />
+						<CommandListTemplate
+							className="pt-1"
+							groupClassName="py-0"
+							itemClassName="rounded-sm"
+							itemShortcutClassName="font-light"
+						/>
 					</div>
 				</Command>
 			</PopoverContent>

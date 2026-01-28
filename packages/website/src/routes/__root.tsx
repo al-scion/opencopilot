@@ -1,6 +1,6 @@
 import { createRootRoute, HeadContent, Outlet, Scripts } from "@tanstack/react-router";
 import { RootProvider } from "fumadocs-ui/provider/tanstack";
-import appCss from "../index.css?url";
+import appCss from "@/index.css?url";
 
 export const Route = createRootRoute({
 	head: () => ({
@@ -13,10 +13,12 @@ export const Route = createRootRoute({
 				content: "width=device-width, initial-scale=1",
 			},
 			{
-				title: "Fumadocs on TanStack Start",
+				title: "Website",
 			},
 		],
 		links: [
+			{ rel: "preconnect", href: "https://fonts.googleapis.com" },
+			{ rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
 			{ rel: "stylesheet", href: appCss },
 			{ rel: "icon", type: "image/svg+xml", href: "/favicon.svg" },
 		],
@@ -26,14 +28,16 @@ export const Route = createRootRoute({
 
 function RootComponent() {
 	return (
-		<html lang="en" suppressHydrationWarning>
+		<html className="overscroll-none" lang="en" suppressHydrationWarning>
 			<head>
 				<HeadContent />
 			</head>
-			<body className="flex min-h-screen flex-col">
+			<body className="relative">
 				<Scripts />
 				<RootProvider search={{ options: { type: "fetch" } }}>
-					<Outlet />
+					<div className="isolate flex min-h-svh w-screen flex-col overflow-x-clip">
+						<Outlet />
+					</div>
 				</RootProvider>
 			</body>
 		</html>

@@ -1,16 +1,14 @@
-@import "tailwindcss";
-@import "fumadocs-ui/css/vitepress.css"; /* https://www.fumadocs.dev/docs/ui/theme */
+/* Base styles from shared UI package */
+@import "../../ui/src/styles/index.css";
+/* @import "@packages/ui/styles/index.css"; */
+
+/* Fumadocs theme */
+/* https://www.fumadocs.dev/docs/ui/theme */
+@import "fumadocs-ui/css/vitepress.css";
 @import "fumadocs-ui/css/preset.css";
 
 @theme inline {
-	--default-border-width: 0.5px;
-}
-
-@layer base {
-	html,
-	body {
-		-webkit-font-smoothing: antialiased;
-	}
+	--default-border-width: 1px;
 }
 
 /* Sidebar customizations */

@@ -208,6 +208,7 @@
     "packages/website": {
       "name": "@packages/website",
       "dependencies": {
+        "@packages/ui": "workspace:*",
         "@tanstack/react-router": "catalog:",
         "@tanstack/react-start": "catalog:",
         "@typescript/native-preview": "catalog:",
